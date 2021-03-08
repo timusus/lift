@@ -7,7 +7,7 @@ import com.acompany.data.json.Exercise
 
 @Entity(tableName = "exercise")
 data class ExerciseEntity(
-    @PrimaryKey val uid: Int,
+    @PrimaryKey(autoGenerate = true) val uid: Int,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "day") val day: Int,
     @ColumnInfo(name = "sets") val sets: Int,

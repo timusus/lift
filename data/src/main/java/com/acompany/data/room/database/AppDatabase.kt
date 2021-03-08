@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.acompany.data.room.dao.ExerciseDao
 import com.acompany.data.room.entities.ExerciseEntity
 
-@Database(entities = arrayOf(ExerciseEntity::class), version = 1)
+@Database(entities = arrayOf(ExerciseEntity::class), version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun exerciseDao(): ExerciseDao
 
