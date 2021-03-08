@@ -17,6 +17,7 @@ import com.acompany.weightr.common.components.CircleIcon
 import com.acompany.weightr.common.components.OverflowMenuButton
 import com.acompany.weightr.features.data.ExercisePreviewProvider
 import com.acompany.weightr.theme.MaterialColors
+import com.acompany.weightr.theme.MaterialTypography
 
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
@@ -34,10 +35,16 @@ fun ExerciseListItem(
                 )
             },
             text = {
-                Text(text = exercise.name)
+                Text(
+                    text = exercise.name,
+                    style = MaterialTypography.body1
+                )
             },
             secondaryText = {
-                Text(text = "${exercise.reps} - ${exercise.sets}")
+                Text(
+                    text = "${exercise.reps} - ${exercise.sets}",
+                    style = MaterialTypography.body2
+                )
             },
             trailing = {
                 OverflowMenuButton(menuItems = emptyList())
