@@ -2,6 +2,7 @@ package com.acompany.weightr.features.components
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.acompany.data.json.Exercise
@@ -17,6 +18,7 @@ fun LazyExerciseList(
             ExerciseListItem(exercise = exercise) {
                 onExerciseClick(exercise)
             }
+            Divider()
         }
     }
 }

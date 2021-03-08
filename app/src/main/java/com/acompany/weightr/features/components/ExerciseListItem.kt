@@ -20,7 +20,7 @@ fun ExerciseListItem(
     modifier: Modifier = Modifier,
     onExerciseClick: () -> Unit = {}
 ) {
-    CompositionLocalProvider(LocalContentColor provides MaterialColors.onBackground) {
+    CompositionLocalProvider(LocalContentColor provides MaterialColors.onSurface) {
         ListItem(
             text = {
                 Text(text = exercise.name)
@@ -32,7 +32,7 @@ fun ExerciseListItem(
                 OverflowMenuButton(menuItems = emptyList())
             },
             modifier = modifier
-                .background(color = MaterialColors.background)
+                .background(color = MaterialColors.surface)
                 .clickable(onClick = onExerciseClick)
         )
     }
