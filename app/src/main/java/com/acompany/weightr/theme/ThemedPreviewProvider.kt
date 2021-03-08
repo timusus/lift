@@ -8,6 +8,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 class ThemedPreviewProvider : PreviewParameterProvider<Colors> {
 
     override val values: Sequence<Colors>
-        get() = sequenceOf(lightColors(), darkColors())
+        get() = sequenceOf(lightAppColors, darkAppColors)
 
 }

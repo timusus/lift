@@ -25,7 +25,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             val sessions by repository.getSessions().collectAsState(emptyList())
             AppTheme {
@@ -36,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     content = { paddingValues ->
                         LazySessionList(
                             sessions = sessions,
-                            modifier = Modifier.padding(paddingValues),
+                            modifier = Modifier.padding(paddingValues)
                         ) { session ->
                             Timber.d("$session")
                         }

@@ -23,7 +23,7 @@ import com.acompany.weightr.theme.MaterialTypography
 fun SessionListItem(
     session: Session,
     modifier: Modifier = Modifier,
-    onExerciseClick: () -> Unit = {}
+    onSessionClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
         ListItem(
@@ -41,13 +41,13 @@ fun SessionListItem(
             },
             secondaryText = {
                 Text(
-                    text = session.exercises.map { it.name }.joinToString(", "),
+                    text = session.exercises.joinToString(", ") { it.name },
                     style = MaterialTypography.body2
                 )
             },
             modifier = modifier
                 .background(color = MaterialColors.surface)
-                .clickable(onClick = onExerciseClick)
+                .clickable(onClick = onSessionClick)
         )
     }
 }
