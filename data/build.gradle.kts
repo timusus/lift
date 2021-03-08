@@ -48,7 +48,6 @@ android {
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":")))
     Dependencies.Coroutines.apply {
         implementation(core)
         implementation(android)
