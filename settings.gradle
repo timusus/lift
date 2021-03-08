@@ -7,3 +7,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "weightr"
+include ':data'
