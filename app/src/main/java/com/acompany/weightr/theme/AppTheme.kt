@@ -11,9 +11,9 @@ import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
 @Composable
 @OptIn(ExperimentalAnimatedInsets::class)
-fun WeightrTheme(
+fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    colorPalette: Colors = if (darkTheme) darkWeightrColors else lightWeightrColors,
+    colorPalette: Colors = if (darkTheme) darkAppColors else lightAppColors,
     typography: Typography = MaterialTheme.typography,
     windowInsetsAnimationsEnabled: Boolean = true,
     content: @Composable () -> Unit

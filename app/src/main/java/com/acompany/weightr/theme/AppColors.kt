@@ -14,14 +14,14 @@ object WeightrColors {
     val surface = Color(0xffc8c6a7)
 }
 
-val lightWeightrColors = lightColors(
+val lightAppColors = lightColors(
     primary = WeightrColors.primary,
     secondary = WeightrColors.secondary,
     background = WeightrColors.background,
     surface = WeightrColors.surface
 )
 
-val darkWeightrColors = darkColors(
+val darkAppColors = darkColors(
     primary = WeightrColors.primary,
     secondary = WeightrColors.secondary,
     background = WeightrColors.background,

@@ -11,17 +11,17 @@ import timber.log.Timber
 class DataImporter(
     private val context: Context,
     private val moshi: Moshi,
-    private val weightrRepository: WeightrRepository
+    private val appRepository: AppRepository
 ) {
 
     suspend fun import(filename: String) {
-        if (weightrRepository.getExercises().first().isEmpty()) {
+        if (appRepository.getExercises().first().isEmpty()) {
             context.assets.open(filename).bufferedReader().use {
                 moshi.adapter(JsonData::class.java).fromJson(it.readText())
             }?.let { jsonData ->
                 val exercises = jsonData.exercises.map { exercise -> exercise.toExercise() }
                 val sessions = jsonData.sessions.map { session -> session.toSession(exercises.filter { it.sessionId == session.id }) }
-                weightrRepository.insert(
+                appRepository.insert(
                     sessions = sessions,
                     exercises = exercises
                 )

@@ -9,6 +9,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
+/**
+ * Runs at app startup, to update the database from the embedded exercises.json file if required
+ */
 class RepositoryInitializer : Initializer<DataImporter> {
 
     @Inject
@@ -23,7 +26,7 @@ class RepositoryInitializer : Initializer<DataImporter> {
         InitializerEntryPoint.resolve(context).inject(this)
 
         appCoroutineScope.launch {
-            dataImporter.import("exercises.json")
+            dataImporter.import("data.json")
         }
 
         return dataImporter

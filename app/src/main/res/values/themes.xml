@@ -1,5 +1,5 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.Weightr" parent="android:Theme.Material.NoActionBar" />
+    <style name="Theme.App" parent="android:Theme.Material.NoActionBar" />
 
 </resources>

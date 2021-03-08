@@ -11,7 +11,7 @@ import com.acompany.data.room.dao.SessionDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class WeightrRepository(
+class AppRepository(
     private val sessionDao: SessionDao,
     private val exerciseDao: ExerciseDao
 ) {

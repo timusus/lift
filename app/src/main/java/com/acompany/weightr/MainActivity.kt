@@ -10,13 +10,10 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.lifecycleScope
-import com.acompany.data.WeightrRepository
+import com.acompany.data.AppRepository
 import com.acompany.weightr.features.components.session.LazySessionList
-import com.acompany.weightr.theme.WeightrTheme
+import com.acompany.weightr.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -24,14 +21,14 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var repository: WeightrRepository
+    lateinit var repository: AppRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             val sessions by repository.getSessions().collectAsState(emptyList())
-            WeightrTheme {
+            AppTheme {
                 Scaffold(
                     topBar = {
                         TopAppBar(title = { Text(text = getString(R.string.app_name)) })

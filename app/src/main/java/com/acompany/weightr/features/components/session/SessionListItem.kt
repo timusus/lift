@@ -14,8 +14,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.data.model.Session
 import com.acompany.weightr.common.components.CircleIcon
-import com.acompany.weightr.common.components.OverflowMenuButton
-import com.acompany.weightr.features.data.exercise.ExercisePreviewProvider
 import com.acompany.weightr.features.data.session.SessionPreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
