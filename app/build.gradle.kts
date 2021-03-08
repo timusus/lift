@@ -81,7 +81,7 @@ dependencies {
     }
     Dependencies.Room.apply {
         implementation(runtime)
-        implementation(coroutines)
+        implementation(ktx)
     }
     Dependencies.Moshi.apply {
         implementation(kotlin)

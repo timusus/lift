@@ -48,14 +48,16 @@ android {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":")))
     Dependencies.Coroutines.apply {
         implementation(core)
         implementation(android)
     }
     Dependencies.Room.apply {
         implementation(runtime)
-        implementation(coroutines)
+        implementation(ktx)
         kapt(compiler)
     }
     implementation(Dependencies.Moshi.kotlin)
+    implementation(Dependencies.Timber())
 }
