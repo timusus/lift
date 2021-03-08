@@ -7,25 +7,30 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-object WeightrColors {
-    val primary = Color(0xff435560)
-    val secondary = Color(0xff6e7c7c)
-    val background = Color(0xff92967d)
-    val surface = Color(0xffc8c6a7)
+object AppColors {
+    val primary = Color(0xFF6dd2aa)
+    val secondary = Color(0xFF3a68a1)
+    val background = Color(0xFFFFFFF)
+    val surface = Color(0xFFFFFFFF)
+
+    val primaryDark = Color(0xFF38a07b)
+    val secondaryDark = Color(0xFF003e72)
+    val backgroundDark = Color(0xFF212121)
+    val surfaceDark = Color(0xFF212121)
 }
 
 val lightAppColors = lightColors(
-    primary = WeightrColors.primary,
-    secondary = WeightrColors.secondary,
-    background = WeightrColors.background,
-    surface = WeightrColors.surface
+    primary = AppColors.primary,
+    secondary = AppColors.secondary,
+    background = AppColors.background,
+    surface = AppColors.surface
 )
 
 val darkAppColors = darkColors(
-    primary = WeightrColors.primary,
-    secondary = WeightrColors.secondary,
-    background = WeightrColors.background,
-    surface = WeightrColors.surface
+    primary = AppColors.primaryDark,
+    secondary = AppColors.secondaryDark,
+    background = AppColors.backgroundDark,
+    surface = AppColors.surfaceDark
 )
 
 val MaterialColors: Colors

@@ -13,7 +13,7 @@ import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 @OptIn(ExperimentalAnimatedInsets::class)
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    colorPalette: Colors = if (darkTheme) darkAppColors else lightAppColors,
+    colorPalette: Colors = lightAppColors, // if (darkTheme) darkAppColors else lightAppColors,
     typography: Typography = MaterialTheme.typography,
     windowInsetsAnimationsEnabled: Boolean = true,
     content: @Composable () -> Unit
