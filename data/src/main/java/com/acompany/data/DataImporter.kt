@@ -15,7 +15,7 @@ class DataImporter(
 ) {
 
     suspend fun import(filename: String) {
-        if (exerciseRepository.getAllExercises().first().isNotEmpty()) {
+        if (exerciseRepository.getAllExercises().first().isEmpty()) {
             val type = Types.newParameterizedType(MutableList::class.java, Exercise::class.java)
             val adapter: JsonAdapter<List<Exercise>> = moshi.adapter(type)
             context.assets.open(filename).bufferedReader().use {
