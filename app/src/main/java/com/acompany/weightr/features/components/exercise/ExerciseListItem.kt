@@ -1,4 +1,4 @@
-package com.acompany.weightr.features.components
+package com.acompany.weightr.features.components.exercise
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,10 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.acompany.data.json.Exercise
+import com.acompany.data.model.Exercise
 import com.acompany.weightr.common.components.CircleIcon
-import com.acompany.weightr.common.components.OverflowMenuButton
-import com.acompany.weightr.features.data.ExercisePreviewProvider
+import com.acompany.weightr.features.data.exercise.ExercisePreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
 
@@ -42,12 +41,9 @@ fun ExerciseListItem(
             },
             secondaryText = {
                 Text(
-                    text = "${exercise.reps} - ${exercise.sets}",
+                    text = "${exercise.reps} x ${exercise.sets}",
                     style = MaterialTypography.body2
                 )
-            },
-            trailing = {
-                OverflowMenuButton(menuItems = emptyList())
             },
             modifier = modifier
                 .background(color = MaterialColors.surface)

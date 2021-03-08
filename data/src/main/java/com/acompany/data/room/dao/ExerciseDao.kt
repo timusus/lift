@@ -12,8 +12,8 @@ interface ExerciseDao {
     @Query("SELECT * FROM exercise")
     fun get(): Flow<List<ExerciseEntity>>
 
-    @Query("SELECT * FROM exercise where day = :day")
-    fun get(day: Int): Flow<List<ExerciseEntity>>
+    @Query("SELECT * FROM exercise where sessionId = :sessionId")
+    fun get(sessionId: Int): Flow<List<ExerciseEntity>>
 
     @Insert
     suspend fun insert(exercises: List<ExerciseEntity>)

@@ -1,60 +1,80 @@
-[
-  {
-    "name": "Squat",
-    "day": 1,
-    "sets": 3,
-    "reps": 5,
-    "percent1rm": 0.825
-  },
-  {
-    "name": "Deadlift",
-    "day": 1,
-    "sets": 3,
-    "reps": 5,
-    "percent1rm": 0.825
-  },
-  {
-    "name": "Single leg",
-    "day": 1,
-    "sets": 3,
-    "reps": 8
-  },
-  {
-    "name": "Standing calf-raises",
-    "day": 1,
-    "sets": 4,
-    "reps": 8
-  },
-  {
-    "name": "Horizontal Push",
-    "day": 1,
-    "sets": 3,
-    "reps": 5,
-    "percent1rm": 0.825
-  },
-  {
-    "name": "Horizontal Pull",
-    "day": 1,
-    "sets": 3,
-    "reps": 5
-  },
-  {
-    "name": "Vertical Push",
-    "day": 1,
-    "sets": 2,
-    "reps": 8,
-    "percent1rm": 0.725
-  },
-  {
-    "name": "Vertical Pull",
-    "day": 1,
-    "sets": 2,
-    "reps": 8
-  },
-  {
-    "name": "Flys",
-    "day": 1,
-    "sets": 2,
-    "reps": 15
-  }
-]
+{
+  "sessions": [
+    {
+      "id": 1,
+      "name": "Upper Body (Strength)"
+    },
+    {
+      "id": 2,
+      "name": "Lower Body (Strength)"
+    },
+    {
+      "id": 3,
+      "name": "Upper Body (Volume)"
+    },
+    {
+      "id": 4,
+      "name": "Lower Body (Volume)"
+    }
+  ],
+  "exercises": [
+    {
+      "name": "Squat",
+      "sessionId": 1,
+      "sets": 3,
+      "reps": 5,
+      "percent1rm": 0.825
+    },
+    {
+      "name": "Deadlift",
+      "sessionId": 1,
+      "sets": 3,
+      "reps": 5,
+      "percent1rm": 0.825
+    },
+    {
+      "name": "Single leg",
+      "sessionId": 1,
+      "sets": 3,
+      "reps": 8
+    },
+    {
+      "name": "Standing calf-raises",
+      "sessionId": 1,
+      "sets": 4,
+      "reps": 8
+    },
+    {
+      "name": "Horizontal Push",
+      "sessionId": 2,
+      "sets": 3,
+      "reps": 5,
+      "percent1rm": 0.825
+    },
+    {
+      "name": "Horizontal Pull",
+      "sessionId": 2,
+      "sets": 3,
+      "reps": 5
+    },
+    {
+      "name": "Vertical Push",
+      "sessionId": 2,
+      "sets": 2,
+      "reps": 8,
+      "percent1rm": 0.725
+    },
+    {
+      "name": "Vertical Pull",
+      "sessionId": 2,
+      "sets": 2,
+      "reps": 8
+    },
+    {
+      "name": "Flys",
+      "sessionId": 2,
+      "sets": 2,
+      "reps": 15
+    }
+  ]
+}

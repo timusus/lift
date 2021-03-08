@@ -10,10 +10,13 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.acompany.data.ExerciseRepository
-import com.acompany.weightr.features.components.LazyExerciseList
+import androidx.lifecycle.lifecycleScope
+import com.acompany.data.WeightrRepository
+import com.acompany.weightr.features.components.session.LazySessionList
 import com.acompany.weightr.theme.WeightrTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -21,23 +24,24 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var repository: ExerciseRepository
+    lateinit var repository: WeightrRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            val exercises by repository.getAllExercises().collectAsState(emptyList())
+            val sessions by repository.getSessions().collectAsState(emptyList())
             WeightrTheme {
                 Scaffold(
                     topBar = {
                         TopAppBar(title = { Text(text = getString(R.string.app_name)) })
                     },
                     content = { paddingValues ->
-                        LazyExerciseList(
-                            exercises = exercises,
-                            modifier = Modifier.padding(paddingValues)
-                        ) { exercise ->
-                            Timber.d("$exercise")
+                        LazySessionList(
+                            sessions = sessions,
+                            modifier = Modifier.padding(paddingValues),
+                        ) { session ->
+                            Timber.d("$session")
                         }
                     }
                 )

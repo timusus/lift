@@ -1,11 +1,11 @@
-package com.acompany.weightr.features.components
+package com.acompany.weightr.features.components.exercise
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.acompany.data.json.Exercise
+import com.acompany.data.model.Exercise
 
 @Composable
 fun LazyExerciseList(
