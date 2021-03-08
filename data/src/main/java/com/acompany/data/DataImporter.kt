@@ -32,16 +32,3 @@ class DataImporter(
         }
     }
 }
-
-class Thing(dataImporter: DataImporter, scope: CoroutineScope) {
-
-    val callback = object : RoomDatabase.Callback() {
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-
-            scope.launch {
-                dataImporter.import("exercises.json")
-            }
-        }
-    }
-}

@@ -89,6 +89,7 @@ object Dependencies {
         private const val version = "2.3.0-beta01"
         const val runtime = "androidx.room:room-runtime:$version"
         const val compiler = "androidx.room:room-compiler:$version"
+        const val coroutines = "androidx.room:room-coroutines:$version"
         const val ktx = "androidx.room:room-ktx:$version"
     }
 
@@ -106,4 +107,9 @@ object Dependencies {
         operator fun invoke() = "com.jakewharton.timber:timber:4.7.1"
     }
 
+    object Dagger {
+        const val hiltPlugin = "com.google.dagger:hilt-android-gradle-plugin:2.33-beta"
+        const val hilt =  "com.google.dagger:hilt-android:2.33-beta"
+        const val hiltKapt =  "com.google.dagger:hilt-compiler:2.33-beta"
+    }
 }

@@ -4,6 +4,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("kotlin-android")
+    id("dagger.hilt.android.plugin")
 }
 
 kapt {
@@ -73,5 +74,16 @@ dependencies {
     Dependencies.Kotlin.apply {
         implementation(stdlib)
         implementation(reflect)
+    }
+    Dependencies.Dagger.apply {
+        kapt(hiltKapt)
+        implementation(hilt)
+    }
+    Dependencies.Room.apply {
+        implementation(runtime)
+        implementation(coroutines)
+    }
+    Dependencies.Moshi.apply {
+        implementation(kotlin)
     }
 }

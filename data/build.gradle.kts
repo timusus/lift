@@ -52,8 +52,10 @@ dependencies {
         implementation(core)
         implementation(android)
     }
-    implementation("androidx.room:room-runtime:2.2.6")
-    implementation("androidx.room:room-coroutines:2.2.6")
-    kapt("androidx.room:room-compiler:2.2.6")
-
+    Dependencies.Room.apply {
+        implementation(runtime)
+        implementation(coroutines)
+        kapt(compiler)
+    }
+    implementation(Dependencies.Moshi.kotlin)
 }
