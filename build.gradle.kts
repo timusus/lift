@@ -6,7 +6,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30")
         dependencies {
             classpath(Dependencies.androidGradlePlugin)
             classpath(Dependencies.Kotlin.gradlePlugin)
@@ -14,7 +13,7 @@ buildscript {
     }
 }
 
-subprojects {
+allprojects {
     repositories {
         google()
         jcenter()

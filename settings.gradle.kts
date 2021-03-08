@@ -1,4 +1,5 @@
 rootProject.name = "weightr"
 include(
-    ":app"
+    ":app",
+    ":data"
 )
