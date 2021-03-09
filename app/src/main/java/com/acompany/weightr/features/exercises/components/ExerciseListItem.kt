@@ -1,4 +1,4 @@
-package com.acompany.weightr.features.components.exercise
+package com.acompany.weightr.features.exercises.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.data.model.Exercise
 import com.acompany.weightr.common.components.CircleIcon
-import com.acompany.weightr.features.data.exercise.ExercisePreviewProvider
+import com.acompany.weightr.features.exercises.data.ExercisePreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
 

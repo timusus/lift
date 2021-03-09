@@ -1,4 +1,4 @@
-package com.acompany.weightr.features.components.exercise
+package com.acompany.weightr.features.exercises.components
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items

@@ -10,11 +10,11 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.acompany.data.AppRepository
-import com.acompany.weightr.features.components.exercise.LazyExerciseList
-import com.acompany.weightr.features.components.session.LazySessionList
+import com.acompany.weightr.features.Screen
+import com.acompany.weightr.features.exerciseList
+import com.acompany.weightr.features.sessionList
 import com.acompany.weightr.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -26,51 +26,44 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var repository: AppRepository
 
-    sealed class Screen(val route: String, val name: String) {
-        object Sessions : Screen("sessions", "Sessions")
-        object Exercises : Screen("sessions/{sessionId}/exercises", "Exercises")
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
-            val sessions by repository.getSessions().collectAsState(emptyList())
             val navController = rememberNavController()
             val screens = listOf(Screen.Sessions, Screen.Exercises)
-
+            val sessions by repository.getSessions().collectAsState(emptyList())
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
             AppTheme {
                 Scaffold(
                     topBar = {
-                        val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-                        TopAppBar(title = { Text(text = screens.firstOrNull { screen -> screen.route == currentRoute }?.name ?: "weightr") })
+                        val currentScreen = screens.firstOrNull { it.route == currentRoute }
+                        TopAppBar(title = { Text(text = currentScreen?.name ?: "weightr") })
                     },
                     content = { paddingValues ->
-                        NavHost(navController, startDestination = Screen.Sessions.route) {
-                            composable(Screen.Sessions.route) {
-                                LazySessionList(
-                                    sessions = sessions,
-                                    modifier = Modifier.padding(paddingValues)
-                                ) { session ->
+                        NavHost(
+                            navController = navController,
+                            startDestination = Screen.Sessions.route
+                        ) {
+                            sessionList(
+                                sessions = sessions,
+                                modifier = Modifier.padding(paddingValues),
+                                onSessionClick = { session ->
                                     navController.navigate("sessions/${session.id}/exercises")
                                 }
-                            }
-                            composable(
-                                route = Screen.Exercises.route,
-                                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
-                            ) { backStackEntry ->
-                                LazyExerciseList(
-                                    exercises = sessions.filter { session -> session.id == backStackEntry.arguments!!.getInt("sessionId") }.flatMap { it.exercises },
-                                    modifier = Modifier.padding(paddingValues)
-                                ) { session ->
-                                    Timber.d("$session")
+                            )
+                            exerciseList(
+                                sessions = sessions,
+                                modifier = Modifier.padding(paddingValues),
+                                onExerciseClick = { exercise ->
+                                    Timber.d("$exercise")
                                 }
-                            }
+                            )
                         }
                     },
                 )
             }
         }
     }
+
 }

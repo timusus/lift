@@ -1,4 +1,4 @@
-package com.acompany.weightr.features.data.exercise
+package com.acompany.weightr.features.exercises.data
 
 import androidx.compose.material.Colors
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider

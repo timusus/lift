@@ -1,4 +1,4 @@
-package com.acompany.weightr.features.components.session
+package com.acompany.weightr.features.sessions.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.data.model.Session
 import com.acompany.weightr.common.components.CircleIcon
-import com.acompany.weightr.features.data.session.SessionPreviewProvider
+import com.acompany.weightr.features.sessions.data.SessionPreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
 

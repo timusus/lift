@@ -1,4 +1,4 @@
-package com.acompany.weightr.features.data.session
+package com.acompany.weightr.features.sessions.data
 
 import androidx.compose.material.Colors
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
