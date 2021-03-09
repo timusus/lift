@@ -11,6 +11,7 @@ class JsonData(
 
     @JsonClass(generateAdapter = true)
     data class Exercise(
+        @ColumnInfo(name = "id") val id: Int,
         @ColumnInfo(name = "name") val name: String,
         @ColumnInfo(name = "sessionId") val sessionId: Int,
         @ColumnInfo(name = "sets") val sets: Int,

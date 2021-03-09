@@ -10,6 +10,7 @@ object ExerciseMapper {
 
     fun ExerciseEntity.toExercise(): Exercise {
         return Exercise(
+            id = uid,
             name = name,
             sessionId = sessionId,
             sets = sets,
@@ -22,6 +23,7 @@ object ExerciseMapper {
 
     fun JsonData.Exercise.toExercise(): Exercise {
         return Exercise(
+            id = id,
             name = name,
             sessionId = sessionId,
             sets = sets,
