@@ -18,7 +18,8 @@ import com.acompany.weightr.features.exercises.data.ExerciseListPreviewProvider
 fun LazyExerciseList(
     exercises: List<Exercise>,
     modifier: Modifier = Modifier,
-    onExerciseClick: (Exercise) -> Unit = {}
+    onExerciseClick: (Exercise) -> Unit = {},
+    onExerciseLongClick: (Exercise) -> Unit = {}
 ) {
     Column {
         Button(modifier = modifier,
@@ -29,9 +30,11 @@ fun LazyExerciseList(
         Spacer(Modifier.size(8.dp))
         LazyColumn(modifier = modifier) {
             items(exercises) { exercise ->
-                ExerciseListItem(exercise = exercise) {
-                    onExerciseClick(exercise)
-                }
+                ExerciseListItem(
+                    exercise = exercise,
+                    onExerciseClick = { onExerciseClick(exercise) },
+                    onExerciseLongClick = { onExerciseLongClick(exercise) }
+                )
                 Divider()
             }
         }
