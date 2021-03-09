@@ -10,11 +10,12 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.acompany.data.AppRepository
 import com.acompany.weightr.features.Screen
-import com.acompany.weightr.features.exerciseList
-import com.acompany.weightr.features.sessionList
+import com.acompany.weightr.features.exercises.components.LazyExerciseList
+import com.acompany.weightr.features.sessions.components.LazySessionList
 import com.acompany.weightr.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -45,20 +46,31 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             startDestination = Screen.Sessions.route
                         ) {
-                            sessionList(
-                                sessions = sessions,
-                                modifier = Modifier.padding(paddingValues),
-                                onSessionClick = { session ->
-                                    navController.navigate("sessions/${session.id}/exercises")
+                            composable(Screen.Sessions.route) {
+                                LazySessionList(
+                                    sessions = sessions,
+                                    modifier = Modifier.padding(paddingValues),
+                                    onSessionClick = { session ->
+                                        navController.navigate("sessions/${session.id}/exercises")
+                                    }
+                                )
+                            }
+                            composable(
+                                route = Screen.Exercises.route,
+                                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
+                            ) { backStackEntry ->
+                                val session = sessions.filter { session ->
+                                    session.id == backStackEntry.arguments!!.getInt("sessionId")
                                 }
-                            )
-                            exerciseList(
-                                sessions = sessions,
-                                modifier = Modifier.padding(paddingValues),
-                                onExerciseClick = { exercise ->
-                                    Timber.d("$exercise")
-                                }
-                            )
+                                val exercises = session.flatMap { it.exercises }
+                                LazyExerciseList(
+                                    exercises = exercises,
+                                    modifier = Modifier.padding(paddingValues),
+                                    onExerciseClick = { exercise ->
+                                        Timber.d("$exercise")
+                                    }
+                                )
+                            }
                         }
                     },
                 )
