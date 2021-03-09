@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.data.model.Session
 import com.acompany.weightr.common.components.CircleIcon
-import com.acompany.weightr.features.sessions.data.SessionPreviewProvider
+import com.acompany.weightr.features.sessions.data.SessionListItemPreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
 
@@ -55,7 +55,7 @@ fun SessionListItem(
 @Preview
 @Composable
 private fun SessionListItemPreview(
-    @PreviewParameter(SessionPreviewProvider::class) preview: Pair<Colors, Session>
+    @PreviewParameter(SessionListItemPreviewProvider::class) preview: Pair<Colors, Session>
 ) {
     MaterialTheme(colors = preview.first) {
         SessionListItem(session = preview.second)

@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.data.model.Exercise
 import com.acompany.weightr.common.components.CircleIcon
-import com.acompany.weightr.features.exercises.data.ExercisePreviewProvider
+import com.acompany.weightr.features.exercises.data.ExerciseListItemPreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
 
@@ -55,7 +55,7 @@ fun ExerciseListItem(
 @Preview
 @Composable
 private fun ExerciseListItemPreview(
-    @PreviewParameter(ExercisePreviewProvider::class) preview: Pair<Colors, Exercise>
+    @PreviewParameter(ExerciseListItemPreviewProvider::class) preview: Pair<Colors, Exercise>
 ) {
     MaterialTheme(colors = preview.first) {
         ExerciseListItem(exercise = preview.second)
