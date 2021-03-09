@@ -3,23 +3,17 @@ package com.acompany.weightr
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.acompany.data.AppRepository
-import com.acompany.weightr.features.Screen
-import com.acompany.weightr.features.exercises.components.LazyExerciseList
-import com.acompany.weightr.features.sessions.components.LazySessionList
+import com.acompany.weightr.features.exercises.components.ExerciseScreen
+import com.acompany.weightr.features.sessions.components.SessionScreen
 import com.acompany.weightr.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,8 +26,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            val screens = listOf(Screen.Sessions, Screen.Exercises)
             val sessions by repository.getSessions().collectAsState(emptyList())
+            val screens = listOf(
+                SessionScreen { sessions },
+                ExerciseScreen { sessionId -> sessions.first { session -> session.id == sessionId }.exercises },
+            )
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
             AppTheme {
@@ -45,32 +42,15 @@ class MainActivity : ComponentActivity() {
                     content = { paddingValues ->
                         NavHost(
                             navController = navController,
-                            startDestination = Screen.Sessions.route
+                            startDestination = screens.first().route
                         ) {
-                            composable(Screen.Sessions.route) {
-                                LazySessionList(
-                                    sessions = sessions,
-                                    modifier = Modifier.padding(paddingValues).padding(16.dp),
-                                    onSessionClick = { session ->
-                                        navController.navigate("sessions/${session.id}/exercises")
-                                    }
-                                )
-                            }
-                            composable(
-                                route = Screen.Exercises.route,
-                                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
-                            ) { backStackEntry ->
-                                val session = sessions.filter { session ->
-                                    session.id == backStackEntry.arguments!!.getInt("sessionId")
+                            screens.forEach { screen ->
+                                composable(
+                                    route = screen.route,
+                                    arguments = screen.arguments
+                                ) { backStackEntry ->
+                                    screen.content(paddingValues, navController, backStackEntry)
                                 }
-                                val exercises = session.flatMap { it.exercises }
-                                LazyExerciseList(
-                                    exercises = exercises,
-                                    modifier = Modifier.padding(paddingValues).padding(16.dp),
-                                    onExerciseClick = { exercise ->
-                                        Timber.d("$exercise")
-                                    }
-                                )
                             }
                         }
                     },
