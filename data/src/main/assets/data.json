@@ -75,6 +75,75 @@
       "sessionId": 2,
       "sets": 2,
       "reps": 15
+    },
+    {
+      "name": "Hip Hinge Variant",
+      "sessionId": 3,
+      "sets": 3,
+      "reps": 8
+    },
+    {
+      "name": "Leg Press Variant",
+      "sessionId": 3,
+      "sets": 3,
+      "reps": 8
+    },
+    {
+      "name": "Leg Extensions",
+      "variant": "Barbell Lunges",
+      "sessionId": 3,
+      "sets": 3,
+      "reps": 12
+    },
+    {
+      "name": "Leg Curl",
+      "variant": "Stiff-leg Deadlift",
+      "sessionId": 3,
+      "sets": 3,
+      "reps": 12
+    },
+    {
+      "name": "Seated Calf Raise",
+      "sessionId": 3,
+      "sets": 4,
+      "reps": 15
+    },
+    {
+      "name": "Horizontal Push",
+      "sessionId": 4,
+      "sets": 3,
+      "reps": 10,
+      "percent1rm": 0.675
+    },
+    {
+      "name": "Horizontal Pull",
+      "sessionId": 4,
+      "sets": 3,
+      "reps": 10
+    },
+    {
+      "name": "Incline Push",
+      "sessionId": 4,
+      "sets": 2,
+      "reps": 12
+    },
+    {
+      "name": "Vertical Pull",
+      "sessionId": 4,
+      "sets": 2,
+      "reps": 12
+    },
+    {
+      "name": "Triceps Isolation",
+      "sessionId": 4,
+      "sets": 2,
+      "reps": 12
+    },
+    {
+      "name": "Biceps Isolation",
+      "sessionId": 4,
+      "sets": 2,
+      "reps": 12
     }
   ]
 }

@@ -10,6 +10,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.acompany.data.AppRepository
@@ -49,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             composable(Screen.Sessions.route) {
                                 LazySessionList(
                                     sessions = sessions,
-                                    modifier = Modifier.padding(paddingValues),
+                                    modifier = Modifier.padding(paddingValues).padding(16.dp),
                                     onSessionClick = { session ->
                                         navController.navigate("sessions/${session.id}/exercises")
                                     }
@@ -65,7 +66,7 @@ class MainActivity : ComponentActivity() {
                                 val exercises = session.flatMap { it.exercises }
                                 LazyExerciseList(
                                     exercises = exercises,
-                                    modifier = Modifier.padding(paddingValues),
+                                    modifier = Modifier.padding(paddingValues).padding(16.dp),
                                     onExerciseClick = { exercise ->
                                         Timber.d("$exercise")
                                     }
@@ -77,5 +78,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 }
