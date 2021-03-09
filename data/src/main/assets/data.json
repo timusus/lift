@@ -19,6 +19,7 @@
   ],
   "exercises": [
     {
+      "id": 1,
       "name": "Squat",
       "sessionId": 1,
       "sets": 3,
@@ -26,6 +27,7 @@
       "percent1rm": 0.825
     },
     {
+      "id": 2,
       "name": "Deadlift",
       "sessionId": 1,
       "sets": 3,
@@ -33,18 +35,21 @@
       "percent1rm": 0.825
     },
     {
+      "id": 3,
       "name": "Single leg",
       "sessionId": 1,
       "sets": 3,
       "reps": 8
     },
     {
+      "id": 4,
       "name": "Standing calf-raises",
       "sessionId": 1,
       "sets": 4,
       "reps": 8
     },
     {
+      "id": 5,
       "name": "Horizontal Push",
       "sessionId": 2,
       "sets": 3,
@@ -52,12 +57,14 @@
       "percent1rm": 0.825
     },
     {
+      "id": 6,
       "name": "Horizontal Pull",
       "sessionId": 2,
       "sets": 3,
       "reps": 5
     },
     {
+      "id": 7,
       "name": "Vertical Push",
       "sessionId": 2,
       "sets": 2,
@@ -65,30 +72,35 @@
       "percent1rm": 0.725
     },
     {
+      "id": 8,
       "name": "Vertical Pull",
       "sessionId": 2,
       "sets": 2,
       "reps": 8
     },
     {
+      "id": 9,
       "name": "Flys",
       "sessionId": 2,
       "sets": 2,
       "reps": 15
     },
     {
+      "id": 10,
       "name": "Hip Hinge Variant",
       "sessionId": 3,
       "sets": 3,
       "reps": 8
     },
     {
+      "id": 11,
       "name": "Leg Press Variant",
       "sessionId": 3,
       "sets": 3,
       "reps": 8
     },
     {
+      "id": 12,
       "name": "Leg Extensions",
       "variant": "Barbell Lunges",
       "sessionId": 3,
@@ -96,6 +108,7 @@
       "reps": 12
     },
     {
+      "id": 13,
       "name": "Leg Curl",
       "variant": "Stiff-leg Deadlift",
       "sessionId": 3,
@@ -103,12 +116,14 @@
       "reps": 12
     },
     {
+      "id": 14,
       "name": "Seated Calf Raise",
       "sessionId": 3,
       "sets": 4,
       "reps": 15
     },
     {
+      "id": 15,
       "name": "Horizontal Push",
       "sessionId": 4,
       "sets": 3,
@@ -116,30 +131,35 @@
       "percent1rm": 0.675
     },
     {
+      "id": 16,
       "name": "Horizontal Pull",
       "sessionId": 4,
       "sets": 3,
       "reps": 10
     },
     {
+      "id": 17,
       "name": "Incline Push",
       "sessionId": 4,
       "sets": 2,
       "reps": 12
     },
     {
+      "id": 18,
       "name": "Vertical Pull",
       "sessionId": 4,
       "sets": 2,
       "reps": 12
     },
     {
+      "id": 19,
       "name": "Triceps Isolation",
       "sessionId": 4,
       "sets": 2,
       "reps": 12
     },
     {
+      "id": 20,
       "name": "Biceps Isolation",
       "sessionId": 4,
       "sets": 2,
