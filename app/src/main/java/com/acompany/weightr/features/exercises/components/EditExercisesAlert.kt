@@ -8,10 +8,10 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.acompany.data.model.Exercise
+import com.acompany.data.model.RoutineExercise
 
 @Composable
-fun EditExercisesAlert(exercise: Exercise, onDismiss: () -> Unit) {
+fun EditExercisesAlert(exercise: RoutineExercise, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = {
             onDismiss()

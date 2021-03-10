@@ -79,10 +79,6 @@ dependencies {
         kapt(hiltKapt)
         implementation(hilt)
     }
-    Dependencies.Room.apply {
-        implementation(runtime)
-        implementation(ktx)
-    }
     Dependencies.Moshi.apply {
         implementation(kotlin)
     }

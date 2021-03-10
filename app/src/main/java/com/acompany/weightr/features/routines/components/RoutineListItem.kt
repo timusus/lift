@@ -1,4 +1,4 @@
-package com.acompany.weightr.features.sessions.components
+package com.acompany.weightr.features.routines.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,16 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.acompany.data.model.Session
 import com.acompany.weightr.common.components.CircleIcon
-import com.acompany.weightr.features.sessions.data.SessionListItemPreviewProvider
+import com.acompany.weightr.features.routines.data.RoutineListItemPreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
+import com.acompany.data.model.Exercise
+import com.acompany.data.model.Routine
+import com.acompany.data.model.RoutineExercise
 
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
-fun SessionListItem(
-    session: Session,
+fun RoutineListItem(
+    routine: Routine,
     modifier: Modifier = Modifier,
     onSessionClick: () -> Unit = {}
 ) {
@@ -35,13 +37,13 @@ fun SessionListItem(
             },
             text = {
                 Text(
-                    text = session.name,
+                    text = routine.name,
                     style = MaterialTypography.body1
                 )
             },
             secondaryText = {
                 Text(
-                    text = session.exercises.joinToString(", ") { it.name },
+                    text = routine.exercises.joinToString(", ") { routineExercise -> routineExercise.exercise.name },
                     style = MaterialTypography.body2
                 )
             },
@@ -55,9 +57,9 @@ fun SessionListItem(
 @Preview
 @Composable
 private fun SessionListItemPreview(
-    @PreviewParameter(SessionListItemPreviewProvider::class) preview: Pair<Colors, Session>
+    @PreviewParameter(RoutineListItemPreviewProvider::class) preview: Pair<Colors, Pair<Routine, List<RoutineExercise>>>
 ) {
     MaterialTheme(colors = preview.first) {
-        SessionListItem(session = preview.second)
+        RoutineListItem(routine = preview.second.first)
     }
 }

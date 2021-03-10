@@ -2,13 +2,13 @@ package com.acompany.weightr.features.exercises.data
 
 import androidx.compose.material.Colors
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.acompany.data.model.Exercise
 import com.acompany.weightr.theme.ThemedPreviewProvider
+import com.acompany.data.model.RoutineExercise
 
-class ExerciseListPreviewProvider : PreviewParameterProvider<Pair<Colors, List<Exercise>>> {
+class RoutineExerciseListItemPreviewProvider : PreviewParameterProvider<Pair<Colors, RoutineExercise>> {
 
-    override val values: Sequence<Pair<Colors, List<Exercise>>>
+    override val values: Sequence<Pair<Colors, RoutineExercise>>
         get() = ThemedPreviewProvider().values.map { colors ->
-            colors to DummyExercises.exercises
+            colors to DummyRoutineExercises.routineExercises.first()
         }
 }

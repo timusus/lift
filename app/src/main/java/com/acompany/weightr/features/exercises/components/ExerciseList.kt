@@ -11,15 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.acompany.data.model.Exercise
-import com.acompany.weightr.features.exercises.data.ExerciseListPreviewProvider
+import com.acompany.weightr.features.exercises.data.RoutineExerciseListPreviewProvider
+import com.acompany.data.model.RoutineExercise
 
 @Composable
 fun LazyExerciseList(
-    exercises: List<Exercise>,
+    routineExercises: List<RoutineExercise>,
     modifier: Modifier = Modifier,
-    onExerciseClick: (Exercise) -> Unit = {},
-    onExerciseLongClick: (Exercise) -> Unit = {}
+    onExerciseClick: (RoutineExercise) -> Unit = {},
+    onExerciseLongClick: (RoutineExercise) -> Unit = {}
 ) {
     Column {
         Button(modifier = modifier,
@@ -29,11 +29,11 @@ fun LazyExerciseList(
         }
         Spacer(Modifier.size(8.dp))
         LazyColumn(modifier = modifier) {
-            items(exercises) { exercise ->
+            items(routineExercises) { routineExercise ->
                 ExerciseListItem(
-                    exercise = exercise,
-                    onExerciseClick = { onExerciseClick(exercise) },
-                    onExerciseLongClick = { onExerciseLongClick(exercise) }
+                    routineExercise = routineExercise,
+                    onExerciseClick = { onExerciseClick(routineExercise) },
+                    onExerciseLongClick = { onExerciseLongClick(routineExercise) }
                 )
                 Divider()
             }
@@ -44,9 +44,9 @@ fun LazyExerciseList(
 @Preview
 @Composable
 private fun ExerciseListPreview(
-    @PreviewParameter(ExerciseListPreviewProvider::class) preview: Pair<Colors, List<Exercise>>
+    @PreviewParameter(RoutineExerciseListPreviewProvider::class) preview: Pair<Colors, List<RoutineExercise>>
 ) {
     MaterialTheme(colors = preview.first) {
-        LazyExerciseList(exercises = preview.second)
+        LazyExerciseList(routineExercises = preview.second)
     }
 }

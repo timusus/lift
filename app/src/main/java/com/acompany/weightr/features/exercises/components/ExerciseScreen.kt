@@ -1,24 +1,25 @@
 package com.acompany.weightr.features.exercises.components
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
+
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.navArgument
-import com.acompany.data.model.Exercise
+import com.acompany.data.AppRepository
 import com.acompany.weightr.features.Screen
 import timber.log.Timber
 
-class ExerciseScreen(exercises: (sessionId: Int) -> List<Exercise>) : Screen(
-    route = "sessions/{sessionId}/exercises",
-    arguments = listOf(navArgument(ARG_SESSION_ID) { type = NavType.IntType }),
+class ExerciseScreen(repository: AppRepository) : Screen(
+    route = "routines/{routineId}/exercises",
+    arguments = listOf(navArgument(ARG_ROUTINE_ID) { type = NavType.LongType }),
     name = "Exercises",
     content = { paddingValues, navController, navBackStackEntry ->
-        val editingExercise = remember { mutableStateOf(null as Exercise?) }
+        val routineExercises by repository.getRoutineExercises(listOf(navBackStackEntry.arguments!!.getLong(ARG_ROUTINE_ID))).collectAsState(initial = emptyList())
         LazyExerciseList(
-            exercises = exercises(navBackStackEntry.arguments!!.getInt(ARG_SESSION_ID)),
+            routineExercises = routineExercises,
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp),
@@ -26,18 +27,12 @@ class ExerciseScreen(exercises: (sessionId: Int) -> List<Exercise>) : Screen(
                 Timber.d("Click $exercise")
             },
             onExerciseLongClick = { exercise ->
-                editingExercise.value = exercise
                 Timber.d("Long click $exercise")
             }
         )
-        editingExercise.value?.let { exercise ->
-            EditExercisesAlert(exercise) {
-                editingExercise.value = null
-            }
-        }
     }
 ) {
     companion object {
-        const val ARG_SESSION_ID = "sessionId"
+        const val ARG_ROUTINE_ID = "routineId"
     }
 }

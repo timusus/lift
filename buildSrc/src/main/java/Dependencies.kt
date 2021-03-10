@@ -108,7 +108,13 @@ object Dependencies {
 
     object Dagger {
         const val hiltPlugin = "com.google.dagger:hilt-android-gradle-plugin:2.33-beta"
-        const val hilt =  "com.google.dagger:hilt-android:2.33-beta"
-        const val hiltKapt =  "com.google.dagger:hilt-compiler:2.33-beta"
+        const val hilt = "com.google.dagger:hilt-android:2.33-beta"
+        const val hiltKapt = "com.google.dagger:hilt-compiler:2.33-beta"
+    }
+
+    object SqlDelight {
+        const val sqlDelightPlugin = "com.squareup.sqldelight:gradle-plugin:1.4.4"
+        const val sqlDelightDriver = "com.squareup.sqldelight:android-driver:1.4.4"
+        const val sqlDelightCoroutines = "com.squareup.sqldelight:coroutines-extensions-jvm:1.4.4"
     }
 }

@@ -1,35 +1,61 @@
 package com.acompany.data
 
-import com.acompany.data.mapper.ExerciseMapper.toEntity
-import com.acompany.data.mapper.ExerciseMapper.toExercise
-import com.acompany.data.mapper.SessionMapper.toEntity
-import com.acompany.data.mapper.SessionMapper.toSession
 import com.acompany.data.model.Exercise
-import com.acompany.data.model.Session
-import com.acompany.data.room.dao.ExerciseDao
-import com.acompany.data.room.dao.SessionDao
+import com.acompany.data.model.Mapper.toExercise
+import com.acompany.data.model.Mapper.toRoutineExercise
+import com.acompany.data.model.Mapper.toRoutine
+import com.acompany.data.model.Routine
+import com.acompany.data.model.RoutineExercise
+import com.squareup.sqldelight.runtime.coroutines.asFlow
+import com.squareup.sqldelight.runtime.coroutines.mapToList
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class AppRepository(
-    private val sessionDao: SessionDao,
-    private val exerciseDao: ExerciseDao
+    private val database: Database,
+    private val dispatcher: CoroutineDispatcher
 ) {
 
-    fun getSessions(): Flow<List<Session>> {
-        return sessionDao.getSessionsWithExercises().map { list -> list.map { entity -> entity.toSession() } }
+    fun getRoutines(): Flow<List<Routine>> {
+        return combine(
+            getRoutineExercises(),
+            database.databaseQueries.selectAllRoutines().asFlow().mapToList()
+        ) { routineExercises, routines ->
+            routines.map { routine -> routine.toRoutine { routineExercises.filter { it.routineId == routine.id } } }
+        }
     }
 
-    fun getExercises(sessionId: Int): Flow<List<Exercise>> {
-        return exerciseDao.get(sessionId).map { list -> list.map { entity -> entity.toExercise() } }
+    fun getRoutineExercises(): Flow<List<RoutineExercise>> {
+        return combine(
+            getAllExercises(),
+            database.databaseQueries.selectAllRoutineExercises().asFlow().mapToList()
+        ) { exercises, routineExercises ->
+            routineExercises
+                .map { routineExercise -> routineExercise.toRoutineExercise { exercises.first { exercise -> exercise.id == routineExercise.exerciseId } } }
+        }
     }
 
-    fun getExercises(): Flow<List<Exercise>> {
-        return exerciseDao.get().map { list -> list.map { entity -> entity.toExercise() } }
+    fun getRoutineExercises(routineIds: Collection<Long>): Flow<List<RoutineExercise>> {
+        return combine(
+            getAllExercises(),
+            database.databaseQueries.selectRoutineExercises(routineIds).asFlow().mapToList()
+        ) { exercises, routineExercises ->
+            routineExercises
+                .map { routineExercise -> routineExercise.toRoutineExercise { exercises.first { exercise -> exercise.id == routineExercise.exerciseId } } }
+        }
     }
 
-    suspend fun insert(sessions: List<Session>, exercises: List<Exercise>) {
-        exerciseDao.insert(exercises.map { exercise -> exercise.toEntity() })
-        sessionDao.insert(sessions.map { session -> session.toEntity() })
+    fun getAllExercises(): Flow<List<Exercise>> {
+        return database.databaseQueries.selectAllExercises().asFlow().mapToList()
+            .map { list -> list.map { exercise -> exercise.toExercise() } }
+    }
+
+    suspend fun updateExercise(id: Long, oneRepMax: Float?) {
+        withContext(dispatcher) {
+            database.databaseQueries.updateExercise(oneRepMax, id)
+        }
     }
 }

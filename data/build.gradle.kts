@@ -2,6 +2,8 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("com.squareup.sqldelight")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -16,18 +18,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments(
-                    mapOf(
-                        "room.schemaLocation" to "$projectDir/schemas",
-                        "room.incremental" to "true",
-                        "room.expandProjection" to "true"
-                    )
-                )
-            }
-        }
     }
 
     buildTypes {
@@ -48,15 +38,18 @@ android {
 }
 
 dependencies {
+    implementation(Dependencies.Moshi.kotlin)
+    implementation(Dependencies.Timber())
     Dependencies.Coroutines.apply {
         implementation(core)
         implementation(android)
     }
-    Dependencies.Room.apply {
-        implementation(runtime)
-        implementation(ktx)
-        kapt(compiler)
+    Dependencies.SqlDelight.apply {
+        implementation(sqlDelightDriver)
+        implementation(sqlDelightCoroutines)
     }
-    implementation(Dependencies.Moshi.kotlin)
-    implementation(Dependencies.Timber())
+    Dependencies.Dagger.apply {
+        kapt(hiltKapt)
+        implementation(hilt)
+    }
 }

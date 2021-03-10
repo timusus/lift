@@ -1,0 +1,123 @@
+CREATE TABLE Exercise (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  one_rep_max REAL AS Float
+);
+
+CREATE TABLE Routine (
+  id INTEGER PRIMARY KEY,
+  sort_order INTEGER AS Int NOT NULL,
+  name TEXT NOT NULL
+);
+
+CREATE TABLE RoutineExercise (
+    id INTEGER PRIMARY KEY,
+    sort_order INTEGER AS Int NOT NULL,
+    sets INTEGER AS Int NOT NULL,
+    reps INTEGER AS Int NOT NULL ,
+    percent_one_rep_max REAL AS Float,
+    routineId INTEGER NOT NULL,
+    exerciseId INTEGER NOT NULL,
+    FOREIGN KEY (routineId) REFERENCES Routine(id),
+    FOREIGN KEY (exerciseId) REFERENCES Exercise(id)
+);
+
+CREATE TABLE Session (
+  id INTEGER PRIMARY KEY,
+  createdAt TEXT NOT NULL,
+  routineId INTEGER,
+  FOREIGN KEY (routineId) REFERENCES Routine(id)
+);
+
+CREATE TABLE SessionExercise (
+  id INTEGER PRIMARY KEY,
+  sets INTEGER AS Int,
+  reps INTEGER AS Int,
+  weight REAL AS Float,
+  sessionId INTEGER,
+  routineExerciseId INTEGER,
+  FOREIGN KEY (sessionId) REFERENCES Session(id),
+  FOREIGN KEY (routineExerciseId) REFERENCES RoutineExercise(id)
+);
+
+INSERT INTO Exercise(id, name)
+VALUES
+    (1, 'Squat'),
+    (2, 'Deadlift'),
+    (3, 'Single leg'),
+    (4, 'Standing calf-raises'),
+    (5, 'Horizontal push'),
+    (6, 'Horizontal pull'),
+    (7, 'Vertical push'),
+    (8, 'Vertical pull'),
+    (9, 'Flys'),
+    (10, 'Hip hinge variant'),
+    (11, 'Leg press variant'),
+    (12, 'Leg extensions'),
+    (13, 'Leg curl'),
+    (14, 'Seated calf-raise'),
+    (15, 'Incline push'),
+    (16, 'Triceps isolation'),
+    (17, 'Biceps isolation');
+
+INSERT INTO Routine(id, sort_order, name)
+VALUES
+    (1, 0, 'Lower Body (Strength)'),
+    (2, 1, 'Upper Body (Strength)'),
+    (3, 2, 'Lower Body (Volume)'),
+    (4, 3, 'Upper Body (Volume)');
+
+INSERT INTO RoutineExercise(sort_order, sets, reps, percent_one_rep_max, routineId, exerciseId)
+VALUES
+    (0, 3, 5, 0.825, 1, 1),
+    (1, 3, 5, 0.825, 1, 2),
+    (2 ,3, 8, NULL, 1, 3),
+    (3, 4, 8, NULL, 1, 4),
+
+    (0, 3, 5, 0.825, 2, 5),
+    (1, 3, 5, NULL, 2, 6),
+    (2, 2, 8, 0.725, 2, 7),
+    (3, 2, 8, NULL, 2, 8),
+    (4, 2, 15, NULL, 2, 9),
+
+    (0, 3, 8, NULL, 3, 10),
+    (1, 3, 8, NULL, 3, 11),
+    (2, 3, 12, NULL, 3, 12),
+    (3, 3, 12, NULL, 3, 13),
+    (4, 4, 15, NULL, 3, 14),
+
+    (0, 3, 10, 0.675, 4, 5),
+    (1, 3, 10, NULL, 4, 6),
+    (2, 2, 12, NULL, 4, 17),
+    (3, 2, 12, NULL, 4, 8),
+    (4, 2, 12, NULL, 4, 15),
+    (5, 2, 12, NULL, 4, 16);
+
+selectAllExercises:
+SELECT *
+FROM Exercise;
+
+selectExercises:
+SELECT *
+FROM Exercise;
+
+selectAllRoutines:
+SELECT *
+FROM Routine
+ORDER BY sort_order;
+
+selectAllRoutineExercises:
+SELECT *
+FROM RoutineExercise
+ORDER BY sort_order;
+
+selectRoutineExercises:
+SELECT *
+FROM RoutineExercise
+WHERE routineId IN :routineId
+ORDER BY sort_order;
+
+updateExercise:
+UPDATE Exercise
+SET one_rep_max = :oneRepMax
+WHERE id = :id;

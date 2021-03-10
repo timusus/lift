@@ -1,74 +1,78 @@
 package com.acompany.weightr.features.exercises.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.acompany.data.model.Exercise
 import com.acompany.weightr.common.components.CircleIcon
-import com.acompany.weightr.features.exercises.data.ExerciseListItemPreviewProvider
+import com.acompany.weightr.features.exercises.data.RoutineExerciseListItemPreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
+import com.acompany.data.model.RoutineExercise
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 fun ExerciseListItem(
-    exercise: Exercise,
+    routineExercise: RoutineExercise,
     modifier: Modifier = Modifier,
     onExerciseClick: () -> Unit = {},
     onExerciseLongClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
-        ListItem(
-            icon = {
-                CircleIcon(
-                    icon = Icons.Rounded.FitnessCenter,
-                    modifier = Modifier.padding(8.dp)
-                )
-            },
-            text = {
+        Row(
+            modifier = modifier
+                .background(color = MaterialColors.surface)
+                .heightIn(min = 72.dp)
+                .combinedClickable(
+                    onClick = { onExerciseClick() },
+                    onLongClick = {
+                        onExerciseLongClick()
+                    })
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CircleIcon(
+                icon = Icons.Rounded.FitnessCenter,
+                modifier = Modifier.padding(8.dp)
+            )
+            Spacer(modifier.size(16.dp))
+            Column(modifier.weight(1f)) {
                 Text(
-                    text = exercise.name,
+                    text = routineExercise.exercise.name,
                     style = MaterialTypography.body1
                 )
-            },
-            secondaryText = {
                 Text(
-                    text = "${exercise.sets} sets x ${exercise.reps} reps",
+                    text = "${routineExercise.sets} sets x ${routineExercise.reps} reps",
                     style = MaterialTypography.body2,
                     fontSize = 16.sp,
                 )
-            },
-            modifier = modifier
-                .background(color = MaterialColors.surface)
-                .clickable(onClick = onExerciseClick)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = { onExerciseClick() },
-                        onLongPress = { onExerciseLongClick() }
-                    )
-                }
-        )
+            }
+            Spacer(modifier.size(16.dp))
+            OutlinedButton(onClick = { }) {
+                val weight = routineExercise.exercise.oneRepMax?.let { oneRepMax -> routineExercise.percentOneRepMax?.let { percentOneRepMax -> "${oneRepMax * percentOneRepMax }kg"} }
+                Text(text = weight ?: "Weight")
+            }
+        }
     }
 }
 
 @Preview
 @Composable
 private fun ExerciseListItemPreview(
-    @PreviewParameter(ExerciseListItemPreviewProvider::class) preview: Pair<Colors, Exercise>
+    @PreviewParameter(RoutineExerciseListItemPreviewProvider::class) preview: Pair<Colors, RoutineExercise>
 ) {
     MaterialTheme(colors = preview.first) {
-        ExerciseListItem(exercise = preview.second)
+        ExerciseListItem(routineExercise = preview.second)
     }
 }

@@ -6,14 +6,17 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.*
 import com.acompany.data.AppRepository
 import com.acompany.weightr.features.exercises.components.ExerciseScreen
-import com.acompany.weightr.features.sessions.components.SessionScreen
+import com.acompany.weightr.features.routines.components.RoutineScreen
 import com.acompany.weightr.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -24,12 +27,18 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch {
+            repository.getRoutineExercises(listOf(1)).collect {
+                Timber.i("Found ${it.size} routine exercises")
+            }
+        }
+
         setContent {
             val navController = rememberNavController()
-            val sessions by repository.getSessions().collectAsState(emptyList())
             val screens = listOf(
-                SessionScreen { sessions },
-                ExerciseScreen { sessionId -> sessions.first { session -> session.id == sessionId }.exercises },
+                RoutineScreen(repository),
+                ExerciseScreen(repository),
             )
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
