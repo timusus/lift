@@ -12,13 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.acompany.data.model.Routine
+import com.acompany.data.model.RoutineExercise
 import com.acompany.weightr.common.components.CircleIcon
 import com.acompany.weightr.features.routines.data.RoutineListItemPreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
-import com.acompany.data.model.Exercise
-import com.acompany.data.model.Routine
-import com.acompany.data.model.RoutineExercise
 
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
@@ -43,7 +42,7 @@ fun RoutineListItem(
             },
             secondaryText = {
                 Text(
-                    text = routine.exercises.joinToString(", ") { routineExercise -> routineExercise.exercise.name },
+                    text = routine.exercises.joinToString(", ") { it.exercise.name },
                     style = MaterialTypography.body2
                 )
             },

@@ -61,23 +61,25 @@ dependencies {
     Dependencies.AndroidX.apply {
         implementation(activity)
         implementation(activityCompose)
-        implementation(startup)
     }
     Dependencies.Compose.apply {
         implementation(material)
         implementation(materialIconsExtended)
-        implementation(navigation)
         implementation(savable)
         implementation(tooling)
         androidTestImplementation(test)
     }
-    Dependencies.Kotlin.apply {
-        implementation(stdlib)
-        implementation(reflect)
+    Dependencies.Compose.Navigation.apply {
+        implementation(hilt)
+        implementation(navigation)
     }
     Dependencies.Dagger.apply {
         kapt(hiltKapt)
         implementation(hilt)
+    }
+    Dependencies.Kotlin.apply {
+        implementation(stdlib)
+        implementation(reflect)
     }
     Dependencies.Moshi.apply {
         implementation(kotlin)

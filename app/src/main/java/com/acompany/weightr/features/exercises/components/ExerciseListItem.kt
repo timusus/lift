@@ -15,11 +15,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.acompany.data.model.RoutineExercise
 import com.acompany.weightr.common.components.CircleIcon
 import com.acompany.weightr.features.exercises.data.RoutineExerciseListItemPreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
-import com.acompany.data.model.RoutineExercise
 
 @Composable
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -35,10 +35,9 @@ fun ExerciseListItem(
                 .background(color = MaterialColors.surface)
                 .heightIn(min = 72.dp)
                 .combinedClickable(
-                    onClick = { onExerciseClick() },
-                    onLongClick = {
-                        onExerciseLongClick()
-                    })
+                    onClick = onExerciseClick,
+                    onLongClick = onExerciseLongClick
+                )
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -60,7 +59,9 @@ fun ExerciseListItem(
             }
             Spacer(modifier.size(16.dp))
             OutlinedButton(onClick = { }) {
-                val weight = routineExercise.exercise.oneRepMax?.let { oneRepMax -> routineExercise.percentOneRepMax?.let { percentOneRepMax -> "${oneRepMax * percentOneRepMax }kg"} }
+                val weight = routineExercise.exercise.oneRepMax?.let { oneRepMax ->
+                    routineExercise.percentOneRepMax?.let { percentOneRepMax -> "${oneRepMax * percentOneRepMax}kg" }
+                }
                 Text(text = weight ?: "Weight")
             }
         }
