@@ -3,7 +3,10 @@ package com.acompany.lift.features.exercises.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Colors
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.runtime.Composable
@@ -14,8 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.common.components.CircleIcon
+import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
 import com.acompany.lift.features.exercises.data.RoutineExerciseListItemPreviewProvider
 import com.acompany.lift.theme.MaterialColors

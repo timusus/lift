@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.acompany.lift.common.components.CircleIcon
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.common.components.CircleIcon
 import com.acompany.lift.features.routines.data.RoutineListItemPreviewProvider
 import com.acompany.lift.theme.MaterialColors
 import com.acompany.lift.theme.MaterialTypography
