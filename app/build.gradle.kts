@@ -17,7 +17,7 @@ android {
     buildToolsVersion("30.0.3")
 
     defaultConfig {
-        applicationId = "com.acompany.weightr"
+        applicationId = "com.acompany.lift"
         minSdkVersion(21)
         targetSdkVersion(30)
         versionCode = 1

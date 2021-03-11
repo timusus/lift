@@ -1,4 +1,4 @@
-rootProject.name = "weightr"
+rootProject.name = "lift"
 include(
     ":app",
     ":data"
