@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acompany.data.model.RoutineExercise
 import com.acompany.weightr.common.components.CircleIcon
-import com.acompany.weightr.features.exercises.components.ExerciseHelper.initialWeight
+import com.acompany.weightr.features.exercises.data.ExerciseHelper.initialWeight
 import com.acompany.weightr.features.exercises.data.RoutineExerciseListItemPreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography

@@ -11,7 +11,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.acompany.data.AppRepository
 import com.acompany.data.model.RoutineExercise
-import com.acompany.weightr.features.exercises.components.ExerciseHelper.initialWeight
+import com.acompany.weightr.features.exercises.data.ExerciseHelper.initialWeight
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

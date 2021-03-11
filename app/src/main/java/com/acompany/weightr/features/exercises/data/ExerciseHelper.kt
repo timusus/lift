@@ -1,4 +1,4 @@
-package com.acompany.weightr.features.exercises.components
+package com.acompany.weightr.features.exercises.data
 
 import com.acompany.data.model.Exercise
 import com.acompany.data.model.RoutineExercise
