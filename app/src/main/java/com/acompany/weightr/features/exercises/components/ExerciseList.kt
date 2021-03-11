@@ -19,24 +19,16 @@ fun LazyExerciseList(
     routineExercises: List<RoutineExercise>,
     modifier: Modifier = Modifier,
     onExerciseClick: (RoutineExercise) -> Unit = {},
-    onExerciseLongClick: (RoutineExercise) -> Unit = {}
+    onWeightButtonClick: (RoutineExercise) -> Unit = {}
 ) {
-    Column {
-        Button(modifier = modifier,
-            onClick = { /*TODO*/ }
-        ) {
-            Text(text = "Start Session")
-        }
-        Spacer(Modifier.size(8.dp))
-        LazyColumn(modifier = modifier) {
-            items(routineExercises) { routineExercise ->
-                ExerciseListItem(
-                    routineExercise = routineExercise,
-                    onExerciseClick = { onExerciseClick(routineExercise) },
-                    onExerciseLongClick = { onExerciseLongClick(routineExercise) }
-                )
-                Divider()
-            }
+    LazyColumn(modifier = modifier) {
+        items(routineExercises) { routineExercise ->
+            ExerciseListItem(
+                routineExercise = routineExercise,
+                onExerciseClick = { onExerciseClick(routineExercise) },
+                onWeightButtonClick = { onWeightButtonClick(routineExercise) }
+            )
+            Divider()
         }
     }
 }

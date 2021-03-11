@@ -2,6 +2,7 @@ package com.acompany.weightr.features.exercises.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acompany.data.model.RoutineExercise
 import com.acompany.weightr.common.components.CircleIcon
+import com.acompany.weightr.features.exercises.components.ExerciseHelper.initialWeight
 import com.acompany.weightr.features.exercises.data.RoutineExerciseListItemPreviewProvider
 import com.acompany.weightr.theme.MaterialColors
 import com.acompany.weightr.theme.MaterialTypography
@@ -27,17 +29,14 @@ fun ExerciseListItem(
     routineExercise: RoutineExercise,
     modifier: Modifier = Modifier,
     onExerciseClick: () -> Unit = {},
-    onExerciseLongClick: () -> Unit = {}
+    onWeightButtonClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
         Row(
             modifier = modifier
                 .background(color = MaterialColors.surface)
                 .heightIn(min = 72.dp)
-                .combinedClickable(
-                    onClick = onExerciseClick,
-                    onLongClick = onExerciseLongClick
-                )
+                .clickable(onClick = onExerciseClick)
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -58,11 +57,8 @@ fun ExerciseListItem(
                 )
             }
             Spacer(modifier.size(16.dp))
-            OutlinedButton(onClick = { }) {
-                val weight = routineExercise.exercise.oneRepMax?.let { oneRepMax ->
-                    routineExercise.percentOneRepMax?.let { percentOneRepMax -> "${oneRepMax * percentOneRepMax}kg" }
-                }
-                Text(text = weight ?: "Weight")
+            OutlinedButton(onClick = onWeightButtonClick) {
+                Text(text = routineExercise.initialWeight()?.let { "$it kg" } ?: "Weight")
             }
         }
     }

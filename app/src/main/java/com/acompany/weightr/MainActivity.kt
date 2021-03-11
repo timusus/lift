@@ -10,8 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.*
 import com.acompany.data.AppRepository
-import com.acompany.weightr.features.exercises.components.ExerciseScreen
-import com.acompany.weightr.features.routines.components.RoutineScreen
+import com.acompany.weightr.features.NavDestination
+import com.acompany.weightr.features.exercises.components.exerciseScreen
+import com.acompany.weightr.features.routines.components.routineScreen
 import com.acompany.weightr.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -36,29 +37,36 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            val screens = listOf(
-                RoutineScreen(repository),
-                ExerciseScreen(repository),
+            val destinations = listOf(
+                NavDestination.RoutineNavDestination,
+                NavDestination.ExerciseNavDestination(),
             )
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
             AppTheme {
                 Scaffold(
                     topBar = {
-                        val currentScreen = screens.firstOrNull { it.route == currentRoute }
+                        val currentScreen = destinations.firstOrNull { it.route == currentRoute }
                         TopAppBar(title = { Text(text = currentScreen?.name ?: "weightr") })
                     },
                     content = { paddingValues ->
                         NavHost(
                             navController = navController,
-                            startDestination = screens.first().route
+                            startDestination = destinations.first().route
                         ) {
-                            screens.forEach { screen ->
+                            destinations.forEach { screen ->
                                 composable(
                                     route = screen.route,
                                     arguments = screen.arguments
                                 ) { backStackEntry ->
-                                    screen.content(paddingValues, navController, backStackEntry)
+                                    when (screen) {
+                                        is NavDestination.RoutineNavDestination -> {
+                                            routineScreen(paddingValues = paddingValues, navController = navController, repository = repository)
+                                        }
+                                        is NavDestination.ExerciseNavDestination -> {
+                                            exerciseScreen(paddingValues = paddingValues, navController = navController, navBackStackEntry = backStackEntry, repository = repository)
+                                        }
+                                    }
                                 }
                             }
                         }
