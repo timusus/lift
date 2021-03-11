@@ -1,10 +1,12 @@
 package com.acompany.weightr.features.exercises.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 
 import androidx.compose.ui.unit.dp
@@ -23,9 +25,8 @@ fun ExerciseScreen(paddingValues: PaddingValues, navController: NavController, n
     val routineExercises by repository.getRoutineExercises(listOf(navBackStackEntry.arguments!!.getLong(NavDestination.ExerciseNavDestination.ARG_ROUTINE_ID)))
         .collectAsState(initial = emptyList())
     val scope = rememberCoroutineScope()
-
     val editingRoutineExercise = remember { mutableStateOf(null as RoutineExercise?) }
-    val textState = remember { mutableStateOf(TextFieldValue(editingRoutineExercise.value?.initialWeight()?.let { "$it" } ?: "")) }
+    val textState = remember { mutableStateOf(TextFieldValue(editingRoutineExercise.value?.initialWeight()?.let { weight -> "$weight" } ?: "")) }
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
     ModalBottomSheetLayout(
@@ -37,8 +38,21 @@ fun ExerciseScreen(paddingValues: PaddingValues, navController: NavController, n
                     .heightIn(min = 120.dp)
                     .padding(24.dp)
             ) {
-                OutlinedTextField(value = textState.value, onValueChange = { textState.value = it })
-                Spacer(Modifier.size(16.dp))
+                editingRoutineExercise.value?.let { editingRoutineExercise ->
+                    Text(text = "Edit ${editingRoutineExercise.exercise.name}")
+                    Spacer(modifier = Modifier.size(8.dp))
+                    OutlinedTextField(
+                        value = textState.value,
+                        label = { Text(text = "One Rep Max") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        onValueChange = { textFieldValue ->
+                            textState.value = textFieldValue
+                            scope.launch {
+                                repository.updateExercise(editingRoutineExercise.exercise.id, textFieldValue.text.toFloatOrNull())
+                            }
+                        }
+                    )
+                }
             }
         }) {
         Column {
@@ -47,7 +61,7 @@ fun ExerciseScreen(paddingValues: PaddingValues, navController: NavController, n
                 Text(text = "Start Session")
             }
             Spacer(Modifier.size(8.dp))
-            LazyExerciseList(
+            ExerciseList(
                 routineExercises = routineExercises,
                 modifier = Modifier
                     .padding(paddingValues)

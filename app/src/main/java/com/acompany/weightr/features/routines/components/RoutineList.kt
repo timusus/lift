@@ -10,12 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.acompany.weightr.features.routines.data.RoutineListPreviewProvider
-import com.acompany.data.model.Exercise
 import com.acompany.data.model.Routine
-import com.acompany.data.model.RoutineExercise
 
 @Composable
-fun LazyRoutineList(
+fun RoutineList(
     routines: List<Routine>,
     modifier: Modifier = Modifier,
     onRoutineClick: (Routine) -> Unit = {}
@@ -38,6 +36,6 @@ private fun SessionListItemPreview(
     @PreviewParameter(RoutineListPreviewProvider::class) preview: Pair<Colors, List<Routine>>
 ) {
     MaterialTheme(colors = preview.first) {
-        LazyRoutineList(routines = preview.second)
+        RoutineList(routines = preview.second)
     }
 }
