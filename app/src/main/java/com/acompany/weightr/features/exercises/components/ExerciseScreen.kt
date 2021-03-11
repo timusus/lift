@@ -58,7 +58,9 @@ private fun ExerciseWeightTextField(
     initialWeight: Float?,
     onWeightChanged: (Float?) -> Unit
 ) {
-    val textState = remember { mutableStateOf(initialWeight?.toString() ?: "") }
+    val textState = remember(exerciseName) {
+        mutableStateOf(initialWeight?.toString() ?: "")
+    }
     Text(text = "Edit $exerciseName")
     OutlinedTextField(
         value = textState.value,
