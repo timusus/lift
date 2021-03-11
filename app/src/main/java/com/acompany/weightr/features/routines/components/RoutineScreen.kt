@@ -12,7 +12,7 @@ import androidx.navigation.compose.navigate
 import com.acompany.data.AppRepository
 
 @Composable
-fun routineScreen(paddingValues: PaddingValues, navController: NavController, repository: AppRepository) {
+fun RoutineScreen(paddingValues: PaddingValues, navController: NavController, repository: AppRepository) {
     val routines by repository.getRoutines().collectAsState(emptyList())
     LazyRoutineList(
         routines = routines,

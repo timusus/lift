@@ -19,7 +19,7 @@ import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun exerciseScreen(paddingValues: PaddingValues, navController: NavController, navBackStackEntry: NavBackStackEntry, repository: AppRepository) {
+fun ExerciseScreen(paddingValues: PaddingValues, navController: NavController, navBackStackEntry: NavBackStackEntry, repository: AppRepository) {
     val routineExercises by repository.getRoutineExercises(listOf(navBackStackEntry.arguments!!.getLong(NavDestination.ExerciseNavDestination.ARG_ROUTINE_ID)))
         .collectAsState(initial = emptyList())
     val scope = rememberCoroutineScope()
