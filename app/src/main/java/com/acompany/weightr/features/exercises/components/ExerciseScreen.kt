@@ -22,20 +22,20 @@ fun ExerciseScreen(
 ) {
     val scope = rememberCoroutineScope()
     val routineExercises by repository.getRoutineExercises(listOf(routineId)).collectAsState(emptyList())
-    var editingRoutineExercise by remember { mutableStateOf(null as RoutineExercise?) }
+    var selectedRoutine by remember { mutableStateOf(null as RoutineExercise?) }
     ExerciseModelSheet(
         sheetContent = {
-            editingRoutineExercise?.let { routine ->
-                ExerciseWeightTextField(
-                    exerciseName = routine.exercise.name,
-                    initialWeight = editingRoutineExercise?.initialWeight(),
-                    onWeightChanged = { weight ->
+            ExerciseWeightTextField(
+                exerciseName = selectedRoutine?.exercise?.name,
+                initialWeight = selectedRoutine?.initialWeight(),
+                onWeightChanged = { weight ->
+                    selectedRoutine?.let { routineExercise ->
                         scope.launch {
-                            repository.updateExercise(routine.exercise.id, weight)
+                            repository.updateExercise(routineExercise.exercise.id, weight)
                         }
                     }
-                )
-            }
+                }
+            )
         },
         content = {
             StartSessionButton {
@@ -44,7 +44,7 @@ fun ExerciseScreen(
             ExerciseList(
                 routineExercises = routineExercises,
                 onWeightButtonClick = { routineExercise ->
-                    editingRoutineExercise = routineExercise
+                    selectedRoutine = routineExercise
                     openDrawer()
                 }
             )
@@ -54,7 +54,7 @@ fun ExerciseScreen(
 
 @Composable
 private fun ExerciseWeightTextField(
-    exerciseName: String,
+    exerciseName: String?,
     initialWeight: Float?,
     onWeightChanged: (Float?) -> Unit
 ) {
@@ -73,7 +73,10 @@ private fun ExerciseWeightTextField(
 
 @Composable
 private fun StartSessionButton(onClick: () -> Unit) {
-    Button(onClick = onClick) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.padding(16.dp)
+    ) {
         Text(text = "Start Session")
     }
 }
