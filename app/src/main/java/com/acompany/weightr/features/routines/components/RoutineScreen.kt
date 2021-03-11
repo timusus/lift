@@ -14,7 +14,7 @@ import com.acompany.data.AppRepository
 @Composable
 fun RoutineScreen(paddingValues: PaddingValues, navController: NavController, repository: AppRepository) {
     val routines by repository.getRoutines().collectAsState(emptyList())
-    LazyRoutineList(
+    RoutineList(
         routines = routines,
         modifier = Modifier
             .padding(paddingValues)

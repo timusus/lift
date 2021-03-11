@@ -13,7 +13,7 @@ import com.acompany.data.model.Routine
 import com.acompany.weightr.features.routines.data.RoutineListPreviewProvider
 
 @Composable
-fun LazyRoutineList(
+fun RoutineList(
     routines: List<Routine>,
     modifier: Modifier = Modifier,
     onRoutineClick: (Routine) -> Unit = {}
@@ -36,6 +36,6 @@ private fun SessionListItemPreview(
     @PreviewParameter(RoutineListPreviewProvider::class) preview: Pair<Colors, List<Routine>>
 ) {
     MaterialTheme(colors = preview.first) {
-        LazyRoutineList(routines = preview.second)
+        RoutineList(routines = preview.second)
     }
 }
