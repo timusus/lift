@@ -1,22 +1,24 @@
 package com.acompany.lift.features.exercises.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acompany.lift.data.AppRepository
-import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
 import kotlinx.coroutines.flow.map
@@ -28,129 +30,119 @@ fun ExerciseScreen(
     routineId: Long,
     repository: AppRepository
 ) {
+    val routineIds = listOf(routineId)
+    val routineExercises by repository.getRoutineExercises(routineIds).collectAsState(emptyList())
+    val routine by repository.getRoutines(routineIds).map { it.first() }.collectAsState(null)
+
     val scope = rememberCoroutineScope()
-    val routineExercises by repository.getRoutineExercises(listOf(routineId)).collectAsState(emptyList())
-    val routine by repository.getRoutines(listOf(routineId)).map { it.first() }.collectAsState(initial = null)
     var selectedExercise by remember { mutableStateOf(null as RoutineExercise?) }
-    routine?.let { routine ->
-        ExerciseModalSheet(
-            sheetContent = {
-                selectedExercise?.let { selectedExercise ->
-                    ExerciseWeightTextField(
-                        routine = routine,
-                        routineExercise = selectedExercise,
-                        onOneRepMaxChanged = { weight ->
-                            selectedExercise.let { routineExercise ->
-                                scope.launch {
-                                    repository.updateExercise(routineExercise.exercise.id, weight)
-                                }
-                            }
-                        },
-                        onDoneClick = {
-                            closeDrawer()
-                        }
-                    )
-                }
-            },
-            content = {
-                ExerciseList(
-                    routineExercises = routineExercises,
-                    onExerciseClick = { routineExercise ->
-                        selectedExercise = routineExercise
-                        openDrawer()
-                    }
-                )
-            }
-        )
+    val updateExercise: (suspend (RoutineExercise) -> Unit) -> Unit = { block ->
+        selectedExercise?.let { routineExercise ->
+            scope.launch { block(routineExercise) }
+        }
     }
+    ExerciseModalSheet(
+        sheetContent = {
+            DoneButton(text = "Edit ${selectedExercise?.exercise?.name}")
+            ExerciseWeightForm(
+                routineName = routine?.name,
+                routineExercise = selectedExercise,
+                onOneRepMaxChanged = { oneRepMax ->
+                    updateExercise { routineExercise ->
+                        repository.updateExercise(routineExercise.exercise.id, oneRepMax)
+                    }
+                },
+                onPercentOneRepMaxChanged = { percentRep ->
+                    Timber.d("$percentRep")
+                },
+                onWeightChanged = { weight ->
+                    Timber.d("$weight")
+                }
+            )
+        },
+        content = {
+            ExerciseList(
+                routineExercises = routineExercises,
+                onExerciseClick = { routineExercise ->
+                    selectedExercise = routineExercise
+                    openDrawer()
+                }
+            )
+        }
+    )
 }
 
 @Composable
-private fun ExerciseWeightTextField(
-    routine: Routine,
-    routineExercise: RoutineExercise,
+private fun ExerciseWeightForm(
+    routineName: String?,
+    routineExercise: RoutineExercise?,
     onOneRepMaxChanged: (Float?) -> Unit,
-    onDoneClick: () -> Unit,
+    onPercentOneRepMaxChanged: (Float?) -> Unit,
+    onWeightChanged: (Float?) -> Unit
 ) {
+    Spacer(modifier = Modifier.height(16.dp))
+    FloatTextField(
+        label = "One rep max",
+        description = "All ${routineExercise?.exercise?.name}(s)",
+        initialValue = routineExercise?.exercise?.oneRepMax,
+        onValueChanged = onOneRepMaxChanged
+    )
+    Spacer(modifier = Modifier.height(24.dp))
+    FloatTextField(
+        label = "% One rep max",
+        description = "Routine:  $routineName",
+        initialValue = routineExercise?.percentOneRepMax?.let { (it * 100) },
+        onValueChanged = onPercentOneRepMaxChanged
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    FloatTextField(
+        label = "Weight",
+        initialValue = routineExercise?.initialWeight(),
+        onValueChanged = onWeightChanged
+    )
+}
+
+@Composable
+private fun ModalSheetScope.DoneButton(text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(modifier = Modifier.weight(1f), text = "Edit ${routineExercise.exercise.name}")
-        OutlinedButton(onClick = onDoneClick) {
+        Text(
+            modifier = Modifier.weight(1f),
+            text = text
+        )
+        OutlinedButton(onClick = { closeDrawer() }) {
             Text(text = "Done")
         }
     }
-    Spacer(modifier = Modifier.size(16.dp))
-    Text(fontSize = 12.sp, text = "All ${routineExercise.exercise.name}(s)")
-    Spacer(modifier = Modifier.size(4.dp))
-    FloatTextField(
-        key = routineExercise.id.toString(),
-        label = "One rep max",
-        initialValue = routineExercise.exercise.oneRepMax,
-        onValueChanged = { value ->
-            onOneRepMaxChanged(value)
-        }
-    )
-    Spacer(modifier = Modifier.size(24.dp))
-    Text(fontSize = 12.sp, text = "Routine:  ${routine.name}")
-    Spacer(modifier = Modifier.size(4.dp))
-    FloatTextField(
-        key = routineExercise.id.toString(),
-        label = "% One rep max",
-        initialValue = routineExercise.percentOneRepMax?.let { (it * 100) },
-        onValueChanged = { value ->
-
-        }
-    )
-    Spacer(modifier = Modifier.size(8.dp))
-    FloatTextField(
-        key = routineExercise.id.toString(),
-        label = "Weight",
-        initialValue = routineExercise.initialWeight(),
-        onValueChanged = { value ->
-
-        }
-    )
 }
 
 @Composable
+@OptIn(ExperimentalComposeUiApi::class)
 private fun FloatTextField(
-    key: String,
     label: String,
     initialValue: Float?,
+    description: String? = null,
     onValueChanged: (Float?) -> Unit,
 ) {
-    val textState = remember(key) { mutableStateOf(initialValue?.toString() ?: "") }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val textState = remember(label, initialValue, description) {
+        mutableStateOf(initialValue?.toString() ?: "")
+    }
+    val onValueChangedState by rememberUpdatedState(onValueChanged)
+    description?.let { desc ->
+        Text(fontSize = 12.sp, text = desc)
+        Spacer(modifier = Modifier.size(4.dp))
+    }
     OutlinedTextField(
+        singleLine = true,
         value = textState.value,
         label = { Text(text = label) },
+        keyboardActions = KeyboardActions {
+            keyboardController?.hideSoftwareKeyboard()
+        },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        onValueChange = { textFieldValue ->
-            textState.value = textFieldValue
-            onValueChanged(textFieldValue.toFloatOrNull())
-        }
-    )
-}
-
-@Composable
-private fun StartSessionButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Text(text = "Start Session")
-    }
-}
-
-@Composable
-private fun ExerciseList(
-    routineExercises: List<RoutineExercise>,
-    onExerciseClick: (RoutineExercise) -> Unit = {}
-) {
-    ExerciseList(
-        routineExercises = routineExercises,
-        modifier = Modifier.padding(8.dp),
-        onExerciseClick = { routineExercise ->
-            onExerciseClick(routineExercise)
-            Timber.d("Click $routineExercise")
+        onValueChange = { text ->
+            textState.value = text
+            onValueChangedState(text.toFloatOrNull())
         }
     )
 }

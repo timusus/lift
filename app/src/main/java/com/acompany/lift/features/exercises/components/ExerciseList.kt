@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.acompany.lift.features.exercises.data.RoutineExerciseListPreviewProvider
 import com.acompany.lift.data.model.RoutineExercise
+import com.acompany.lift.features.exercises.data.RoutineExerciseListPreviewProvider
 
 @Composable
 fun ExerciseList(
@@ -20,9 +20,9 @@ fun ExerciseList(
 ) {
     LazyColumn(modifier = modifier) {
         items(routineExercises) { routineExercise ->
-            ExerciseListItem(
-                routineExercise = routineExercise
-            ) { onExerciseClick(routineExercise) }
+            ExerciseListItem(routineExercise = routineExercise) {
+                onExerciseClick(routineExercise)
+            }
             Divider()
         }
     }
