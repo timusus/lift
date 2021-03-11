@@ -28,6 +28,15 @@ class AppRepository(
         }
     }
 
+    fun getRoutines(ids: Collection<Long>): Flow<List<Routine>> {
+        return combine(
+            getRoutineExercises(),
+            database.databaseQueries.selectRoutines(ids).asFlow().mapToList()
+        ) { routineExercises, routines ->
+            routines.map { routine -> routine.toRoutine { routineExercises.filter { it.routineId == routine.id } } }
+        }
+    }
+
     fun getRoutineExercises(): Flow<List<RoutineExercise>> {
         return combine(
             getAllExercises(),

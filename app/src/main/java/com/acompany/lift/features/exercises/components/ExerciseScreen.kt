@@ -14,8 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.acompany.lift.data.AppRepository
+import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
+import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -26,41 +30,46 @@ fun ExerciseScreen(
 ) {
     val scope = rememberCoroutineScope()
     val routineExercises by repository.getRoutineExercises(listOf(routineId)).collectAsState(emptyList())
+    val routine by repository.getRoutines(listOf(routineId)).map { it.first() }.collectAsState(initial = null)
     var selectedExercise by remember { mutableStateOf(null as RoutineExercise?) }
-    ExerciseModalSheet(
-        sheetContent = {
-            selectedExercise?.let { selectedExercise ->
-                ExerciseWeightTextField(
-                    routineExercise = selectedExercise,
-                    onValueChanged = { weight ->
-                        selectedExercise.let { routineExercise ->
-                            scope.launch {
-                                repository.updateExercise(routineExercise.exercise.id, weight)
+    routine?.let { routine ->
+        ExerciseModalSheet(
+            sheetContent = {
+                selectedExercise?.let { selectedExercise ->
+                    ExerciseWeightTextField(
+                        routine = routine,
+                        routineExercise = selectedExercise,
+                        onOneRepMaxChanged = { weight ->
+                            selectedExercise.let { routineExercise ->
+                                scope.launch {
+                                    repository.updateExercise(routineExercise.exercise.id, weight)
+                                }
                             }
+                        },
+                        onDoneClick = {
+                            closeDrawer()
                         }
-                    },
-                    onDoneClick = {
-                        closeDrawer()
+                    )
+                }
+            },
+            content = {
+                ExerciseList(
+                    routineExercises = routineExercises,
+                    onExerciseClick = { routineExercise ->
+                        selectedExercise = routineExercise
+                        openDrawer()
                     }
                 )
             }
-        },
-        content = {
-            ExerciseList(
-                routineExercises = routineExercises,
-                onExerciseClick = { routineExercise ->
-                    selectedExercise = routineExercise
-                    openDrawer()
-                }
-            )
-        }
-    )
+        )
+    }
 }
 
 @Composable
 private fun ExerciseWeightTextField(
+    routine: Routine,
     routineExercise: RoutineExercise,
-    onValueChanged: (Float?) -> Unit,
+    onOneRepMaxChanged: (Float?) -> Unit,
     onDoneClick: () -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -70,23 +79,34 @@ private fun ExerciseWeightTextField(
         }
     }
     Spacer(modifier = Modifier.size(16.dp))
-    Text("All ${routineExercise.exercise.name}(s)")
+    Text(fontSize = 12.sp, text = "All ${routineExercise.exercise.name}(s)")
+    Spacer(modifier = Modifier.size(4.dp))
     FloatTextField(
         key = routineExercise.id.toString(),
         label = "One rep max",
         initialValue = routineExercise.exercise.oneRepMax,
         onValueChanged = { value ->
-            onValueChanged(value)
+            onOneRepMaxChanged(value)
         }
     )
-    Spacer(modifier = Modifier.size(8.dp))
-    Text("All ${routineExercise.exercise.name}(s)")
+    Spacer(modifier = Modifier.size(24.dp))
+    Text(fontSize = 12.sp, text = "Routine:  ${routine.name}")
+    Spacer(modifier = Modifier.size(4.dp))
     FloatTextField(
         key = routineExercise.id.toString(),
         label = "% One rep max",
-        initialValue = routineExercise.percentOneRepMax?.let { (it * 100) } ,
+        initialValue = routineExercise.percentOneRepMax?.let { (it * 100) },
         onValueChanged = { value ->
-            onValueChanged(value)
+
+        }
+    )
+    Spacer(modifier = Modifier.size(8.dp))
+    FloatTextField(
+        key = routineExercise.id.toString(),
+        label = "Weight",
+        initialValue = routineExercise.initialWeight(),
+        onValueChanged = { value ->
+
         }
     )
 }
