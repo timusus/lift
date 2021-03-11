@@ -60,7 +60,7 @@ private fun ExerciseList(
     onExerciseClick: (RoutineExercise) -> Unit = {},
     onWeightButtonClick: (RoutineExercise) -> Unit = {}
 ) {
-    LazyExerciseList(
+    ExerciseList(
         routineExercises = routineExercises,
         modifier = Modifier.padding(16.dp),
         onExerciseClick = { routineExercise ->
