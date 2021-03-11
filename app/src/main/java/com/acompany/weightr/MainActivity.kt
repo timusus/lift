@@ -64,7 +64,12 @@ class MainActivity : ComponentActivity() {
                                             RoutineScreen(paddingValues = paddingValues, navController = navController, repository = repository)
                                         }
                                         is NavDestination.ExerciseNavDestination -> {
-                                            ExerciseScreen(paddingValues = paddingValues, navController = navController, navBackStackEntry = backStackEntry, repository = repository)
+                                            ExerciseScreen(
+                                                routineId = backStackEntry.arguments!!.let {
+                                                    it.getLong(NavDestination.ExerciseNavDestination.ARG_ROUTINE_ID)
+                                                },
+                                                repository = repository
+                                            )
                                         }
                                     }
                                 }

@@ -1,7 +1,7 @@
 package com.acompany.weightr.features.exercises.components
 
-import com.acompany.data.model.RoutineExercise
 import com.acompany.data.model.Exercise
+import com.acompany.data.model.RoutineExercise
 
 object ExerciseHelper {
 

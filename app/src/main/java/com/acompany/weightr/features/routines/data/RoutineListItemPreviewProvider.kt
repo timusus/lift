@@ -2,8 +2,8 @@ package com.acompany.weightr.features.routines.data
 
 import androidx.compose.material.Colors
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.acompany.weightr.theme.ThemedPreviewProvider
 import com.acompany.data.model.Routine
+import com.acompany.weightr.theme.ThemedPreviewProvider
 
 class RoutineListItemPreviewProvider : PreviewParameterProvider<Pair<Colors, Routine>> {
 
