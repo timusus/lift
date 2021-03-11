@@ -25,8 +25,7 @@ import com.acompany.weightr.theme.MaterialTypography
 fun ExerciseListItem(
     routineExercise: RoutineExercise,
     modifier: Modifier = Modifier,
-    onExerciseClick: () -> Unit = {},
-    onWeightButtonClick: () -> Unit = {}
+    onExerciseClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
         Row(
@@ -53,9 +52,13 @@ fun ExerciseListItem(
                     fontSize = 16.sp,
                 )
             }
-            Spacer(modifier.size(16.dp))
-            OutlinedButton(onClick = onWeightButtonClick) {
-                Text(text = routineExercise.initialWeight()?.let { "$it kg" } ?: "Weight")
+            routineExercise.initialWeight()?.let { initialWeight ->
+                Spacer(modifier.size(16.dp))
+                Text(
+                    text = routineExercise.initialWeight()?.let { "$initialWeight kg" } ?: "Weight",
+                    style = MaterialTypography.body2,
+                    fontSize = 16.sp,
+                )
             }
         }
     }

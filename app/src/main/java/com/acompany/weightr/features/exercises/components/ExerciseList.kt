@@ -16,16 +16,13 @@ import com.acompany.data.model.RoutineExercise
 fun ExerciseList(
     routineExercises: List<RoutineExercise>,
     modifier: Modifier = Modifier,
-    onExerciseClick: (RoutineExercise) -> Unit = {},
-    onWeightButtonClick: (RoutineExercise) -> Unit = {}
+    onExerciseClick: (RoutineExercise) -> Unit = {}
 ) {
     LazyColumn(modifier = modifier) {
         items(routineExercises) { routineExercise ->
             ExerciseListItem(
-                routineExercise = routineExercise,
-                onExerciseClick = { onExerciseClick(routineExercise) },
-                onWeightButtonClick = { onWeightButtonClick(routineExercise) }
-            )
+                routineExercise = routineExercise
+            ) { onExerciseClick(routineExercise) }
             Divider()
         }
     }

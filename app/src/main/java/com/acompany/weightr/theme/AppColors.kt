@@ -8,10 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 object AppColors {
-    val primary = Color(0xFF6dd2aa)
+    val primary = Color(0xFF38a07b)
     val secondary = Color(0xFF3a68a1)
-    val background = Color(0xFFFFFFF)
-    val surface = Color(0xFFFFFFFF)
+    val background = Color(0xFFEFF0F3)
+    val surface = Color(0xFFEFF0F3)
 
     val primaryDark = Color(0xFF38a07b)
     val secondaryDark = Color(0xFF003e72)

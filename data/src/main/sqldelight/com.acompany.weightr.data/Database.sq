@@ -106,6 +106,12 @@ SELECT *
 FROM Routine
 ORDER BY sort_order;
 
+selectRoutines:
+SELECT *
+FROM Routine
+WHERE id IN :ids
+ORDER BY sort_order;
+
 selectAllRoutineExercises:
 SELECT *
 FROM RoutineExercise
@@ -114,7 +120,7 @@ ORDER BY sort_order;
 selectRoutineExercises:
 SELECT *
 FROM RoutineExercise
-WHERE routineId IN :routineId
+WHERE routineId IN :routineIds
 ORDER BY sort_order;
 
 updateExercise:

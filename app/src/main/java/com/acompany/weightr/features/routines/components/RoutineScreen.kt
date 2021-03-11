@@ -13,12 +13,12 @@ import com.acompany.data.AppRepository
 
 @Composable
 fun RoutineScreen(paddingValues: PaddingValues, navController: NavController, repository: AppRepository) {
-    val routines by repository.getRoutines().collectAsState(emptyList())
+    val routines by repository.getAllRoutines().collectAsState(emptyList())
     RoutineList(
         routines = routines,
         modifier = Modifier
             .padding(paddingValues)
-            .padding(16.dp),
+            .padding(8.dp),
         onRoutineClick = { routine ->
             navController.navigate("routines/${routine.id}/exercises")
         }
