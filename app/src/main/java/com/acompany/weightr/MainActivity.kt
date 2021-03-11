@@ -11,8 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.*
 import com.acompany.data.AppRepository
 import com.acompany.weightr.features.NavDestination
-import com.acompany.weightr.features.exercises.components.exerciseScreen
-import com.acompany.weightr.features.routines.components.routineScreen
+import com.acompany.weightr.features.exercises.components.ExerciseScreen
+import com.acompany.weightr.features.routines.components.RoutineScreen
 import com.acompany.weightr.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -61,10 +61,10 @@ class MainActivity : ComponentActivity() {
                                 ) { backStackEntry ->
                                     when (screen) {
                                         is NavDestination.RoutineNavDestination -> {
-                                            routineScreen(paddingValues = paddingValues, navController = navController, repository = repository)
+                                            RoutineScreen(paddingValues = paddingValues, navController = navController, repository = repository)
                                         }
                                         is NavDestination.ExerciseNavDestination -> {
-                                            exerciseScreen(paddingValues = paddingValues, navController = navController, navBackStackEntry = backStackEntry, repository = repository)
+                                            ExerciseScreen(paddingValues = paddingValues, navController = navController, navBackStackEntry = backStackEntry, repository = repository)
                                         }
                                     }
                                 }
