@@ -7,13 +7,13 @@ import androidx.navigation.compose.navArgument
 sealed class NavDestination(
     val route: String,
     val arguments: List<NamedNavArgument> = emptyList(),
-    val name: String
+    val name: () -> String
 ) {
 
-    class ExerciseNavDestination : NavDestination(
+    class ExerciseNavDestination(name: () -> String) : NavDestination(
         route = "routines/{routineId}/exercises",
         arguments = listOf(navArgument(ARG_ROUTINE_ID) { type = NavType.LongType }),
-        name = "Exercises"
+        name = name
     ) {
         companion object {
             const val ARG_ROUTINE_ID = "routineId"
@@ -22,6 +22,6 @@ sealed class NavDestination(
 
     object RoutineNavDestination : NavDestination(
         route = "routines",
-        name = "Routines"
+        name = { "Routines" }
     )
 }

@@ -6,6 +6,7 @@ data class RoutineExercise(
     val sets: Int,
     val reps: Int,
     val percentOneRepMax: Float?,
+    val weight: Float?,
     val routineId: Long,
     val exercise: Exercise
 )

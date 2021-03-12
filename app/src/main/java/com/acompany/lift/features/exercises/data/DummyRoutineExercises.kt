@@ -12,6 +12,7 @@ object DummyRoutineExercises {
             sets = 3,
             reps = 5,
             percentOneRepMax = 0.825f,
+            weight = null,
             routineId = 1L,
             exercise = Exercise(
                 id = 1L,
@@ -25,6 +26,7 @@ object DummyRoutineExercises {
             sets = 3,
             reps = 5,
             percentOneRepMax = 0.825f,
+            weight = null,
             routineId = 1L,
             exercise = Exercise(
                 id = 2L,
@@ -38,6 +40,7 @@ object DummyRoutineExercises {
             sets = 3,
             reps = 8,
             percentOneRepMax = null,
+            weight = null,
             routineId = 1L,
             exercise = Exercise(
                 id = 3L,
@@ -51,6 +54,7 @@ object DummyRoutineExercises {
             sets = 3,
             reps = 12,
             percentOneRepMax = null,
+            weight = null,
             routineId = 1L,
             exercise = Exercise(
                 id = 4L,
@@ -64,6 +68,7 @@ object DummyRoutineExercises {
             sets = 3,
             reps = 12,
             percentOneRepMax = 0.825f,
+            weight = null,
             routineId = 2L,
             exercise = Exercise(
                 id = 5L,
@@ -77,6 +82,7 @@ object DummyRoutineExercises {
             sets = 3,
             reps = 12,
             percentOneRepMax = null,
+            weight = null,
             routineId = 2L,
             exercise = Exercise(
                 id = 6L,
@@ -90,6 +96,7 @@ object DummyRoutineExercises {
             sets = 3,
             reps = 12,
             percentOneRepMax = 0.725f,
+            weight = null,
             routineId = 2L,
             exercise = Exercise(
                 id = 7L,
@@ -103,6 +110,7 @@ object DummyRoutineExercises {
             sets = 3,
             reps = 12,
             percentOneRepMax = null,
+            weight = null,
             routineId = 2L,
             exercise = Exercise(
                 id = 8L,
@@ -116,6 +124,7 @@ object DummyRoutineExercises {
             sets = 3,
             reps = 12,
             percentOneRepMax = null,
+            weight = null,
             routineId = 2L,
             exercise = Exercise(
                 id = 9L,

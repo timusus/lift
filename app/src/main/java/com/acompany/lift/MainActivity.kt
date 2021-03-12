@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.*
 import com.acompany.lift.data.AppRepository
 import com.acompany.lift.features.NavDestination
@@ -16,8 +16,6 @@ import com.acompany.lift.features.routines.components.RoutineScreen
 import com.acompany.lift.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,25 +27,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lifecycleScope.launch {
-            repository.getRoutineExercises(listOf(1)).collect {
-                Timber.i("Found ${it.size} routine exercises")
-            }
-        }
-
         setContent {
             val navController = rememberNavController()
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val allRoutines = repository.getAllRoutines().collectAsState(initial = emptyList())
             val destinations = listOf(
                 NavDestination.RoutineNavDestination,
-                NavDestination.ExerciseNavDestination(),
-            )
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+                NavDestination.ExerciseNavDestination {
+                    val routineId = navBackStackEntry?.arguments!!.getLong(NavDestination.ExerciseNavDestination.ARG_ROUTINE_ID)
+                    allRoutines.value.firstOrNull { routine -> routine.id == routineId }?.name ?: "Lift"
+                })
             AppTheme {
                 Scaffold(
                     topBar = {
-                        val currentScreen = destinations.firstOrNull { it.route == currentRoute }
-                        TopAppBar(title = { Text(text = currentScreen?.name ?: "Lift") })
+                        val currentScreen = destinations.firstOrNull { it.route == navBackStackEntry?.arguments?.getString(KEY_ROUTE) }
+                        TopAppBar(title = { Text(text = currentScreen?.name?.invoke() ?: "Lift") })
                     },
                     content = { paddingValues ->
                         NavHost(
@@ -64,10 +58,9 @@ class MainActivity : ComponentActivity() {
                                             RoutineScreen(paddingValues = paddingValues, navController = navController, repository = repository)
                                         }
                                         is NavDestination.ExerciseNavDestination -> {
+                                            val routineId = backStackEntry.arguments!!.getLong(NavDestination.ExerciseNavDestination.ARG_ROUTINE_ID)
                                             ExerciseScreen(
-                                                routineId = backStackEntry.arguments!!.let {
-                                                    it.getLong(NavDestination.ExerciseNavDestination.ARG_ROUTINE_ID)
-                                                },
+                                                routineId = routineId,
                                                 repository = repository
                                             )
                                         }

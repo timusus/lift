@@ -62,9 +62,21 @@ class AppRepository(
             .map { list -> list.map { exercise -> exercise.toExercise() } }
     }
 
-    suspend fun updateExercise(id: Long, oneRepMax: Float?) {
+    suspend fun updateRoutineExercisePercentOneRepMax(id: Long, percentOneRepMax: Float?) {
         withContext(dispatcher) {
-            database.databaseQueries.updateExercise(oneRepMax, id)
+            database.databaseQueries.updateRoutineExercisePercentOneRepMax(percentOneRepMax, id)
+        }
+    }
+
+    suspend fun updateRoutineExerciseWeight(id: Long, weight: Float?) {
+        withContext(dispatcher) {
+            database.databaseQueries.updateRoutineExerciseWeight(weight, id)
+        }
+    }
+
+    suspend fun updateExerciseOneRepMax(id: Long, oneRepMax: Float?) {
+        withContext(dispatcher) {
+            database.databaseQueries.updateExerciseOneRepMax(oneRepMax, id)
         }
     }
 }

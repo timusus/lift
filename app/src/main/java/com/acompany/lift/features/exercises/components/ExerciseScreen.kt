@@ -35,20 +35,34 @@ fun ExerciseScreen(
     routine?.let { routine ->
         ExerciseModalSheet(
             sheetContent = {
-                    ExerciseWeightTextField(
-                        routine = routine,
-                        routineExercise = selectedRotuineExercise,
-                        onOneRepMaxChanged = { weight ->
-                            selectedRotuineExercise?.let { routineExercise ->
-                                scope.launch {
-                                    repository.updateExercise(routineExercise.exercise.id, weight)
-                                }
+                ExerciseWeightTextField(
+                    routine = routine,
+                    routineExercise = selectedRotuineExercise,
+                    onOneRepMaxChanged = { oneRepMax ->
+                        selectedRotuineExercise?.let { routineExercise ->
+                            scope.launch {
+                                repository.updateExerciseOneRepMax(routineExercise.exercise.id, oneRepMax)
                             }
-                        },
-                        onDoneClick = {
-                            closeDrawer()
                         }
-                    )
+                    },
+                    onWeightChanged = { weight ->
+                        selectedRotuineExercise?.let { routineExercise ->
+                            scope.launch {
+                                repository.updateRoutineExerciseWeight(routineExercise.id, weight)
+                            }
+                        }
+                    },
+                    onPercentOneRepMaxChanged = { percentOneRepMax ->
+                        selectedRotuineExercise?.let { routineExercise ->
+                            scope.launch {
+                                repository.updateRoutineExercisePercentOneRepMax(routineExercise.id, percentOneRepMax)
+                            }
+                        }
+                    },
+                    onDoneClick = {
+                        closeDrawer()
+                    }
+                )
             },
             content = {
                 ExerciseList(
@@ -68,6 +82,8 @@ private fun ExerciseWeightTextField(
     routine: Routine,
     routineExercise: RoutineExercise?,
     onOneRepMaxChanged: (Float?) -> Unit,
+    onWeightChanged: (Float?) -> Unit,
+    onPercentOneRepMaxChanged: (Float?) -> Unit,
     onDoneClick: () -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -95,16 +111,16 @@ private fun ExerciseWeightTextField(
         label = "% One rep max",
         initialValue = routineExercise?.percentOneRepMax?.let { (it * 100) },
         onValueChanged = { value ->
-
+            onPercentOneRepMaxChanged(value?.let { it / 100f })
         }
     )
     Spacer(modifier = Modifier.size(8.dp))
     FloatTextField(
         key = routineExercise?.id.toString(),
         label = "Weight",
-        initialValue = routineExercise?.initialWeight(),
+        initialValue = routineExercise?.weight ?: routineExercise?.initialWeight(),
         onValueChanged = { value ->
-
+            onWeightChanged(value)
         }
     )
 }

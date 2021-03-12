@@ -2,6 +2,7 @@ package com.acompany.lift.features.exercises.data
 
 import com.acompany.lift.data.model.Exercise
 import com.acompany.lift.data.model.RoutineExercise
+import java.lang.Math.round
 
 object ExerciseHelper {
 
@@ -11,8 +12,7 @@ object ExerciseHelper {
      */
     fun RoutineExercise.initialWeight(): Float? {
         return exercise.oneRepMax?.let { oneRepMax ->
-            oneRepMax * (percentOneRepMax ?: 1f)
+            round(0.4f * oneRepMax * (percentOneRepMax ?: 1f)) / 0.4f
         }
     }
-
 }

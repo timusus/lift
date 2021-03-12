@@ -52,10 +52,12 @@ fun ExerciseListItem(
                     fontSize = 16.sp,
                 )
             }
-            routineExercise.initialWeight()?.let { initialWeight ->
+            if (routineExercise.weight != null || routineExercise.initialWeight() != null) {
                 Spacer(modifier.size(16.dp))
                 Text(
-                    text = routineExercise.initialWeight()?.let { "$initialWeight kg" } ?: "Weight",
+                    text = routineExercise.weight?.let { weight -> "$weight kg" }
+                        ?: routineExercise.initialWeight()?.let { initialWeight -> "$initialWeight kg" }
+                        ?: "Weight",
                     style = MaterialTypography.body2,
                     fontSize = 16.sp,
                 )
