@@ -15,66 +15,77 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.acompany.lift.data.AppRepository
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
-import kotlinx.coroutines.flow.map
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
+
+@HiltViewModel
+class ExerciseScreenViewModel @Inject constructor(
+    private val appRepository: AppRepository
+) : ViewModel() {
+    val selectedRoutineExercise: MutableStateFlow<RoutineExercise?> = MutableStateFlow(null)
+
+    fun updateOneRepMax(exerciseId: Long, value: Float?) {
+        viewModelScope.launch {
+            appRepository.updateExerciseOneRepMax(exerciseId, value)
+        }
+    }
+
+    fun updateRoutineExerciseWeight(exerciseId: Long, value: Float?) {
+        viewModelScope.launch {
+            appRepository.updateRoutineExerciseWeight(exerciseId, value)
+        }
+    }
+
+    fun updateRoutineExercisePercentOneRepMax(exerciseId: Long, value: Float?) {
+        viewModelScope.launch {
+            appRepository.updateRoutineExercisePercentOneRepMax(exerciseId, value)
+        }
+    }
+}
 
 @Composable
 fun ExerciseScreen(
-    routineId: Long,
-    repository: AppRepository
+    viewModel: ExerciseScreenViewModel,
+    routine: Routine
 ) {
     val scope = rememberCoroutineScope()
-    val routineExercises by repository.getRoutineExercises(listOf(routineId)).collectAsState(emptyList())
-    val routine by repository.getRoutines(listOf(routineId)).map { it.first() }.collectAsState(initial = null)
-    var selectedRotuineExercise by remember { mutableStateOf(null as RoutineExercise?) }
-    routine?.let { routine ->
-        ExerciseModalSheet(
-            sheetContent = {
+
+    val selectedExercise = viewModel.selectedRoutineExercise.collectAsState()
+
+    ExerciseModalSheet(
+        sheetContent = {
+            selectedExercise.value?.let { selectedExercise ->
                 ExerciseWeightTextField(
                     routine = routine,
-                    routineExercise = selectedRotuineExercise,
-                    onOneRepMaxChanged = { oneRepMax ->
-                        selectedRotuineExercise?.let { routineExercise ->
-                            scope.launch {
-                                repository.updateExerciseOneRepMax(routineExercise.exercise.id, oneRepMax)
-                            }
-                        }
-                    },
-                    onWeightChanged = { weight ->
-                        selectedRotuineExercise?.let { routineExercise ->
-                            scope.launch {
-                                repository.updateRoutineExerciseWeight(routineExercise.id, weight)
-                            }
-                        }
-                    },
-                    onPercentOneRepMaxChanged = { percentOneRepMax ->
-                        selectedRotuineExercise?.let { routineExercise ->
-                            scope.launch {
-                                repository.updateRoutineExercisePercentOneRepMax(routineExercise.id, percentOneRepMax)
-                            }
-                        }
-                    },
-                    onDoneClick = {
-                        closeDrawer()
-                    }
-                )
-            },
-            content = {
-                ExerciseList(
-                    routineExercises = routineExercises,
-                    onExerciseClick = { routineExercise ->
-                        selectedRotuineExercise = routineExercise
-                        openDrawer()
-                    }
+                    routineExercise = selectedExercise,
+                    onOneRepMaxChanged = { oneRepMax -> viewModel.updateOneRepMax(selectedExercise.id, oneRepMax) },
+                    onWeightChanged = { weight -> viewModel.updateRoutineExerciseWeight(selectedExercise.id, weight) },
+                    onPercentOneRepMaxChanged = { percentOneRepMax -> viewModel.updateRoutineExercisePercentOneRepMax(selectedExercise.id, percentOneRepMax) },
+                    onDoneClick = { closeDrawer() }
                 )
             }
-        )
-    }
+        },
+        content = {
+            ExerciseList(
+                routineExercises = routine.exercises,
+                onExerciseClick = { routineExercise ->
+                    scope.launch {
+                        viewModel.selectedRoutineExercise.emit(routineExercise)
+                    }
+                    openDrawer()
+                }
+            )
+        }
+    )
 }
 
 @Composable
