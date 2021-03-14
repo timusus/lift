@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,21 +14,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.acompany.lift.data.AppRepository
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class ExerciseScreenViewModel @Inject constructor(
     private val appRepository: AppRepository
 ) : ViewModel() {
+
+    fun getRoutine(routineId: Long): Flow<Routine?> {
+        return appRepository.getRoutines(listOf(routineId)).map { routines -> routines.firstOrNull() }
+    }
+
     val selectedRoutineExercise: MutableStateFlow<RoutineExercise?> = MutableStateFlow(null)
+
+    fun setSelectedRoutineExercise(exercise: RoutineExercise) {
+        viewModelScope.launch {
+            selectedRoutineExercise.emit(exercise)
+        }
+    }
 
     fun updateOneRepMax(exerciseId: Long, value: Float?) {
         viewModelScope.launch {
@@ -50,48 +63,76 @@ class ExerciseScreenViewModel @Inject constructor(
             appRepository.updateRoutineExercisePercentOneRepMax(exerciseId, value)
         }
     }
+
+    val startDate: MutableStateFlow<Date?> = MutableStateFlow(null)
+    fun setStartDate(date: Date) {
+        viewModelScope.launch {
+            startDate.emit(date)
+        }
+    }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExerciseScreen(
     viewModel: ExerciseScreenViewModel,
-    routine: Routine
+    routineId: Long
 ) {
-    val scope = rememberCoroutineScope()
+    val routine by viewModel.getRoutine(routineId).collectAsState(null)
+    val selectedExercise by viewModel.selectedRoutineExercise.collectAsState()
+    val startDate by viewModel.startDate.collectAsState()
 
-    val selectedExercise = viewModel.selectedRoutineExercise.collectAsState()
-
-    ExerciseModalSheet(
-        sheetContent = {
-            selectedExercise.value?.let { selectedExercise ->
-                ExerciseWeightTextField(
-                    routine = routine,
-                    routineExercise = selectedExercise,
-                    onOneRepMaxChanged = { oneRepMax -> viewModel.updateOneRepMax(selectedExercise.id, oneRepMax) },
-                    onWeightChanged = { weight -> viewModel.updateRoutineExerciseWeight(selectedExercise.id, weight) },
-                    onPercentOneRepMaxChanged = { percentOneRepMax -> viewModel.updateRoutineExercisePercentOneRepMax(selectedExercise.id, percentOneRepMax) },
-                    onDoneClick = { closeDrawer() }
-                )
-            }
-        },
-        content = {
-            ExerciseList(
-                routineExercises = routine.exercises,
-                onExerciseClick = { routineExercise ->
-                    scope.launch {
-                        viewModel.selectedRoutineExercise.emit(routineExercise)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    routine?.let { routine ->
+                        Text(text = routine.name)
                     }
-                    openDrawer()
+                },
+                actions = {
+                    ExerciseMenuItem(startDate, onStartClick = {
+                        viewModel.setStartDate(Date())
+                    })
                 }
             )
+        },
+        content = {
+            routine?.let { routine ->
+                ExerciseModalSheet(
+                    sheetContent = {
+                        selectedExercise?.let { selectedExercise ->
+                            SheetContent(
+                                routine = routine,
+                                routineExercise = selectedExercise,
+                                onOneRepMaxChanged = { oneRepMax -> viewModel.updateOneRepMax(selectedExercise.id, oneRepMax) },
+                                onWeightChanged = { weight -> viewModel.updateRoutineExerciseWeight(selectedExercise.id, weight) },
+                                onPercentOneRepMaxChanged = { percentOneRepMax -> viewModel.updateRoutineExercisePercentOneRepMax(selectedExercise.id, percentOneRepMax) },
+                                onDoneClick = {
+                                    hide()
+                                }
+                            )
+                        }
+                    },
+                    content = {
+                        ExerciseList(
+                            routineExercises = routine.exercises,
+                            onExerciseClick = { routineExercise ->
+                                viewModel.setSelectedRoutineExercise(routineExercise)
+                                show()
+                            }
+                        )
+                    }
+                )
+            }
         }
     )
 }
 
 @Composable
-private fun ExerciseWeightTextField(
+private fun SheetContent(
     routine: Routine,
-    routineExercise: RoutineExercise?,
+    routineExercise: RoutineExercise,
     onOneRepMaxChanged: (Float?) -> Unit,
     onWeightChanged: (Float?) -> Unit,
     onPercentOneRepMaxChanged: (Float?) -> Unit,
@@ -104,12 +145,12 @@ private fun ExerciseWeightTextField(
         }
     }
     Spacer(modifier = Modifier.size(16.dp))
-    Text(fontSize = 12.sp, text = "All ${routineExercise?.exercise?.name}(s)")
+    Text(fontSize = 12.sp, text = "All ${routineExercise.exercise.name}(s)")
     Spacer(modifier = Modifier.size(4.dp))
     FloatTextField(
         key = routineExercise?.id.toString(),
         label = "One rep max",
-        initialValue = routineExercise?.exercise?.oneRepMax,
+        initialValue = routineExercise.exercise.oneRepMax,
         onValueChanged = { value ->
             onOneRepMaxChanged(value)
         }
@@ -118,22 +159,23 @@ private fun ExerciseWeightTextField(
     Text(fontSize = 12.sp, text = "Routine:  ${routine.name}")
     Spacer(modifier = Modifier.size(4.dp))
     FloatTextField(
-        key = routineExercise?.id.toString(),
+        key = routineExercise.id.toString(),
         label = "% One rep max",
-        initialValue = routineExercise?.percentOneRepMax?.let { (it * 100) },
+        initialValue = routineExercise.percentOneRepMax?.let { (it * 100) },
         onValueChanged = { value ->
             onPercentOneRepMaxChanged(value?.let { it / 100f })
         }
     )
     Spacer(modifier = Modifier.size(8.dp))
     FloatTextField(
-        key = routineExercise?.id.toString(),
+        key = routineExercise.id.toString(),
         label = "Weight",
-        initialValue = routineExercise?.weight ?: routineExercise?.initialWeight(),
+        initialValue = routineExercise.weight ?: routineExercise.initialWeight(),
         onValueChanged = { value ->
             onWeightChanged(value)
         }
     )
+
 }
 
 @Composable

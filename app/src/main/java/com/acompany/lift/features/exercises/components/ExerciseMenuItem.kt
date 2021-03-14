@@ -10,18 +10,26 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PlayCircleOutline
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.acompany.lift.common.components.CircleIcon
+import com.acompany.lift.common.components.elapsedTimeMillis
+import java.util.*
 
 @Composable
-fun RowScope.ExerciseMenuItem(elapsedTime: Long?, onStartClick: () -> Unit) {
-    elapsedTime?.let {
+fun RowScope.ExerciseMenuItem(
+    startDate: Date?,
+    onStartClick: () -> Unit
+) {
+    startDate?.let { date ->
         IconButton(
             onClick = {
 
             }) {
-            Text(text = DateUtils.formatElapsedTime(elapsedTime / 1000))
+            Text(text = DateUtils.formatElapsedTime(elapsedTimeMillis(startDate = date) / 1000))
         }
         Spacer(modifier = Modifier.size(8.dp))
     } ?: run {

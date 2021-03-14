@@ -21,7 +21,8 @@ fun ExerciseList(
     LazyColumn(modifier = modifier) {
         items(routineExercises) { routineExercise ->
             ExerciseListItem(
-                routineExercise = routineExercise
+                routineExercise = routineExercise,
+                exerciseSessionState = ExerciseSessionState.None
             ) { onExerciseClick(routineExercise) }
             Divider()
         }

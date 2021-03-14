@@ -1,7 +1,9 @@
 package com.acompany.lift.features.routines.components
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -10,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acompany.lift.data.AppRepository
 import com.acompany.lift.data.model.Routine
+import com.acompany.lift.data.model.RoutineExercise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -35,19 +38,25 @@ class RoutineScreenViewModel @Inject constructor(
 @Composable
 fun RoutineScreen(
     viewModel: RoutineScreenViewModel,
-    paddingValues: PaddingValues,
     onRoutineSelected: (Routine) -> Unit
 ) {
 
     val routines = viewModel.allRoutines.collectAsState()
 
-    RoutineList(
-        routines = routines.value,
-        modifier = Modifier
-            .padding(paddingValues)
-            .padding(8.dp),
-        onRoutineClick = { routine ->
-            onRoutineSelected(routine)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Routines") },
+            )
+        },
+        content = {
+            RoutineList(
+                routines = routines.value,
+                modifier = Modifier.padding(8.dp),
+                onRoutineClick = { routine ->
+                    onRoutineSelected(routine)
+                }
+            )
         }
     )
 }

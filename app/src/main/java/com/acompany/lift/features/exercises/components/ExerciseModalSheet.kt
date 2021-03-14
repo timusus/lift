@@ -7,11 +7,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 interface ModalSheetScope {
-    fun openDrawer()
-    fun closeDrawer()
+    fun show()
+    fun hide()
 }
 
 @Composable
@@ -20,19 +21,18 @@ fun rememberModalSheetScope(sheetState: ModalBottomSheetState): ModalSheetScope 
     val scope = rememberCoroutineScope()
     return remember(scope) {
         object : ModalSheetScope {
-
-            override fun openDrawer() {
+            override fun show() {
                 scope.launch {
+                    delay(250) // Todo: Remove. Workaround for https://issuetracker.google.com/issues/181593642
                     sheetState.show()
                 }
             }
 
-            override fun closeDrawer() {
+            override fun hide() {
                 scope.launch {
                     sheetState.hide()
                 }
             }
-
         }
     }
 }
