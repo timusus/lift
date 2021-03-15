@@ -1,5 +1,6 @@
 package com.acompany.lift.features.exercises.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -33,9 +34,9 @@ fun ExerciseListItem(
     onActionClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
-        Column {
+        Column(modifier = modifier.animateContentSize()) {
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .background(color = MaterialColors.surface)
                     .heightIn(min = 72.dp)
                     .clickable(onClick = onExerciseClick)
