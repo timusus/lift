@@ -9,7 +9,6 @@ import androidx.compose.ui.graphics.Color
 
 object AppColors {
     val primary = Color(0xFF38a07b)
-    val onPrimary = Color(0xFF212121)
     val secondary = Color(0xFF3a68a1)
     val background = Color(0xFFEFF0F3)
     val onBackground = Color(0xFF212121)
@@ -22,8 +21,9 @@ object AppColors {
 
 val lightAppColors = lightColors(
     primary = AppColors.primary,
-    onPrimary = AppColors.onPrimary,
+    onPrimary = Color.White,
     secondary = AppColors.secondary,
+    onSecondary = Color.White,
     background = AppColors.background,
     onBackground = AppColors.onBackground,
     surface = AppColors.surface
@@ -31,8 +31,9 @@ val lightAppColors = lightColors(
 
 val darkAppColors = darkColors(
     primary = AppColors.primary,
-    onPrimary = AppColors.onPrimary,
+    onPrimary = Color.White,
     secondary = AppColors.secondary,
+    onSecondary = Color.White,
     background = AppColors.backgroundDark,
     onBackground = AppColors.onBackgroundDark,
     surface = AppColors.surfaceDark

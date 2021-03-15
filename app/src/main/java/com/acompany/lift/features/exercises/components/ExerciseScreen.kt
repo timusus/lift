@@ -1,12 +1,14 @@
 package com.acompany.lift.features.exercises.components
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import android.text.format.DateUtils
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -16,12 +18,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.acompany.lift.common.components.elapsedTimeMillis
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 fun ExerciseScreen(
     viewModel: ExerciseScreenViewModel,
     routineId: Long
@@ -33,16 +36,7 @@ fun ExerciseScreen(
     routine?.let { routine ->
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(text = routine.name)
-                    },
-                    actions = {
-                        ExerciseMenuItem(sessionState.startDate, onStartClick = {
-                            viewModel.moveToNextState(routine.exercises)
-                        })
-                    }
-                )
+                TopAppBar(title = { Text(text = routine.name) })
             },
             content = {
                 ExerciseModalSheet(
@@ -51,9 +45,24 @@ fun ExerciseScreen(
                             SheetContent(
                                 routine = routine,
                                 routineExercise = selectedExercise,
-                                onOneRepMaxChanged = { oneRepMax -> viewModel.updateOneRepMax(selectedExercise.id, oneRepMax) },
-                                onWeightChanged = { weight -> viewModel.updateRoutineExerciseWeight(selectedExercise.id, weight) },
-                                onPercentOneRepMaxChanged = { percentOneRepMax -> viewModel.updateRoutineExercisePercentOneRepMax(selectedExercise.id, percentOneRepMax) },
+                                onOneRepMaxChanged = { oneRepMax ->
+                                    viewModel.updateOneRepMax(
+                                        selectedExercise.id,
+                                        oneRepMax
+                                    )
+                                },
+                                onWeightChanged = { weight ->
+                                    viewModel.updateRoutineExerciseWeight(
+                                        selectedExercise.id,
+                                        weight
+                                    )
+                                },
+                                onPercentOneRepMaxChanged = { percentOneRepMax ->
+                                    viewModel.updateRoutineExercisePercentOneRepMax(
+                                        selectedExercise.id,
+                                        percentOneRepMax
+                                    )
+                                },
                                 onDoneClick = {
                                     hide()
                                 }
@@ -61,17 +70,45 @@ fun ExerciseScreen(
                         }
                     },
                     content = {
-                        ExerciseList(
-                            routineExercises = routine.exercises,
-                            sessionState = sessionState,
-                            onExerciseClick = { routineExercise ->
-                                viewModel.setSelectedRoutineExercise(routineExercise)
-                                show()
-                            },
-                            onActionClick = { routineExercise ->
-                                viewModel.moveToNextState(routine.exercises)
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            ExerciseList(
+                                routineExercises = routine.exercises,
+                                sessionState = sessionState,
+                                onExerciseClick = { routineExercise ->
+                                    viewModel.setSelectedRoutineExercise(routineExercise)
+                                    show()
+                                },
+                                onActionClick = { routineExercise ->
+                                    viewModel.moveToNextState(routine.exercises)
+                                }
+                            )
+                            FloatingActionButton(
+                                onClick = { viewModel.moveToNextState(routine.exercises) },
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .wrapContentSize(Alignment.BottomEnd)
+                                    .padding(end = 16.dp, bottom = 16.dp)
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    AnimatedVisibility(visible = sessionState.startDate != null) {
+                                        Box(Modifier.padding(start = 16.dp, end = 2.dp)) {
+                                            Text(
+                                                text = DateUtils.formatElapsedTime(
+                                                    elapsedTimeMillis(sessionState.startDate!!)
+                                                )
+                                            )
+                                        }
+                                    }
+                                    Icon(
+                                        imageVector = Icons.Rounded.Timer,
+                                        contentDescription = "start session"
+                                    )
+                                    AnimatedVisibility(visible = sessionState.startDate != null) {
+                                        Spacer(Modifier.width(20.dp))
+                                    }
+                                }
                             }
-                        )
+                        }
                     }
                 )
             }
@@ -79,8 +116,8 @@ fun ExerciseScreen(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
+@OptIn(ExperimentalComposeUiApi::class)
 private fun SheetContent(
     routine: Routine,
     routineExercise: RoutineExercise,
@@ -143,23 +180,16 @@ private fun FloatTextField(
     OutlinedTextField(
         value = textState.value,
         label = { Text(text = label) },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
+        ),
         onValueChange = { textFieldValue ->
             textState.value = textFieldValue
             onValueChanged(textFieldValue.toFloatOrNull())
         },
         keyboardActions = KeyboardActions(onDone = { onDone() })
     )
-}
-
-@Composable
-private fun StartSessionButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Text(text = "Start Session")
-    }
 }
 
 @Composable

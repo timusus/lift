@@ -18,5 +18,5 @@ fun elapsedTimeMillis(
             elapsedTimeMillis = startDate.let { Date().time - startDate.time }
         }
     }
-    return elapsedTimeMillis
+    return elapsedTimeMillis / 1000
 }
