@@ -8,5 +8,6 @@ data class RoutineExercise(
     val percentOneRepMax: Float?,
     val weight: Float?,
     val routineId: Long,
-    val exercise: Exercise
+    val exercise: Exercise,
+    val restPeriod: Int = 90
 )

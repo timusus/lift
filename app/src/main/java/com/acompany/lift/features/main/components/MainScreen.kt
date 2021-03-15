@@ -1,8 +1,11 @@
 package com.acompany.lift.features.main.components
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.acompany.lift.features.exercises.components.ExerciseScreen
 import com.acompany.lift.features.navigation.NavDestination
 import com.acompany.lift.features.routines.components.RoutineScreen
@@ -40,7 +43,7 @@ fun MainScreen() {
                         is NavDestination.ExerciseNavDestination -> {
                             ExerciseScreen(
                                 viewModel = hiltNavGraphViewModel(),
-                                backStackEntry.arguments!!.getLong(NavDestination.ExerciseNavDestination.ARG_ROUTINE_ID)
+                                routineId = backStackEntry.arguments!!.getLong(NavDestination.ExerciseNavDestination.ARG_ROUTINE_ID),
                             )
                         }
                     }

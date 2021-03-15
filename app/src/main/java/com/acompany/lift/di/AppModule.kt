@@ -5,8 +5,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.*
-import org.ocpsoft.prettytime.TimeFormat
-import org.ocpsoft.prettytime.format.SimpleTimeFormat
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.SimpleDateFormat
