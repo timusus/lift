@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acompany.lift.common.components.CircleIcon
 import com.acompany.lift.common.components.Icon
-import com.acompany.lift.common.components.remainingTimeMillis
+import com.acompany.lift.common.effects.remainingTimeMillis
 import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
 import com.acompany.lift.features.exercises.data.ExerciseScreenViewModel

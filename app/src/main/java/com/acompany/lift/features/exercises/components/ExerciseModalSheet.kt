@@ -24,7 +24,8 @@ fun rememberModalSheetScope(sheetState: ModalBottomSheetState): ModalSheetScope 
         object : ModalSheetScope {
             override fun show() {
                 scope.launch {
-                    delay(250) // Todo: Remove. Workaround for https://issuetracker.google.com/issues/181593642
+                    // Todo: Remove. Workaround for https://issuetracker.google.com/issues/18159364
+                    delay(250)
                     sheetState.show()
                 }
             }
@@ -66,34 +67,6 @@ fun ExerciseModalSheet(
         }
     )
     BackHandler(sheetState.isVisible) {
-        modalSheetScope.closeDrawer()
+        modalSheetScope.hide()
     }
-}
-
-@Composable
-@OptIn(ExperimentalMaterialApi::class)
-fun rememberModalSheetScope(sheetState: ModalBottomSheetState): ModalSheetScope {
-    val scope = rememberCoroutineScope()
-    return remember(scope) {
-        object : ModalSheetScope {
-
-            override fun openDrawer() {
-                scope.launch {
-                    sheetState.show()
-                }
-            }
-
-            override fun closeDrawer() {
-                scope.launch {
-                    sheetState.hide()
-                }
-            }
-
-        }
-    }
-}
-
-interface ModalSheetScope {
-    fun openDrawer()
-    fun closeDrawer()
 }

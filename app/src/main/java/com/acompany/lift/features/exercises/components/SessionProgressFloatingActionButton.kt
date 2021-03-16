@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.acompany.lift.common.components.elapsedTimeMillis
+import com.acompany.lift.common.effects.elapsedTimeMillis
 import com.acompany.lift.features.exercises.data.ExerciseScreenViewModel
 import com.acompany.lift.features.main.data.DummyAppRepository
 import java.util.*
