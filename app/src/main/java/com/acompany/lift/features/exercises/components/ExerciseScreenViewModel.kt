@@ -75,12 +75,16 @@ class ExerciseScreenViewModel @Inject constructor(
                 viewModelScope.launch {
                     val index = exercises.indexOf(state.exercise)
                     sessionState.emit(
-                        if (state.set <= state.exercise.sets - 2) {
-                            SessionState.InProgress(state.startDate!!, state.exercise, state.set + 1)
-                        } else if (index <= exercises.size - 2) {
-                            SessionState.InProgress(state.startDate!!, exercises[index + 1], 0)
-                        } else {
-                            SessionState.Complete(state.startDate!!)
+                        when {
+                            state.set <= state.exercise.sets - 2 -> {
+                                SessionState.InProgress(state.startDate!!, state.exercise, state.set + 1)
+                            }
+                            index <= exercises.size - 2 -> {
+                                SessionState.InProgress(state.startDate!!, exercises[index + 1], 0)
+                            }
+                            else -> {
+                                SessionState.Complete(state.startDate!!)
+                            }
                         }
                     )
                 }
