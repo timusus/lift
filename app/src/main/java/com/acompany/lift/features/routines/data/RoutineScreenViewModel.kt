@@ -7,6 +7,7 @@ import com.acompany.lift.data.model.Routine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,7 +18,7 @@ class RoutineScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _allRoutines: MutableStateFlow<List<Routine>> = MutableStateFlow(emptyList())
-    val allRoutines: StateFlow<List<Routine>> = _allRoutines
+    val allRoutines: StateFlow<List<Routine>> = _allRoutines.asStateFlow()
 
     init {
         viewModelScope.launch {

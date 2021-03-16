@@ -19,7 +19,7 @@ fun ExerciseList(
     exerciseProgress: Map<RoutineExercise, ExerciseScreenViewModel.ExerciseProgress>,
     modifier: Modifier = Modifier,
     onExerciseClick: (RoutineExercise) -> Unit = {},
-    onActionClick: (RoutineExercise) -> Unit = {}
+    onDoneClick: (RoutineExercise) -> Unit = {}
 ) {
     LazyColumn(modifier = modifier) {
         items(routineExercises) { routineExercise ->
@@ -28,7 +28,7 @@ fun ExerciseList(
                 exerciseProgress = exerciseProgress[routineExercise]
                     ?: ExerciseScreenViewModel.ExerciseProgress.None,
                 onExerciseClick = { onExerciseClick(routineExercise) },
-                onActionClick = { onActionClick(routineExercise) }
+                onDoneClick = { onDoneClick(routineExercise) }
             )
             Divider()
         }

@@ -11,6 +11,8 @@ import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -20,10 +22,11 @@ class ExerciseScreenViewModel @Inject constructor(
     private val appRepository: AppRepository
 ) : ViewModel() {
 
-    val selectedRoutineExercise: MutableStateFlow<RoutineExercise?> = MutableStateFlow(null)
+    private val _selectedRoutineExercise: MutableStateFlow<RoutineExercise?> = MutableStateFlow(null)
+    val selectedRoutineExercise: StateFlow<RoutineExercise?> = _selectedRoutineExercise.asStateFlow()
 
     fun setSelectedRoutineExercise(exercise: RoutineExercise) {
-        selectedRoutineExercise.tryEmit(exercise)
+        _selectedRoutineExercise.tryEmit(exercise)
     }
 
     fun updateOneRepMax(exerciseId: Long, value: Float?) {

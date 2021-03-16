@@ -65,7 +65,7 @@ fun ExerciseScreen(
                             viewModel.setSelectedRoutineExercise(routineExercise)
                             show()
                         },
-                        onActionClick = { viewModel.moveToNext(routine) }
+                        onDoneClick = { viewModel.moveToNext(routine) }
                     )
                     SessionProgressFloatingActionButton(viewModel.sessionProgress) {
                         viewModel.moveToNext(routine)

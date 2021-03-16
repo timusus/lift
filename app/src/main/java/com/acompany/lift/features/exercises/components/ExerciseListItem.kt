@@ -33,7 +33,7 @@ fun ExerciseListItem(
     exerciseProgress: ExerciseScreenViewModel.ExerciseProgress,
     modifier: Modifier = Modifier,
     onExerciseClick: () -> Unit = {},
-    onActionClick: () -> Unit = {}
+    onDoneClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
         Column(modifier = modifier.animateContentSize()) {
@@ -76,7 +76,7 @@ fun ExerciseListItem(
                     )
                 }
             }
-            SessionStateIndicator(exerciseProgress, routineExercise, onActionClick)
+            SessionStateIndicator(exerciseProgress, routineExercise, onDoneClick)
         }
     }
 }
@@ -85,7 +85,7 @@ fun ExerciseListItem(
 private fun SessionStateIndicator(
     exerciseProgress: ExerciseScreenViewModel.ExerciseProgress,
     routineExercise: RoutineExercise,
-    onActionClick: () -> Unit
+    onDoneClick: () -> Unit
 ) {
     when (exerciseProgress) {
         is ExerciseScreenViewModel.ExerciseProgress.None -> {
@@ -102,7 +102,7 @@ private fun SessionStateIndicator(
                     text = "Set ${exerciseProgress.set + 1} of ${routineExercise.sets}",
                     color = MaterialColors.onBackground.copy(alpha = 0.85f)
                 )
-                IconButton(onClick = onActionClick) {
+                IconButton(onClick = onDoneClick) {
                     Icon(
                         icon = Icons.Rounded.CheckCircleOutline,
                         modifier = Modifier.padding(8.dp),
@@ -121,14 +121,14 @@ private fun SessionStateIndicator(
                 val minutes = remainingTime / 60
                 val seconds = remainingTime % 60
                 if (remainingTime == 0L) {
-                    onActionClick()
+                    onDoneClick()
                 }
                 Text(
                     modifier = Modifier.weight(1f),
                     text = "Rest for ${String.format("%02d:%02d", minutes, seconds)}",
                     color = MaterialColors.onBackground.copy(alpha = 0.85f)
                 )
-                IconButton(onClick = onActionClick) {
+                IconButton(onClick = onDoneClick) {
                     Icon(
                         icon = Icons.Rounded.CheckCircleOutline,
                         modifier = Modifier.padding(8.dp),
