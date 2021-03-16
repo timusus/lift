@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CheckCircleOutline
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.runtime.Composable
@@ -28,7 +29,7 @@ import com.acompany.lift.theme.MaterialTypography
 @Composable
 fun ExerciseListItem(
     routineExercise: RoutineExercise,
-    sessionState: ExerciseScreenViewModel.SessionState,
+    exerciseProgress: ExerciseScreenViewModel.ExerciseProgress,
     modifier: Modifier = Modifier,
     onExerciseClick: () -> Unit = {},
     onActionClick: () -> Unit = {}
@@ -44,7 +45,7 @@ fun ExerciseListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CircleIcon(
-                    icon = Icons.Rounded.FitnessCenter,
+                    icon = if (exerciseProgress is ExerciseScreenViewModel.ExerciseProgress.Complete) Icons.Rounded.Check else Icons.Rounded.FitnessCenter,
                     modifier = Modifier.padding(8.dp)
                 )
                 Spacer(modifier.size(16.dp))
@@ -73,66 +74,63 @@ fun ExerciseListItem(
                     )
                 }
             }
-            SessionStateIndicator(sessionState, routineExercise, onActionClick)
+            SessionStateIndicator(exerciseProgress, routineExercise, onActionClick)
         }
     }
 }
 
 @Composable
 private fun SessionStateIndicator(
-    sessionState: ExerciseScreenViewModel.SessionState,
+    exerciseProgress: ExerciseScreenViewModel.ExerciseProgress,
     routineExercise: RoutineExercise,
     onActionClick: () -> Unit
 ) {
-    when (sessionState) {
-        is ExerciseScreenViewModel.SessionState.Complete, ExerciseScreenViewModel.SessionState.None -> {
-
+    when (exerciseProgress) {
+        is ExerciseScreenViewModel.ExerciseProgress.None -> {
         }
-        is ExerciseScreenViewModel.SessionState.InProgress -> {
-            if (sessionState.exercise == routineExercise) {
-                Row(
-                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = "Set ${sessionState.set + 1} of ${routineExercise.sets}",
-                        color = MaterialColors.onBackground.copy(alpha = 0.85f)
+        is ExerciseScreenViewModel.ExerciseProgress.Complete -> {
+        }
+        is ExerciseScreenViewModel.ExerciseProgress.InProgress -> {
+            Row(
+                modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = "Set ${exerciseProgress.set + 1} of ${routineExercise.sets}",
+                    color = MaterialColors.onBackground.copy(alpha = 0.85f)
+                )
+                IconButton(onClick = onActionClick) {
+                    Icon(
+                        icon = Icons.Rounded.CheckCircleOutline,
+                        modifier = Modifier.padding(8.dp),
+                        tint = MaterialColors.secondary
                     )
-                    IconButton(onClick = onActionClick) {
-                        Icon(
-                            icon = Icons.Rounded.CheckCircleOutline,
-                            modifier = Modifier.padding(8.dp),
-                            tint = MaterialColors.secondary
-                        )
-                    }
                 }
             }
         }
-        is ExerciseScreenViewModel.SessionState.Resting -> {
-            if (sessionState.exercise == routineExercise) {
-                Row(
-                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    val remainingTime = remainingTimeMillis(periodMillis = sessionState.exercise.restPeriod * 1000L) / 1000
-                    val minutes = remainingTime / 60
-                    val seconds = remainingTime % 60
-                    if (remainingTime == 0L) {
-                        onActionClick()
-                    }
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = "Rest for ${String.format("%02d:%02d", minutes, seconds)}",
-                        color = MaterialColors.onBackground.copy(alpha = 0.85f)
+        is ExerciseScreenViewModel.ExerciseProgress.Resting -> {
+            Row(
+                modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val remainingTime = remainingTimeMillis(periodMillis = routineExercise.restPeriod * 1000L) / 1000
+                val minutes = remainingTime / 60
+                val seconds = remainingTime % 60
+                if (remainingTime == 0L) {
+                    onActionClick()
+                }
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = "Rest for ${String.format("%02d:%02d", minutes, seconds)}",
+                    color = MaterialColors.onBackground.copy(alpha = 0.85f)
+                )
+                IconButton(onClick = onActionClick) {
+                    Icon(
+                        icon = Icons.Rounded.CheckCircleOutline,
+                        modifier = Modifier.padding(8.dp),
+                        tint = MaterialColors.secondary
                     )
-                    IconButton(onClick = onActionClick) {
-                        Icon(
-                            icon = Icons.Rounded.CheckCircleOutline,
-                            modifier = Modifier.padding(8.dp),
-                            tint = MaterialColors.secondary
-                        )
-                    }
                 }
             }
         }
@@ -145,6 +143,6 @@ private fun ExerciseListItemPreview(
     @PreviewParameter(RoutineExerciseListItemPreviewProvider::class) preview: Pair<Colors, RoutineExercise>
 ) {
     MaterialTheme(colors = preview.first) {
-        ExerciseListItem(routineExercise = preview.second, ExerciseScreenViewModel.SessionState.None)
+        ExerciseListItem(routineExercise = preview.second, ExerciseScreenViewModel.ExerciseProgress.None)
     }
 }

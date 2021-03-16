@@ -1,14 +1,16 @@
 package com.acompany.lift.features.exercises.components
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acompany.lift.data.AppRepository
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -25,9 +27,7 @@ class ExerciseScreenViewModel @Inject constructor(
     val selectedRoutineExercise: MutableStateFlow<RoutineExercise?> = MutableStateFlow(null)
 
     fun setSelectedRoutineExercise(exercise: RoutineExercise) {
-        viewModelScope.launch {
-            selectedRoutineExercise.emit(exercise)
-        }
+        selectedRoutineExercise.tryEmit(exercise)
     }
 
     fun updateOneRepMax(exerciseId: Long, value: Float?) {
@@ -48,49 +48,61 @@ class ExerciseScreenViewModel @Inject constructor(
         }
     }
 
-    sealed class SessionState(val startDate: Date?) {
-        object None : SessionState(null)
-        class InProgress(startDate: Date, val exercise: RoutineExercise, val set: Int) : SessionState(startDate)
-        class Resting(startDate: Date, val exercise: RoutineExercise, val set: Int) : SessionState(startDate)
-        class Complete(startDate: Date) : SessionState(startDate)
+    sealed class ExerciseProgress {
+        object None : ExerciseProgress()
+        class InProgress(val set: Int) : ExerciseProgress()
+        class Resting(val set: Int) : ExerciseProgress()
+        object Complete : ExerciseProgress()
     }
 
-    val sessionState = MutableStateFlow<SessionState>(SessionState.None)
+    val exerciseProgressMap = mutableStateMapOf<RoutineExercise, ExerciseProgress>()
 
-    fun moveToNextState(exercises: List<RoutineExercise>) {
-        when (val state = sessionState.value) {
-            is SessionState.None -> {
-                viewModelScope.launch {
-                    sessionState.emit(SessionState.InProgress(Date(), exercises.first(), 0))
+    sealed class SessionProgress(val startDate: Date?) {
+        object None : SessionProgress(null)
+        class InProgress(startDate: Date?, val currentExercise: RoutineExercise) : SessionProgress(startDate)
+        class Complete(startDate: Date?) : SessionProgress(startDate)
+    }
+
+    var sessionProgress by mutableStateOf<SessionProgress>(SessionProgress.None)
+
+    fun moveToNext(routine: Routine) {
+        when (val _sessionProgress = sessionProgress) {
+            is SessionProgress.None -> {
+                routine.exercises.forEachIndexed { index, exercise ->
+                    if (index == 0) {
+                        exerciseProgressMap[exercise] = ExerciseProgress.InProgress(0)
+                    } else {
+                        exerciseProgressMap[exercise] = ExerciseProgress.None
+                    }
                 }
+                sessionProgress = SessionProgress.InProgress(Date(), routine.exercises.first())
             }
-            is SessionState.InProgress -> {
-                viewModelScope.launch {
-                    sessionState.emit(
-                        SessionState.Resting(state.startDate!!, state.exercise, state.set)
-                    )
-                }
-            }
-            is SessionState.Resting -> {
-                viewModelScope.launch {
-                    val index = exercises.indexOf(state.exercise)
-                    sessionState.emit(
-                        when {
-                            state.set <= state.exercise.sets - 2 -> {
-                                SessionState.InProgress(state.startDate!!, state.exercise, state.set + 1)
-                            }
-                            index <= exercises.size - 2 -> {
-                                SessionState.InProgress(state.startDate!!, exercises[index + 1], 0)
-                            }
-                            else -> {
-                                SessionState.Complete(state.startDate!!)
+            is SessionProgress.InProgress -> {
+                when (val currentExerciseProgress = exerciseProgressMap[_sessionProgress.currentExercise]!!) {
+                    is ExerciseProgress.None -> {
+                        exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.InProgress(0)
+                    }
+                    is ExerciseProgress.InProgress -> {
+                        exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.Resting(currentExerciseProgress.set)
+                    }
+                    is ExerciseProgress.Resting -> {
+                        if (currentExerciseProgress.set < _sessionProgress.currentExercise.sets - 1) {
+                            exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.InProgress(currentExerciseProgress.set + 1)
+                        } else {
+                            exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.Complete
+                            val index = routine.exercises.indexOf(_sessionProgress.currentExercise)
+                            if (index < exerciseProgressMap.size - 1) {
+                                val nextExercise = routine.exercises[index + 1]
+                                exerciseProgressMap[nextExercise] = ExerciseProgress.InProgress(0)
+                                sessionProgress = SessionProgress.InProgress(_sessionProgress.startDate, nextExercise)
+                            } else {
+                                sessionProgress = SessionProgress.Complete(_sessionProgress.startDate)
                             }
                         }
-                    )
+                    }
+                    is ExerciseProgress.Complete -> {
+                    }
                 }
-            }
-            is SessionState.Complete -> {
-                // No op
             }
         }
     }

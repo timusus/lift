@@ -15,7 +15,7 @@ import com.acompany.lift.features.exercises.data.RoutineExerciseListPreviewProvi
 @Composable
 fun ExerciseList(
     routineExercises: List<RoutineExercise>,
-    sessionState: ExerciseScreenViewModel.SessionState,
+    exerciseProgress: Map<RoutineExercise, ExerciseScreenViewModel.ExerciseProgress>,
     modifier: Modifier = Modifier,
     onExerciseClick: (RoutineExercise) -> Unit = {},
     onActionClick: (RoutineExercise) -> Unit = {}
@@ -24,7 +24,7 @@ fun ExerciseList(
         items(routineExercises) { routineExercise ->
             ExerciseListItem(
                 routineExercise = routineExercise,
-                sessionState = sessionState,
+                exerciseProgress = exerciseProgress[routineExercise] ?: ExerciseScreenViewModel.ExerciseProgress.None,
                 onExerciseClick = { onExerciseClick(routineExercise) },
                 onActionClick = { onActionClick(routineExercise) }
             )
@@ -39,6 +39,6 @@ private fun ExerciseListPreview(
     @PreviewParameter(RoutineExerciseListPreviewProvider::class) preview: Pair<Colors, List<RoutineExercise>>
 ) {
     MaterialTheme(colors = preview.first) {
-        ExerciseList(routineExercises = preview.second, ExerciseScreenViewModel.SessionState.None)
+        ExerciseList(routineExercises = preview.second, mapOf(preview.second.first() to ExerciseScreenViewModel.ExerciseProgress.None))
     }
 }

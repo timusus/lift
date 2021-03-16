@@ -4,28 +4,30 @@ import android.text.format.DateUtils
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.DoubleArrow
 import androidx.compose.material.icons.rounded.Timer
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.acompany.lift.common.components.FloatTextField
 import com.acompany.lift.common.components.elapsedTimeMillis
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.exercises.components.ExerciseScreenViewModel.SessionState
 import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
+import com.acompany.lift.features.exercises.data.ExerciseScreenPreviewProvider
+import com.acompany.lift.features.main.data.DummyAppRepository
 import java.util.*
 
 @Composable
@@ -35,67 +37,54 @@ fun ExerciseScreen(
     routineId: Long
 ) {
     val routine by viewModel.getRoutine(routineId).collectAsState(initial = null)
-    val selectedExercise by viewModel.selectedRoutineExercise.collectAsState()
-    val sessionState by viewModel.sessionState.collectAsState()
-
     routine?.let { routine ->
-        Scaffold(
-            topBar = {
-                TopAppBar(title = { Text(text = routine.name) })
-            },
-            content = {
-                ExerciseModalSheet(
-                    sheetContent = {
-                        selectedExercise?.let { selectedExercise ->
-                            SheetContent(
-                                routine = routine,
-                                routineExercise = selectedExercise,
-                                onOneRepMaxChanged = { oneRepMax ->
-                                    viewModel.updateOneRepMax(
-                                        selectedExercise.id,
-                                        oneRepMax
-                                    )
-                                },
-                                onWeightChanged = { weight ->
-                                    viewModel.updateRoutineExerciseWeight(
-                                        selectedExercise.id,
-                                        weight
-                                    )
-                                },
-                                onPercentOneRepMaxChanged = { percentOneRepMax ->
-                                    viewModel.updateRoutineExercisePercentOneRepMax(
-                                        selectedExercise.id,
-                                        percentOneRepMax
-                                    )
-                                },
-                                onDoneClick = {
-                                    hide()
-                                }
-                            )
-                        }
-                    },
-                    content = {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            ExerciseList(
-                                routineExercises = routine.exercises,
-                                sessionState = sessionState,
-                                onExerciseClick = { routineExercise ->
-                                    viewModel.setSelectedRoutineExercise(routineExercise)
-                                    show()
-                                },
-                                onActionClick = { routineExercise ->
-                                    viewModel.moveToNextState(routine.exercises)
-                                }
-                            )
-                            SessionProgressFloatingActionButton(sessionState) {
-                                viewModel.moveToNextState(routine.exercises)
-                            }
-                        }
-                    }
-                )
-            }
-        )
+        ExerciseScreen(viewModel = viewModel, routine = routine)
     }
+}
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+fun ExerciseScreen(
+    viewModel: ExerciseScreenViewModel,
+    routine: Routine
+) {
+    val selectedExercise by viewModel.selectedRoutineExercise.collectAsState()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(text = routine.name) })
+        },
+        content = {
+            ExerciseModalSheet(
+                sheetContent = {
+                    selectedExercise?.let { selectedExercise ->
+                        SheetContent(
+                            routine = routine,
+                            routineExercise = selectedExercise,
+                            onOneRepMaxChanged = { oneRepMax -> viewModel.updateOneRepMax(selectedExercise.id, oneRepMax) },
+                            onWeightChanged = { weight -> viewModel.updateRoutineExerciseWeight(selectedExercise.id, weight) },
+                            onPercentOneRepMaxChanged = { percentOneRepMax -> viewModel.updateRoutineExercisePercentOneRepMax(selectedExercise.id, percentOneRepMax) },
+                            onDoneClick = { hide() }
+                        )
+                    }
+                },
+                content = {
+                    ExerciseList(
+                        routineExercises = routine.exercises,
+                        exerciseProgress = viewModel.exerciseProgressMap,
+                        onExerciseClick = { routineExercise ->
+                            viewModel.setSelectedRoutineExercise(routineExercise)
+                            show()
+                        },
+                        onActionClick = { routineExercise -> viewModel.moveToNext(routine) }
+                    )
+                    SessionProgressFloatingActionButton(viewModel.sessionProgress) {
+                        viewModel.moveToNext(routine)
+                    }
+                }
+            )
+        }
+    )
 }
 
 @Composable
@@ -108,7 +97,6 @@ private fun SheetContent(
     onPercentOneRepMaxChanged: (Float?) -> Unit,
     onDoneClick: () -> Unit,
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -150,60 +138,25 @@ private fun SheetContent(
     )
 }
 
+@Preview
 @Composable
-private fun FloatTextField(
-    key: String,
-    label: String,
-    initialValue: Float?,
-    onValueChanged: (Float?) -> Unit,
-    onDone: () -> Unit
+private fun ExerciseScreenPreview(
+    @PreviewParameter(ExerciseScreenPreviewProvider::class) preview: Pair<Colors, ExerciseScreenViewModel>
 ) {
-    val textState = remember(key) { mutableStateOf(initialValue?.toString() ?: "") }
-    OutlinedTextField(
-        value = textState.value,
-        label = { Text(text = label) },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Done
-        ),
-        onValueChange = { textFieldValue ->
-            textState.value = textFieldValue
-            onValueChanged(textFieldValue.toFloatOrNull())
-        },
-        keyboardActions = KeyboardActions(onDone = { onDone() })
-    )
-}
-
-@Composable
-private fun ExerciseList(
-    routineExercises: List<RoutineExercise>,
-    sessionState: SessionState,
-    onExerciseClick: (RoutineExercise) -> Unit,
-    onActionClick: (RoutineExercise) -> Unit
-) {
-    ExerciseList(
-        routineExercises = routineExercises,
-        sessionState = sessionState,
-        modifier = Modifier.padding(8.dp),
-        onExerciseClick = { routineExercise ->
-            onExerciseClick(routineExercise)
-        },
-        onActionClick = { routineExercise ->
-            onActionClick(routineExercise)
-        }
-    )
+    MaterialTheme(colors = preview.first) {
+        ExerciseScreen(preview.second, DummyAppRepository.routines.first())
+    }
 }
 
 @Composable
 fun SessionProgressFloatingActionButton(
-    sessionProgress: SessionState,
+    sessionProgress: ExerciseScreenViewModel.SessionProgress,
     onClick: () -> Unit
 ) {
     val (sessionIcon, sessionIconDescription) = when (sessionProgress) {
-        SessionState.None -> Icons.Rounded.Timer to "start session"
-        is SessionState.Resting,
-        is SessionState.InProgress -> Icons.Rounded.DoubleArrow to "next session"
-        is SessionState.Complete -> Icons.Rounded.CheckCircle to "completed"
+        ExerciseScreenViewModel.SessionProgress.None -> Icons.Rounded.Timer to "start session"
+        is ExerciseScreenViewModel.SessionProgress.InProgress -> Icons.Rounded.DoubleArrow to "next session"
+        is ExerciseScreenViewModel.SessionProgress.Complete -> Icons.Rounded.CheckCircle to "completed"
     }
     AnimatedFloatingActionButton(
         text = DateUtils.formatElapsedTime(
@@ -211,7 +164,7 @@ fun SessionProgressFloatingActionButton(
         ),
         icon = sessionIcon,
         contentDescription = sessionIconDescription,
-        expanded = sessionProgress is SessionState.InProgress || sessionProgress is SessionState.Resting,
+        expanded = sessionProgress is ExerciseScreenViewModel.SessionProgress.InProgress,
         onClick = onClick,
         modifier = Modifier.bottomEndFabPlacement()
     )
