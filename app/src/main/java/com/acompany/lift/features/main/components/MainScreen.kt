@@ -30,20 +30,25 @@ fun MainScreen() {
                 composable(
                     route = screen.route,
                     arguments = screen.arguments
-                ) { backStackEntry ->
+                ) {
                     when (screen) {
                         is NavDestination.RoutineNavDestination -> {
                             RoutineScreen(
                                 viewModel = hiltNavGraphViewModel(),
                                 onRoutineSelected = { routine ->
-                                    navController.navigate("routines/${routine.id}/exercises")
+                                    navController.currentBackStackEntry!!.arguments!!.putParcelable(
+                                        NavDestination.ExerciseNavDestination.ARG_ROUTINE, routine
+                                    )
+                                    navController.navigate("routines/routine/exercises")
                                 }
                             )
                         }
                         is NavDestination.ExerciseNavDestination -> {
                             ExerciseScreen(
                                 viewModel = hiltNavGraphViewModel(),
-                                routineId = backStackEntry.arguments!!.getLong(NavDestination.ExerciseNavDestination.ARG_ROUTINE_ID),
+                                routine = navController.previousBackStackEntry!!.arguments!!.getParcelable(
+                                    NavDestination.ExerciseNavDestination.ARG_ROUTINE
+                                )!!
                             )
                         }
                     }

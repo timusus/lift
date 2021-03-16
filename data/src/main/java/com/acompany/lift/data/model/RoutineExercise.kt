@@ -1,5 +1,9 @@
 package com.acompany.lift.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class RoutineExercise(
     val id: Long,
     val order: Int,
@@ -10,4 +14,4 @@ data class RoutineExercise(
     val routineId: Long,
     val exercise: Exercise,
     val restPeriod: Int = 90
-)
+) : Parcelable

@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.features.main.data.DummyAppRepository
 import com.acompany.lift.features.routines.data.RoutineScreenPreviewProvider
+import com.acompany.lift.features.routines.data.RoutineScreenViewModel
 
 @Composable
 fun RoutineScreen(

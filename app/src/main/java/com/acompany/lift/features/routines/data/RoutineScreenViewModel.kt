@@ -1,4 +1,4 @@
-package com.acompany.lift.features.routines.components
+package com.acompany.lift.features.routines.data
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

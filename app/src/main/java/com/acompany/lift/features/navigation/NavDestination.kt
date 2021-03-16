@@ -1,8 +1,6 @@
 package com.acompany.lift.features.navigation
 
-import androidx.navigation.NavType
 import androidx.navigation.compose.NamedNavArgument
-import androidx.navigation.compose.navArgument
 
 sealed class NavDestination(
     val route: String,
@@ -15,13 +13,12 @@ sealed class NavDestination(
         name = "Routines"
     )
 
-    class ExerciseNavDestination() : NavDestination(
-        route = "routines/{routineId}/exercises",
-        arguments = listOf(navArgument(ARG_ROUTINE_ID) { type = NavType.LongType }),
-        name = "Routine Exercise",
+    class ExerciseNavDestination : NavDestination(
+        route = "routines/routine/exercises",
+        name = "Routine Exercise"
     ) {
         companion object {
-            const val ARG_ROUTINE_ID = "routineId"
+            const val ARG_ROUTINE = "routine"
         }
     }
 }

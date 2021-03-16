@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.components
+package com.acompany.lift.features.exercises.data
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -10,7 +10,7 @@ import com.acompany.lift.data.AppRepository
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -19,10 +19,6 @@ import javax.inject.Inject
 class ExerciseScreenViewModel @Inject constructor(
     private val appRepository: AppRepository
 ) : ViewModel() {
-
-    fun getRoutine(routineId: Long): Flow<Routine> {
-        return appRepository.getRoutines(listOf(routineId)).map { list -> list.first() }
-    }
 
     val selectedRoutineExercise: MutableStateFlow<RoutineExercise?> = MutableStateFlow(null)
 

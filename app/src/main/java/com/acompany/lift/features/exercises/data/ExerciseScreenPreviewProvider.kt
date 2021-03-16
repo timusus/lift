@@ -2,7 +2,6 @@ package com.acompany.lift.features.exercises.data
 
 import androidx.compose.material.Colors
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.acompany.lift.features.exercises.components.ExerciseScreenViewModel
 import com.acompany.lift.features.main.data.DummyAppRepository
 import com.acompany.lift.theme.ThemedPreviewProvider
 import java.util.*

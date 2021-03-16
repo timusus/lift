@@ -113,5 +113,4 @@ object Dependencies {
     object Timber {
         operator fun invoke() = "com.jakewharton.timber:timber:4.7.1"
     }
-
 }

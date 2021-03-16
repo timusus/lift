@@ -22,6 +22,7 @@ import com.acompany.lift.common.components.Icon
 import com.acompany.lift.common.components.remainingTimeMillis
 import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
+import com.acompany.lift.features.exercises.data.ExerciseScreenViewModel
 import com.acompany.lift.features.exercises.data.RoutineExerciseListItemPreviewProvider
 import com.acompany.lift.theme.MaterialColors
 import com.acompany.lift.theme.MaterialTypography
