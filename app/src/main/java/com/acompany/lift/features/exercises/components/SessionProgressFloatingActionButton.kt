@@ -50,11 +50,12 @@ fun Modifier.bottomEndFabPlacement(): Modifier {
 
 @Preview
 @Composable
-fun SessionProgressFloatingActionButtonPreview() {
+private fun SessionProgressFloatingActionButtonPreview() {
     SessionProgressFloatingActionButton(
         sessionProgress = ExerciseScreenViewModel.SessionProgress.InProgress(
             startDate = Date(),
             currentExercise = DummyAppRepository.routineExercises.first()
         ),
-        onClick = { })
+        onClick = {}
+    )
 }

@@ -33,12 +33,18 @@ object AppModule {
     @Provides
     @Singleton
     @Named("AppCoroutineScope")
-    fun provideAppCoroutineScope(@Named("AppSupervisorJob") job: Job, coroutineExceptionHandler: CoroutineExceptionHandler): CoroutineScope {
+    fun provideAppCoroutineScope(
+        @Named("AppSupervisorJob") job: Job,
+        coroutineExceptionHandler: CoroutineExceptionHandler
+    ): CoroutineScope {
         return CoroutineScope(Dispatchers.Main + job + coroutineExceptionHandler)
     }
 
     @Provides
     fun provideDateFormatter(): DateFormat {
-        return SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.MEDIUM, SimpleDateFormat.MEDIUM)
+        return SimpleDateFormat.getDateTimeInstance(
+            SimpleDateFormat.MEDIUM,
+            SimpleDateFormat.MEDIUM
+        )
     }
 }

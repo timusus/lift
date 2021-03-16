@@ -34,9 +34,24 @@ fun ExerciseScreen(
                         SheetContent(
                             routine = routine,
                             routineExercise = selectedExercise,
-                            onOneRepMaxChanged = { oneRepMax -> viewModel.updateOneRepMax(selectedExercise.id, oneRepMax) },
-                            onWeightChanged = { weight -> viewModel.updateRoutineExerciseWeight(selectedExercise.id, weight) },
-                            onPercentOneRepMaxChanged = { percentOneRepMax -> viewModel.updateRoutineExercisePercentOneRepMax(selectedExercise.id, percentOneRepMax) },
+                            onOneRepMaxChanged = { oneRepMax ->
+                                viewModel.updateOneRepMax(
+                                    selectedExercise.id,
+                                    oneRepMax
+                                )
+                            },
+                            onWeightChanged = { weight ->
+                                viewModel.updateRoutineExerciseWeight(
+                                    selectedExercise.id,
+                                    weight
+                                )
+                            },
+                            onPercentOneRepMaxChanged = { percentOneRepMax ->
+                                viewModel.updateRoutineExercisePercentOneRepMax(
+                                    selectedExercise.id,
+                                    percentOneRepMax
+                                )
+                            },
                             onDoneClick = { hide() }
                         )
                     }
@@ -51,14 +66,13 @@ fun ExerciseScreen(
                             show()
                         },
                         onActionClick = { viewModel.moveToNext(routine) }
-                    );
+                    )
                     SessionProgressFloatingActionButton(viewModel.sessionProgress) {
                         viewModel.moveToNext(routine)
                     }
                 }
             )
-        }
-    }
+        })
 }
 
 @Preview

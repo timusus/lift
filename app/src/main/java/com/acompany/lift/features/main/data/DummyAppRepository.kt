@@ -172,10 +172,26 @@ class DummyAppRepository : AppRepository {
         )
 
         val routines = listOf(
-            Routine(id = 1, order = 0, name = "Lower Body (Strength)", exercises = routineExercises.filter { it.routineId == 1L }),
-            Routine(id = 2, order = 1, name = "Upper Body (Strength)", exercises = routineExercises.filter { it.routineId == 2L }),
-            Routine(id = 3, order = 2, name = "Lower Body (Volume)", exercises = routineExercises.filter { it.routineId == 3L }),
-            Routine(id = 4, order = 3, name = "Upper Body (Volume)", exercises = routineExercises.filter { it.routineId == 4L })
+            Routine(
+                id = 1,
+                order = 0,
+                name = "Lower Body (Strength)",
+                exercises = routineExercises.filter { it.routineId == 1L }),
+            Routine(
+                id = 2,
+                order = 1,
+                name = "Upper Body (Strength)",
+                exercises = routineExercises.filter { it.routineId == 2L }),
+            Routine(
+                id = 3,
+                order = 2,
+                name = "Lower Body (Volume)",
+                exercises = routineExercises.filter { it.routineId == 3L }),
+            Routine(
+                id = 4,
+                order = 3,
+                name = "Upper Body (Volume)",
+                exercises = routineExercises.filter { it.routineId == 4L })
         )
     }
 }

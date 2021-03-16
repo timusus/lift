@@ -4,10 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Colors
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CheckCircleOutline
@@ -70,7 +67,8 @@ fun ExerciseListItem(
                     Spacer(modifier.size(16.dp))
                     Text(
                         text = routineExercise.weight?.let { weight -> "$weight kg" }
-                            ?: routineExercise.initialWeight()?.let { initialWeight -> "$initialWeight kg" }
+                            ?: routineExercise.initialWeight()
+                                ?.let { initialWeight -> "$initialWeight kg" }
                             ?: "Weight",
                         style = MaterialTypography.body2,
                         fontSize = 16.sp,
@@ -118,7 +116,8 @@ private fun SessionStateIndicator(
                 modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val remainingTime = remainingTimeMillis(periodMillis = routineExercise.restPeriod * 1000L) / 1000
+                val remainingTime =
+                    remainingTimeMillis(periodMillis = routineExercise.restPeriod * 1000L) / 1000
                 val minutes = remainingTime / 60
                 val seconds = remainingTime % 60
                 if (remainingTime == 0L) {
@@ -147,6 +146,9 @@ private fun ExerciseListItemPreview(
     @PreviewParameter(RoutineExerciseListItemPreviewProvider::class) preview: Pair<Colors, RoutineExercise>
 ) {
     MaterialTheme(colors = preview.first) {
-        ExerciseListItem(routineExercise = preview.second, ExerciseScreenViewModel.ExerciseProgress.None)
+        ExerciseListItem(
+            routineExercise = preview.second,
+            ExerciseScreenViewModel.ExerciseProgress.None
+        )
     }
 }

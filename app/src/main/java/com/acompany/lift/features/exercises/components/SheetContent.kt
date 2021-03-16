@@ -74,10 +74,10 @@ fun SheetContent(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
-fun PreviewSheetContent() {
+@OptIn(ExperimentalMaterialApi::class)
+private fun PreviewSheetContent() {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Expanded)
     ModalBottomSheetLayout(
         sheetState = sheetState,

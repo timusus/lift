@@ -55,7 +55,9 @@ class ExerciseScreenViewModel @Inject constructor(
 
     sealed class SessionProgress(val startDate: Date?) {
         object None : SessionProgress(null)
-        class InProgress(startDate: Date?, val currentExercise: RoutineExercise) : SessionProgress(startDate)
+        class InProgress(startDate: Date?, val currentExercise: RoutineExercise) :
+            SessionProgress(startDate)
+
         class Complete(startDate: Date?) : SessionProgress(startDate)
     }
 
@@ -74,25 +76,34 @@ class ExerciseScreenViewModel @Inject constructor(
                 sessionProgress = SessionProgress.InProgress(Date(), routine.exercises.first())
             }
             is SessionProgress.InProgress -> {
-                when (val currentExerciseProgress = exerciseProgressMap[_sessionProgress.currentExercise]!!) {
+                when (val currentExerciseProgress =
+                    exerciseProgressMap[_sessionProgress.currentExercise]!!) {
                     is ExerciseProgress.None -> {
-                        exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.InProgress(0)
+                        exerciseProgressMap[_sessionProgress.currentExercise] =
+                            ExerciseProgress.InProgress(0)
                     }
                     is ExerciseProgress.InProgress -> {
-                        exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.Resting(currentExerciseProgress.set)
+                        exerciseProgressMap[_sessionProgress.currentExercise] =
+                            ExerciseProgress.Resting(currentExerciseProgress.set)
                     }
                     is ExerciseProgress.Resting -> {
                         if (currentExerciseProgress.set < _sessionProgress.currentExercise.sets - 1) {
-                            exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.InProgress(currentExerciseProgress.set + 1)
+                            exerciseProgressMap[_sessionProgress.currentExercise] =
+                                ExerciseProgress.InProgress(currentExerciseProgress.set + 1)
                         } else {
-                            exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.Complete
+                            exerciseProgressMap[_sessionProgress.currentExercise] =
+                                ExerciseProgress.Complete
                             val index = routine.exercises.indexOf(_sessionProgress.currentExercise)
                             if (index < exerciseProgressMap.size - 1) {
                                 val nextExercise = routine.exercises[index + 1]
                                 exerciseProgressMap[nextExercise] = ExerciseProgress.InProgress(0)
-                                sessionProgress = SessionProgress.InProgress(_sessionProgress.startDate, nextExercise)
+                                sessionProgress = SessionProgress.InProgress(
+                                    _sessionProgress.startDate,
+                                    nextExercise
+                                )
                             } else {
-                                sessionProgress = SessionProgress.Complete(_sessionProgress.startDate)
+                                sessionProgress =
+                                    SessionProgress.Complete(_sessionProgress.startDate)
                             }
                         }
                     }

@@ -25,7 +25,8 @@ fun ExerciseList(
         items(routineExercises) { routineExercise ->
             ExerciseListItem(
                 routineExercise = routineExercise,
-                exerciseProgress = exerciseProgress[routineExercise] ?: ExerciseScreenViewModel.ExerciseProgress.None,
+                exerciseProgress = exerciseProgress[routineExercise]
+                    ?: ExerciseScreenViewModel.ExerciseProgress.None,
                 onExerciseClick = { onExerciseClick(routineExercise) },
                 onActionClick = { onActionClick(routineExercise) }
             )
@@ -40,6 +41,9 @@ private fun ExerciseListPreview(
     @PreviewParameter(RoutineExerciseListPreviewProvider::class) preview: Pair<Colors, List<RoutineExercise>>
 ) {
     MaterialTheme(colors = preview.first) {
-        ExerciseList(routineExercises = preview.second, mapOf(preview.second.first() to ExerciseScreenViewModel.ExerciseProgress.None))
+        ExerciseList(
+            routineExercises = preview.second,
+            mapOf(preview.second.first() to ExerciseScreenViewModel.ExerciseProgress.None)
+        )
     }
 }
