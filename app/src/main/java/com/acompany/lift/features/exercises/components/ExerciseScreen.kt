@@ -8,11 +8,14 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.DoubleArrow
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -21,7 +24,9 @@ import androidx.compose.ui.unit.sp
 import com.acompany.lift.common.components.elapsedTimeMillis
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
+import com.acompany.lift.features.exercises.components.ExerciseScreenViewModel.SessionState
 import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
+import java.util.*
 
 @Composable
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
@@ -82,31 +87,8 @@ fun ExerciseScreen(
                                     viewModel.moveToNextState(routine.exercises)
                                 }
                             )
-                            FloatingActionButton(
-                                onClick = { viewModel.moveToNextState(routine.exercises) },
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .wrapContentSize(Alignment.BottomEnd)
-                                    .padding(end = 16.dp, bottom = 16.dp)
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    AnimatedVisibility(visible = sessionState.startDate != null) {
-                                        Box(Modifier.padding(start = 16.dp, end = 2.dp)) {
-                                            Text(
-                                                text = DateUtils.formatElapsedTime(
-                                                    elapsedTimeMillis(sessionState.startDate!!)
-                                                )
-                                            )
-                                        }
-                                    }
-                                    Icon(
-                                        imageVector = Icons.Rounded.Timer,
-                                        contentDescription = "start session"
-                                    )
-                                    AnimatedVisibility(visible = sessionState.startDate != null) {
-                                        Spacer(Modifier.width(20.dp))
-                                    }
-                                }
+                            SessionProgressFloatingActionButton(sessionState) {
+                                viewModel.moveToNextState(routine.exercises)
                             }
                         }
                     }
@@ -195,7 +177,7 @@ private fun FloatTextField(
 @Composable
 private fun ExerciseList(
     routineExercises: List<RoutineExercise>,
-    sessionState: ExerciseScreenViewModel.SessionState,
+    sessionState: SessionState,
     onExerciseClick: (RoutineExercise) -> Unit,
     onActionClick: (RoutineExercise) -> Unit
 ) {
@@ -209,5 +191,67 @@ private fun ExerciseList(
         onActionClick = { routineExercise ->
             onActionClick(routineExercise)
         }
+    )
+}
+
+@Composable
+fun SessionProgressFloatingActionButton(
+    sessionProgress: SessionState,
+    onClick: () -> Unit
+) {
+    val (sessionIcon, sessionIconDescription) = when (sessionProgress) {
+        SessionState.None -> Icons.Rounded.Timer to "start session"
+        is SessionState.Resting,
+        is SessionState.InProgress -> Icons.Rounded.DoubleArrow to "next session"
+        is SessionState.Complete -> Icons.Rounded.CheckCircle to "completed"
+    }
+    AnimatedFloatingActionButton(
+        text = DateUtils.formatElapsedTime(
+            elapsedTimeMillis(sessionProgress.startDate ?: Date())
+        ),
+        icon = sessionIcon,
+        contentDescription = sessionIconDescription,
+        expanded = sessionProgress is SessionState.InProgress || sessionProgress is SessionState.Resting,
+        onClick = onClick,
+        modifier = Modifier.bottomEndFabPlacement()
+    )
+}
+
+@Composable
+@OptIn(ExperimentalAnimationApi::class)
+fun AnimatedFloatingActionButton(
+    text: String,
+    icon: ImageVector,
+    expanded: Boolean,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    onClick: () -> Unit
+) {
+    FloatingActionButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            AnimatedVisibility(visible = expanded) {
+                Box(Modifier.padding(start = 16.dp, end = 8.dp)) {
+                    Text(text = text)
+                }
+            }
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription
+            )
+            AnimatedVisibility(visible = expanded) {
+                Spacer(Modifier.width(20.dp))
+            }
+        }
+    }
+}
+
+fun Modifier.bottomEndFabPlacement(): Modifier {
+    return this.then(
+        fillMaxSize()
+            .wrapContentSize(Alignment.BottomEnd)
+            .padding(end = 16.dp, bottom = 16.dp)
     )
 }
