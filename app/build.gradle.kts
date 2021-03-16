@@ -61,6 +61,8 @@ dependencies {
     Dependencies.AndroidX.apply {
         implementation(activity)
         implementation(activityCompose)
+        implementation(lifecycleViewmodelKtx)
+        implementation(lifecycleViewModelCompose)
     }
     Dependencies.Compose.apply {
         implementation(material)

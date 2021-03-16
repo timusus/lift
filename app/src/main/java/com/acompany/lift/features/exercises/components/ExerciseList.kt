@@ -10,19 +10,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.acompany.lift.data.model.RoutineExercise
+import com.acompany.lift.features.exercises.data.ExerciseScreenViewModel
 import com.acompany.lift.features.exercises.data.RoutineExerciseListPreviewProvider
 
 @Composable
 fun ExerciseList(
     routineExercises: List<RoutineExercise>,
+    exerciseProgress: Map<RoutineExercise, ExerciseScreenViewModel.ExerciseProgress>,
     modifier: Modifier = Modifier,
-    onExerciseClick: (RoutineExercise) -> Unit = {}
+    onExerciseClick: (RoutineExercise) -> Unit = {},
+    onActionClick: (RoutineExercise) -> Unit = {}
 ) {
     LazyColumn(modifier = modifier) {
         items(routineExercises) { routineExercise ->
-            ExerciseListItem(routineExercise = routineExercise) {
-                onExerciseClick(routineExercise)
-            }
+            ExerciseListItem(
+                routineExercise = routineExercise,
+                exerciseProgress = exerciseProgress[routineExercise] ?: ExerciseScreenViewModel.ExerciseProgress.None,
+                onExerciseClick = { onExerciseClick(routineExercise) },
+                onActionClick = { onActionClick(routineExercise) }
+            )
             Divider()
         }
     }
@@ -34,6 +40,6 @@ private fun ExerciseListPreview(
     @PreviewParameter(RoutineExerciseListPreviewProvider::class) preview: Pair<Colors, List<RoutineExercise>>
 ) {
     MaterialTheme(colors = preview.first) {
-        ExerciseList(routineExercises = preview.second)
+        ExerciseList(routineExercises = preview.second, mapOf(preview.second.first() to ExerciseScreenViewModel.ExerciseProgress.None))
     }
 }

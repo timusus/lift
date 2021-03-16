@@ -6,6 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.*
 import timber.log.Timber
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -33,5 +35,10 @@ object AppModule {
     @Named("AppCoroutineScope")
     fun provideAppCoroutineScope(@Named("AppSupervisorJob") job: Job, coroutineExceptionHandler: CoroutineExceptionHandler): CoroutineScope {
         return CoroutineScope(Dispatchers.Main + job + coroutineExceptionHandler)
+    }
+
+    @Provides
+    fun provideDateFormatter(): DateFormat {
+        return SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.MEDIUM, SimpleDateFormat.MEDIUM)
     }
 }

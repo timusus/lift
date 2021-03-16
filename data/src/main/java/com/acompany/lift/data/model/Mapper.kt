@@ -7,7 +7,7 @@ object Mapper {
     }
 
     fun comacompanyliftdata.RoutineExercise.toRoutineExercise(exercise: () -> Exercise): RoutineExercise {
-        return RoutineExercise(id, sort_order, sets, reps, percent_one_rep_max, routineId, exercise())
+        return RoutineExercise(id, sort_order, sets, reps, percent_one_rep_max, weight, routineId, exercise())
     }
 
     fun comacompanyliftdata.Exercise.toExercise(): Exercise {

@@ -16,6 +16,7 @@ CREATE TABLE RoutineExercise (
     sets INTEGER AS Int NOT NULL,
     reps INTEGER AS Int NOT NULL ,
     percent_one_rep_max REAL AS Float,
+    weight REAL AS Float,
     routineId INTEGER NOT NULL,
     exerciseId INTEGER NOT NULL,
     FOREIGN KEY (routineId) REFERENCES Routine(id),
@@ -67,31 +68,31 @@ VALUES
     (3, 2, 'Lower Body (Volume)'),
     (4, 3, 'Upper Body (Volume)');
 
-INSERT INTO RoutineExercise(sort_order, sets, reps, percent_one_rep_max, routineId, exerciseId)
+INSERT INTO RoutineExercise(sort_order, sets, reps, percent_one_rep_max, weight, routineId, exerciseId)
 VALUES
-    (0, 3, 5, 0.825, 1, 1),
-    (1, 3, 5, 0.825, 1, 2),
-    (2 ,3, 8, NULL, 1, 3),
-    (3, 4, 8, NULL, 1, 4),
+    (0, 3, 5, 0.825, NULL, 1, 1),
+    (1, 3, 5, 0.825, NULL, 1, 2),
+    (2 ,3, 8, NULL, NULL, 1, 3),
+    (3, 4, 8, NULL, NULL, 1, 4),
 
-    (0, 3, 5, 0.825, 2, 5),
-    (1, 3, 5, NULL, 2, 6),
-    (2, 2, 8, 0.725, 2, 7),
-    (3, 2, 8, NULL, 2, 8),
-    (4, 2, 15, NULL, 2, 9),
+    (0, 3, 5, 0.825, NULL, 2, 5),
+    (1, 3, 5, NULL, NULL, 2, 6),
+    (2, 2, 8, 0.725, NULL, 2, 7),
+    (3, 2, 8, NULL, NULL, 2, 8),
+    (4, 2, 15, NULL, NULL, 2, 9),
 
-    (0, 3, 8, NULL, 3, 10),
-    (1, 3, 8, NULL, 3, 11),
-    (2, 3, 12, NULL, 3, 12),
-    (3, 3, 12, NULL, 3, 13),
-    (4, 4, 15, NULL, 3, 14),
+    (0, 3, 8, NULL, NULL, 3, 10),
+    (1, 3, 8, NULL, NULL, 3, 11),
+    (2, 3, 12, NULL, NULL, 3, 12),
+    (3, 3, 12, NULL, NULL, 3, 13),
+    (4, 4, 15, NULL, NULL, 3, 14),
 
-    (0, 3, 10, 0.675, 4, 5),
-    (1, 3, 10, NULL, 4, 6),
-    (2, 2, 12, NULL, 4, 17),
-    (3, 2, 12, NULL, 4, 8),
-    (4, 2, 12, NULL, 4, 15),
-    (5, 2, 12, NULL, 4, 16);
+    (0, 3, 10, 0.675, NULL, 4, 5),
+    (1, 3, 10, NULL, NULL, 4, 6),
+    (2, 2, 12, NULL, NULL, 4, 17),
+    (3, 2, 12, NULL, NULL, 4, 8),
+    (4, 2, 12, NULL, NULL, 4, 15),
+    (5, 2, 12, NULL, NULL, 4, 16);
 
 selectAllExercises:
 SELECT *
@@ -123,7 +124,17 @@ FROM RoutineExercise
 WHERE routineId IN :routineIds
 ORDER BY sort_order;
 
-updateExercise:
+updateRoutineExerciseWeight:
+UPDATE RoutineExercise
+SET weight = :weight
+WHERE id = :id;
+
+updateRoutineExercisePercentOneRepMax:
+UPDATE RoutineExercise
+SET percent_one_rep_max = :percentOneRepMax
+WHERE id = :id;
+
+updateExerciseOneRepMax:
 UPDATE Exercise
 SET one_rep_max = :oneRepMax
 WHERE id = :id;

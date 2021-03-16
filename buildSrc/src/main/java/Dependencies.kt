@@ -1,5 +1,5 @@
 object Dependencies {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha09"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha10"
 
     object Accompanist {
         private const val version = "0.6.2"
@@ -19,6 +19,9 @@ object Dependencies {
         const val datastore = "androidx.datastore:datastore-preferences:1.0.0-alpha06"
         const val palette = "androidx.palette:palette:1.0.0"
         const val work = "androidx.work:work-runtime-ktx:2.5.0"
+        const val hiltCompiler = "androidx.hilt:hilt-compiler:1.0.0-beta01"
+        const val lifecycleViewmodelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
+        const val lifecycleViewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03"
     }
 
     object Coil {
@@ -110,5 +113,4 @@ object Dependencies {
     object Timber {
         operator fun invoke() = "com.jakewharton.timber:timber:4.7.1"
     }
-
 }

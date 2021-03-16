@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("com.squareup.sqldelight")
     id("dagger.hilt.android.plugin")
+    id("kotlin-parcelize")
 }
 
 android {

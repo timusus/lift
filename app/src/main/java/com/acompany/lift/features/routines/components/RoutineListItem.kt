@@ -1,6 +1,5 @@
 package com.acompany.lift.features.routines.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -30,7 +29,6 @@ fun RoutineListItem(
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
         Row(
             modifier
-                .background(color = MaterialColors.surface)
                 .heightIn(min = 72.dp)
                 .clickable(onClick = onSessionClick)
                 .padding(16.dp),
@@ -44,11 +42,13 @@ fun RoutineListItem(
             Column(modifier.weight(1f)) {
                 Text(
                     text = routine.name,
-                    style = MaterialTypography.body1
+                    style = MaterialTypography.body1,
+                    color = MaterialColors.onBackground
                 )
                 Text(
                     text = routine.exercises.joinToString(", ") { it.exercise.name },
-                    style = MaterialTypography.body2
+                    style = MaterialTypography.body2,
+                    color = MaterialColors.onBackground.copy(alpha = 0.85f)
                 )
             }
         }

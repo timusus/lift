@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Lift</string>
+
+    <string name="session_start">Start</string>
 </resources>

@@ -2,6 +2,7 @@ package com.acompany.lift.data.di
 
 import android.content.Context
 import com.acompany.lift.data.AppRepository
+import com.acompany.lift.data.LocalAppRepository
 import com.acompany.lift.data.Database
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import dagger.Module
@@ -25,6 +26,6 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideExerciseRepository(database: Database, @IoDispatcher dispatcher: CoroutineDispatcher): AppRepository {
-        return AppRepository(database, dispatcher)
+        return LocalAppRepository(database, dispatcher)
     }
 }
