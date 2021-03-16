@@ -1,6 +1,8 @@
 package com.acompany.lift.features.exercises.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,55 +28,50 @@ fun SheetContent(
     onPercentOneRepMaxChanged: (Float?) -> Unit,
     onDoneClick: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .heightIn(min = 120.dp)
-            .padding(24.dp)
-    ) {
-        val keyboardController = LocalSoftwareKeyboardController.current
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(modifier = Modifier.weight(1f), text = "Edit ${routineExercise.exercise.name}")
-            OutlinedButton(onClick = {
-                keyboardController?.hideSoftwareKeyboard()
-                onDoneClick()
-            }) {
-                Text(text = "Done")
-            }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(modifier = Modifier.weight(1f), text = "Edit ${routineExercise.exercise.name}")
+        OutlinedButton(onClick = {
+            keyboardController?.hideSoftwareKeyboard()
+            onDoneClick()
+        }) {
+            Text(text = "Done")
         }
-        Spacer(modifier = Modifier.size(16.dp))
-
-        Text(fontSize = 12.sp, text = "Routine:  ${routine.name}")
-        Spacer(modifier = Modifier.size(4.dp))
-        FloatTextField(
-            key = routineExercise.id.toString(),
-            label = "Weight",
-            initialValue = routineExercise.weight ?: routineExercise.initialWeight(),
-            onValueChanged = { value -> onWeightChanged(value) },
-            onDone = { keyboardController?.hideSoftwareKeyboard() }
-        )
-        Spacer(modifier = Modifier.size(8.dp))
-
-        FloatTextField(
-            key = routineExercise.id.toString(),
-            label = "% One rep max",
-            initialValue = routineExercise.percentOneRepMax?.let { (it * 100) },
-            onValueChanged = { value -> onPercentOneRepMaxChanged(value?.let { it / 100f }) },
-            onDone = { keyboardController?.hideSoftwareKeyboard() }
-        )
-
-        Spacer(modifier = Modifier.size(24.dp))
-
-        Text(fontSize = 12.sp, text = "All ${routineExercise.exercise.name}(s)")
-        Spacer(modifier = Modifier.size(4.dp))
-        FloatTextField(
-            key = routineExercise.id.toString(),
-            label = "One rep max",
-            initialValue = routineExercise.exercise.oneRepMax,
-            onValueChanged = { value -> onOneRepMaxChanged(value) },
-            onDone = { keyboardController?.hideSoftwareKeyboard() }
-        )
     }
+    Spacer(modifier = Modifier.size(16.dp))
+
+    Text(fontSize = 12.sp, text = "Routine:  ${routine.name}")
+    Spacer(modifier = Modifier.size(4.dp))
+    FloatTextField(
+        key = routineExercise.id.toString(),
+        label = "Weight",
+        initialValue = routineExercise.weight ?: routineExercise.initialWeight(),
+        onValueChanged = { value -> onWeightChanged(value) },
+        onDone = { keyboardController?.hideSoftwareKeyboard() }
+    )
+    Spacer(modifier = Modifier.size(8.dp))
+
+    FloatTextField(
+        key = routineExercise.id.toString(),
+        label = "% One rep max",
+        initialValue = routineExercise.percentOneRepMax?.let { (it * 100) },
+        onValueChanged = { value -> onPercentOneRepMaxChanged(value?.let { it / 100f }) },
+        onDone = { keyboardController?.hideSoftwareKeyboard() }
+    )
+
+    Spacer(modifier = Modifier.size(24.dp))
+
+    Text(fontSize = 12.sp, text = "All ${routineExercise.exercise.name}(s)")
+    Spacer(modifier = Modifier.size(4.dp))
+    FloatTextField(
+        key = routineExercise.id.toString(),
+        label = "One rep max",
+        initialValue = routineExercise.exercise.oneRepMax,
+        onValueChanged = { value -> onOneRepMaxChanged(value) },
+        onDone = { keyboardController?.hideSoftwareKeyboard() }
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
