@@ -61,7 +61,7 @@ fun ExerciseModalSheet(
             }
         },
         content = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box {
                 modalSheetScope.content()
             }
         }

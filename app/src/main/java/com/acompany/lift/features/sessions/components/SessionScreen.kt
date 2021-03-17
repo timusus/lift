@@ -19,30 +19,39 @@ import com.acompany.lift.features.sessions.data.SessionScreenViewModel
 
 @Composable
 fun SessionScreen(
-    viewModel: SessionScreenViewModel
+    viewModel: SessionScreenViewModel,
+    modifier: Modifier = Modifier
 ) {
     val sessions by viewModel.getSessions().collectAsState(emptyList())
     SessionScreen(
         sessions = sessions,
-        viewModel.dateFormatter
+        dateFormatter = viewModel.dateFormatter,
+        modifier = modifier,
     )
 }
 
 @Composable
 fun SessionScreen(
     sessions: List<Session>,
-    dateFormatter: DateFormatter
+    dateFormatter: DateFormatter,
+    modifier: Modifier = Modifier
 ) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(title = { Text(text = "Sessions") })
         },
         content = {
             if (sessions.isNotEmpty()) {
-                SessionList(sessions = sessions, dateFormatter = dateFormatter)
-
+                SessionList(
+                    sessions = sessions,
+                    dateFormatter = dateFormatter
+                )
             } else {
-                Text(modifier = Modifier.padding(16.dp), text = "No sessions recorded")
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = "No sessions recorded"
+                )
             }
         }
     )

@@ -1,4 +1,4 @@
-package com.acompany.lift.features.navigation
+package com.acompany.lift.features.main.data
 
 import androidx.navigation.compose.NamedNavArgument
 

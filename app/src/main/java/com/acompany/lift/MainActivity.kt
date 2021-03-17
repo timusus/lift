@@ -3,7 +3,7 @@ package com.acompany.lift
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.acompany.lift.features.main.components.MainScreen
+import com.acompany.lift.features.main.components.LiftApp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MainScreen()
+            LiftApp()
         }
     }
 }

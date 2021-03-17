@@ -2,6 +2,8 @@ package com.acompany.lift.features.exercises.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,7 +41,17 @@ fun ExerciseScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(title = { Text(text = routine.name) })
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = onSessionComplete) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "back to routines"
+                        )
+                    }
+                },
+                title = { Text(text = routine.name) }
+            )
         },
         content = {
             ExerciseModalSheet(
