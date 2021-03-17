@@ -148,5 +148,13 @@ createSessionExercise:
 INSERT INTO SessionExercise(sets, reps, weight, sessionId, routineExerciseId)
 VALUES ?;
 
+selectAllSessions:
+SELECT *
+FROM Session;
+
+selectAllSessionExercises:
+SELECT *
+FROM SessionExercise;
+
 lastInsertId:
 SELECT last_insert_rowid();

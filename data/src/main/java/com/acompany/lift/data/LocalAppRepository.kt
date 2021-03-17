@@ -1,14 +1,11 @@
 package com.acompany.lift.data
 
-import com.acompany.lift.data.model.Exercise
+import com.acompany.lift.data.model.*
 import com.acompany.lift.data.model.Mapper.toExercise
 import com.acompany.lift.data.model.Mapper.toRoutine
 import com.acompany.lift.data.model.Mapper.toRoutineExercise
 import com.acompany.lift.data.model.Mapper.toSession
 import com.acompany.lift.data.model.Mapper.toSessionExercise
-import com.acompany.lift.data.model.Routine
-import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.data.model.Session
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
@@ -65,6 +62,25 @@ class LocalAppRepository(
     override fun getAllExercises(): Flow<List<Exercise>> {
         return database.databaseQueries.selectAllExercises().asFlow().mapToList()
             .map { list -> list.map { exercise -> exercise.toExercise() } }
+    }
+
+    override fun getAllSessions(): Flow<List<Session>> {
+        return combine(
+            getAllRoutines(),
+            getAllSessionExercises(),
+            database.databaseQueries.selectAllSessions().asFlow().mapToList()
+        ) { routines, sessionExercises, sessions ->
+            sessions.map { session -> session.toSession(dateAdapter, routines.first { session.routineId == it.id }, sessionExercises) }
+        }
+    }
+
+    override fun getAllSessionExercises(): Flow<List<SessionExercise>> {
+        return combine(
+            getRoutineExercises(),
+            database.databaseQueries.selectAllSessionExercises().asFlow().mapToList()
+        ) { routineExercises, sessionExercises ->
+            sessionExercises.map { sessionExercise -> sessionExercise.toSessionExercise(routineExercises.first { it.id == sessionExercise.routineExerciseId }) }
+        }
     }
 
     override suspend fun updateRoutineExercisePercentOneRepMax(id: Long, percentOneRepMax: Float?) {

@@ -1,12 +1,11 @@
 package com.acompany.lift.features.main.data
 
 import com.acompany.lift.data.AppRepository
-import com.acompany.lift.data.model.Exercise
-import com.acompany.lift.data.model.Routine
-import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.data.model.Session
+import com.acompany.lift.data.model.*
+import com.acompany.lift.data.model.Mapper.toSessionExercise
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import java.util.*
 
 class DummyAppRepository : AppRepository {
 
@@ -28,6 +27,14 @@ class DummyAppRepository : AppRepository {
 
     override fun getAllExercises(): Flow<List<Exercise>> {
         return flowOf(routineExercises.map { it.exercise })
+    }
+
+    override fun getAllSessions(): Flow<List<Session>> {
+        return flowOf(sessions)
+    }
+
+    override fun getAllSessionExercises(): Flow<List<SessionExercise>> {
+        return flowOf(sessionExercises)
     }
 
     override suspend fun updateRoutineExercisePercentOneRepMax(id: Long, percentOneRepMax: Float?) {
@@ -197,6 +204,18 @@ class DummyAppRepository : AppRepository {
                 order = 3,
                 name = "Upper Body (Volume)",
                 exercises = routineExercises.filter { it.routineId == 4L })
+        )
+
+        val sessionExercises = routineExercises.map { it.toSessionExercise() }
+
+        val sessions = listOf(
+            Session(
+                id = 1,
+                startDate = Date(Date().time - 24 * 60 * 60 * 1000),
+                endDate = Date(),
+                routine = routines.first(),
+                exercises = sessionExercises
+            )
         )
     }
 }

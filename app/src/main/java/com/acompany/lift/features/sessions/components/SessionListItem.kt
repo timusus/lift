@@ -1,4 +1,4 @@
-package com.acompany.lift.features.routines.components
+package com.acompany.lift.features.sessions.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,21 +9,24 @@ import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.acompany.lift.common.DateFormatter
 import com.acompany.lift.common.components.CutCornerIcon
-import com.acompany.lift.data.model.Routine
-import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.routines.data.RoutineListItemPreviewProvider
+import com.acompany.lift.data.model.Session
+import com.acompany.lift.di.AppModule
+import com.acompany.lift.features.sessions.data.SessionItemPreviewProvider
 import com.acompany.lift.theme.MaterialColors
 import com.acompany.lift.theme.MaterialTypography
 
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
-fun RoutineListItem(
-    routine: Routine,
+fun SessionListItem(
+    session: Session,
     modifier: Modifier = Modifier,
+    dateFormatter: DateFormatter,
     onSessionClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
@@ -45,12 +48,12 @@ fun RoutineListItem(
                 Spacer(modifier = Modifier.size(16.dp))
                 Column(modifier.weight(1f)) {
                     Text(
-                        text = routine.name,
+                        text = session.routine.name,
                         style = MaterialTypography.body1,
                         color = MaterialColors.onBackground
                     )
                     Text(
-                        text = routine.exercises.joinToString(", ") { it.exercise.name },
+                        text = dateFormatter.formatShortDateTime(session.startDate),
                         style = MaterialTypography.body2,
                         color = MaterialColors.onBackground.copy(alpha = 0.85f)
                     )
@@ -62,10 +65,19 @@ fun RoutineListItem(
 
 @Preview
 @Composable
-private fun RoutineListItemPreview(
-    @PreviewParameter(RoutineListItemPreviewProvider::class) preview: Pair<Colors, Pair<Routine, List<RoutineExercise>>>
+private fun SessionListItemPreview(
+    @PreviewParameter(SessionItemPreviewProvider::class) preview: Pair<Colors, Session>
 ) {
     MaterialTheme(colors = preview.first) {
-        RoutineListItem(routine = preview.second.first)
+        SessionListItem(
+            session = preview.second,
+            dateFormatter = DateFormatter(
+                context = LocalContext.current,
+                mediumDateFormatter = AppModule.provideMediumDateFormat(),
+                shortDateFormatter = AppModule.provideShortDateFormat(),
+                mediumDateTimeFormatter = AppModule.provideMediumDateTimeFormat(),
+                shortDateTimeFormatter = AppModule.provideShortDateTimeFormat()
+            )
+        )
     }
 }

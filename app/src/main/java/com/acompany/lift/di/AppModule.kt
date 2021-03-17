@@ -31,6 +31,10 @@ object AppModule {
         return SupervisorJob()
     }
 
+    @Retention(AnnotationRetention.BINARY)
+    @Qualifier
+    annotation class AppCoroutineScope
+
     @Provides
     @Singleton
     @AppCoroutineScope
@@ -41,15 +45,43 @@ object AppModule {
         return CoroutineScope(Dispatchers.Main + job + coroutineExceptionHandler)
     }
 
+    @Retention(AnnotationRetention.BINARY)
+    @Qualifier
+    annotation class MediumDateFormat
+
     @Provides
-    fun provideDateFormatter(): DateFormat {
-        return SimpleDateFormat.getDateTimeInstance(
-            SimpleDateFormat.MEDIUM,
-            SimpleDateFormat.MEDIUM
-        )
+    @MediumDateFormat
+    fun provideMediumDateFormat(): DateFormat {
+        return SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM)
     }
 
     @Retention(AnnotationRetention.BINARY)
     @Qualifier
-    annotation class AppCoroutineScope
+    annotation class MediumDateTimeFormat
+
+    @Provides
+    @MediumDateTimeFormat
+    fun provideMediumDateTimeFormat(): DateFormat {
+        return SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.MEDIUM, SimpleDateFormat.MEDIUM)
+    }
+
+    @Retention(AnnotationRetention.BINARY)
+    @Qualifier
+    annotation class ShortDateFormat
+
+    @Provides
+    @ShortDateFormat
+    fun provideShortDateFormat(): DateFormat {
+        return SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT)
+    }
+
+    @Retention(AnnotationRetention.BINARY)
+    @Qualifier
+    annotation class ShortDateTimeFormat
+
+    @Provides
+    @ShortDateTimeFormat
+    fun provideShortDateTimeFormat(): DateFormat {
+        return SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.SHORT, SimpleDateFormat.SHORT)
+    }
 }

@@ -6,6 +6,6 @@ data class Session(
     val id: Long,
     val startDate: Date,
     val endDate: Date,
-    val routineId: Long,
+    val routine: Routine,
     val exercises: List<SessionExercise>
 )

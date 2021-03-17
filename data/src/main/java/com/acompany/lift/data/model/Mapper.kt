@@ -34,12 +34,12 @@ object Mapper {
         )
     }
 
-    fun comacompanyliftdata.Session.toSession(dateAdapter: Rfc3339DateJsonAdapter, exercises: List<SessionExercise>): Session {
+    fun comacompanyliftdata.Session.toSession(dateAdapter: Rfc3339DateJsonAdapter, routine: Routine, exercises: List<SessionExercise>): Session {
         return Session(
             id = id,
             startDate = dateAdapter.fromJson(startDate)!!,
             endDate = dateAdapter.fromJson(endDate)!!,
-            routineId = routineId,
+            routine = routine,
             exercises = exercises
         )
     }
@@ -49,7 +49,7 @@ object Mapper {
             id = id,
             startDate = dateAdapter.toJson(startDate)!!,
             endDate = dateAdapter.toJson(endDate)!!,
-            routineId = routineId
+            routineId = routine.id
         )
     }
 

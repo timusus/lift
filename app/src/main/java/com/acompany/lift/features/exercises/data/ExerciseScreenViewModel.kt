@@ -63,7 +63,7 @@ class ExerciseScreenViewModel @Inject constructor(
                         id = 0,
                         startDate = sessionProgress.startDate!!,
                         endDate = Date(),
-                        routineId = routine.id,
+                        routine = routine,
                         exercises = routine.exercises.map { routineExercise ->
                             routineExercise.toSessionExercise()
                         }
