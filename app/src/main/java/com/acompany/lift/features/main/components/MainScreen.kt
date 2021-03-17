@@ -1,11 +1,13 @@
 package com.acompany.lift.features.main.components
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.StackedLineChart
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
@@ -42,7 +44,7 @@ fun MainScreen() {
                     )
                 }
             }
-        }) {
+        }) { paddingValues ->
             NavHost(
                 navController = navController,
                 startDestination = NavDestination.RoutineNavDestination.route
@@ -56,6 +58,7 @@ fun MainScreen() {
                             is NavDestination.RoutineNavDestination -> {
                                 RoutineScreen(
                                     viewModel = hiltNavGraphViewModel(),
+                                    modifier = Modifier.padding(paddingValues),
                                     onRoutineSelected = { routine ->
                                         navController.currentBackStackEntry!!.arguments!!.putParcelable(
                                             NavDestination.ExerciseNavDestination.ARG_ROUTINE, routine
@@ -67,6 +70,7 @@ fun MainScreen() {
                             is NavDestination.ExerciseNavDestination -> {
                                 ExerciseScreen(
                                     viewModel = hiltNavGraphViewModel(),
+                                    modifier = Modifier.padding(paddingValues),
                                     routine = navController.previousBackStackEntry!!.arguments!!.getParcelable(
                                         NavDestination.ExerciseNavDestination.ARG_ROUTINE
                                     )!!,

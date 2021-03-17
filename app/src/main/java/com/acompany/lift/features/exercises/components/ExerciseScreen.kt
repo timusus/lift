@@ -5,6 +5,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.acompany.lift.data.model.Routine
@@ -17,6 +18,7 @@ import com.acompany.lift.features.main.data.DummyAppRepository
 fun ExerciseScreen(
     viewModel: ExerciseScreenViewModel,
     routine: Routine,
+    modifier: Modifier = Modifier,
     onSessionComplete: () -> Unit
 ) {
     val routine: Routine by viewModel.getRoutine(routine.id).collectAsState(initial = routine)
@@ -35,6 +37,7 @@ fun ExerciseScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(title = { Text(text = routine.name) })
         },
