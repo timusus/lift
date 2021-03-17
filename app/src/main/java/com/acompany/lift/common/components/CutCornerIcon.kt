@@ -25,14 +25,14 @@ fun CutCornerIcon(
         contentDescription = contentDescription,
         colorFilter = ColorFilter.tint(tint),
         modifier = Modifier
-            .size(CircleIconDefaults.PreferredIconSize)
+            .size(CutCornerIconDefaults.PreferredIconSize)
             .clip(CutCornerShape(8.dp, 4.dp, 8.dp, 4.dp))
-            .background(color = tint.copy(alpha = CircleIconDefaults.IconTintAlpha))
+            .background(color = tint.copy(alpha = CutCornerIconDefaults.IconTintAlpha))
             .then(modifier)
     )
 }
 
-object CircleIconDefaults {
+object CutCornerIconDefaults {
     val PreferredIconSize = 46.dp
     const val IconTintAlpha = 0.2f
 }
