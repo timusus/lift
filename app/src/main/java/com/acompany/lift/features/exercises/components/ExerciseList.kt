@@ -1,14 +1,16 @@
 package com.acompany.lift.features.exercises.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Colors
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
 import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.exercises.data.ExerciseScreenViewModel
 import com.acompany.lift.features.exercises.data.RoutineExerciseListPreviewProvider
@@ -17,20 +19,24 @@ import com.acompany.lift.features.exercises.data.RoutineExerciseListPreviewProvi
 fun ExerciseList(
     routineExercises: List<RoutineExercise>,
     exerciseProgress: Map<RoutineExercise, ExerciseScreenViewModel.ExerciseProgress>,
+    currentExercise: RoutineExercise?,
     modifier: Modifier = Modifier,
     onExerciseClick: (RoutineExercise) -> Unit = {},
     onDoneClick: (RoutineExercise) -> Unit = {}
 ) {
-    LazyColumn(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(start = 8.dp, top = 16.dp, end = 8.dp, bottom = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         items(routineExercises) { routineExercise ->
             ExerciseListItem(
                 routineExercise = routineExercise,
-                exerciseProgress = exerciseProgress[routineExercise]
-                    ?: ExerciseScreenViewModel.ExerciseProgress.None,
+                exerciseProgress = exerciseProgress[routineExercise] ?: ExerciseScreenViewModel.ExerciseProgress.None,
+                isCurrentExercise = routineExercise == currentExercise,
                 onExerciseClick = { onExerciseClick(routineExercise) },
                 onDoneClick = { onDoneClick(routineExercise) }
             )
-            Divider()
         }
     }
 }
@@ -43,7 +49,8 @@ private fun ExerciseListPreview(
     MaterialTheme(colors = preview.first) {
         ExerciseList(
             routineExercises = preview.second,
-            mapOf(preview.second.first() to ExerciseScreenViewModel.ExerciseProgress.None)
+            mapOf(preview.second.first() to ExerciseScreenViewModel.ExerciseProgress.None),
+            preview.second.first()
         )
     }
 }

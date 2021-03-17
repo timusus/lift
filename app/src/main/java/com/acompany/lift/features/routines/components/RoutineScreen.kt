@@ -42,7 +42,6 @@ private fun RoutineScreen(
         content = {
             RoutineList(
                 routines = routines,
-                modifier = Modifier.padding(8.dp),
                 onRoutineClick = { routine ->
                     onRoutineSelected(routine)
                 }

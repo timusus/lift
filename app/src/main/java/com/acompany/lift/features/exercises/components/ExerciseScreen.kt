@@ -68,9 +68,9 @@ fun ExerciseScreen(
                 },
                 content = {
                     ExerciseList(
-                        modifier = Modifier.padding(8.dp),
                         routineExercises = routine.exercises,
                         exerciseProgress = viewModel.exerciseProgressMap,
+                        currentExercise = (viewModel.sessionProgress as? ExerciseScreenViewModel.SessionProgress.InProgress)?.currentExercise,
                         onExerciseClick = { routineExercise ->
                             viewModel.setSelectedRoutineExercise(routineExercise)
                             show()

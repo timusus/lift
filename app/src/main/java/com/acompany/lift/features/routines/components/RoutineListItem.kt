@@ -2,6 +2,7 @@ package com.acompany.lift.features.routines.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FitnessCenter
@@ -12,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.acompany.lift.common.components.CircleIcon
+import com.acompany.lift.common.components.CutCornerIcon
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.routines.data.RoutineListItemPreviewProvider
@@ -27,29 +28,34 @@ fun RoutineListItem(
     onSessionClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
-        Row(
-            modifier
-                .heightIn(min = 72.dp)
-                .clickable(onClick = onSessionClick)
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Card(
+            shape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 8.dp),
+            backgroundColor = MaterialTheme.colors.surface,
         ) {
-            CircleIcon(
-                icon = Icons.Rounded.FitnessCenter,
-                modifier = Modifier.padding(8.dp)
-            )
-            Spacer(modifier = Modifier.size(16.dp))
-            Column(modifier.weight(1f)) {
-                Text(
-                    text = routine.name,
-                    style = MaterialTypography.body1,
-                    color = MaterialColors.onBackground
+            Row(
+                modifier
+                    .heightIn(min = 72.dp)
+                    .clickable(onClick = onSessionClick)
+                    .padding(16.dp)
+            ) {
+                CutCornerIcon(
+                    icon = Icons.Rounded.FitnessCenter,
+                    modifier = Modifier.padding(8.dp),
+                    tint = MaterialColors.primary
                 )
-                Text(
-                    text = routine.exercises.joinToString(", ") { it.exercise.name },
-                    style = MaterialTypography.body2,
-                    color = MaterialColors.onBackground.copy(alpha = 0.85f)
-                )
+                Spacer(modifier = Modifier.size(16.dp))
+                Column(modifier.weight(1f)) {
+                    Text(
+                        text = routine.name,
+                        style = MaterialTypography.body1,
+                        color = MaterialColors.onBackground
+                    )
+                    Text(
+                        text = routine.exercises.joinToString(", ") { it.exercise.name },
+                        style = MaterialTypography.body2,
+                        color = MaterialColors.onBackground.copy(alpha = 0.85f)
+                    )
+                }
             }
         }
     }
