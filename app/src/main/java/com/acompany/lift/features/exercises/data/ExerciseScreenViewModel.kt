@@ -87,10 +87,8 @@ class ExerciseScreenViewModel @Inject constructor(
 
     sealed class SessionProgress(val startDate: Date?) {
         object None : SessionProgress(null)
-        class InProgress(startDate: Date?, val currentExercise: RoutineExercise) :
-            SessionProgress(startDate)
-
-        class Complete(startDate: Date?) : SessionProgress(startDate)
+        class InProgress(startDate: Date?, val currentExercise: RoutineExercise) : SessionProgress(startDate)
+        class Complete(startDate: Date?, val shouldSave: Boolean) : SessionProgress(startDate)
     }
 
     var sessionProgress by mutableStateOf<SessionProgress>(SessionProgress.None)
@@ -120,28 +118,34 @@ class ExerciseScreenViewModel @Inject constructor(
                         if (currentExerciseProgress.set < _sessionProgress.currentExercise.sets - 1) {
                             exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.InProgress(currentExerciseProgress.set + 1)
                         } else {
-                            exerciseProgressMap[_sessionProgress.currentExercise] =
-                                ExerciseProgress.Complete
+                            exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.Complete
                             val index = routine.exercises.indexOf(_sessionProgress.currentExercise)
                             if (index < exerciseProgressMap.size - 1) {
                                 val nextExercise = routine.exercises[index + 1]
                                 exerciseProgressMap[nextExercise] = ExerciseProgress.InProgress(0)
                                 sessionProgress = SessionProgress.InProgress(
-                                    _sessionProgress.startDate,
-                                    nextExercise
+                                    startDate = _sessionProgress.startDate,
+                                    currentExercise = nextExercise
                                 )
                             } else {
-                                sessionProgress = SessionProgress.Complete(_sessionProgress.startDate)
+                                sessionProgress = SessionProgress.Complete(
+                                    startDate = _sessionProgress.startDate,
+                                    shouldSave = false
+                                )
                             }
                         }
                     }
                     is ExerciseProgress.Complete -> {
-
                     }
                 }
             }
             is SessionProgress.Complete -> {
-
+                if (!_sessionProgress.shouldSave) {
+                    sessionProgress = SessionProgress.Complete(
+                        startDate = _sessionProgress.startDate,
+                        shouldSave = true
+                    )
+                }
             }
         }
     }

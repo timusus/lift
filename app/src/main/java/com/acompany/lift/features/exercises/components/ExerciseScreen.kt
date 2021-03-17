@@ -1,15 +1,12 @@
 package com.acompany.lift.features.exercises.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.features.exercises.data.ExerciseScreenPreviewProvider
 import com.acompany.lift.features.exercises.data.ExerciseScreenViewModel
@@ -27,9 +24,13 @@ fun ExerciseScreen(
 
     fun updateProgress(routine: Routine) {
         viewModel.updateProgress(routine)
-        if (viewModel.sessionProgress is ExerciseScreenViewModel.SessionProgress.Complete) {
-            viewModel.saveSession(routine)
-            onSessionComplete()
+        when (val sessionProgress = viewModel.sessionProgress) {
+            is ExerciseScreenViewModel.SessionProgress.Complete -> {
+                if (sessionProgress.shouldSave) {
+                    viewModel.saveSession(routine)
+                    onSessionComplete()
+                }
+            }
         }
     }
 
