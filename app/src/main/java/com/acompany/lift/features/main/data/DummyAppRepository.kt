@@ -4,6 +4,7 @@ import com.acompany.lift.data.AppRepository
 import com.acompany.lift.data.model.Exercise
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
+import com.acompany.lift.data.model.Session
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -38,6 +39,10 @@ class DummyAppRepository : AppRepository {
     }
 
     override suspend fun updateExerciseOneRepMax(id: Long, oneRepMax: Float?) {
+
+    }
+
+    override suspend fun createSession(session: Session, routine: Routine) {
 
     }
 

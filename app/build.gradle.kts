@@ -85,5 +85,6 @@ dependencies {
     }
     Dependencies.Moshi.apply {
         implementation(kotlin)
+        implementation(adapters)
     }
 }

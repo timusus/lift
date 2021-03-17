@@ -48,7 +48,10 @@ fun MainScreen() {
                                 viewModel = hiltNavGraphViewModel(),
                                 routine = navController.previousBackStackEntry!!.arguments!!.getParcelable(
                                     NavDestination.ExerciseNavDestination.ARG_ROUTINE
-                                )!!
+                                )!!,
+                                onSessionComplete = {
+                                    navController.popBackStack()
+                                }
                             )
                         }
                     }

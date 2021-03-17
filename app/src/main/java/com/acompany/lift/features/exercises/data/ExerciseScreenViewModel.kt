@@ -7,20 +7,28 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acompany.lift.data.AppRepository
+import com.acompany.lift.data.model.Mapper.toSessionExercise
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
+import com.acompany.lift.data.model.Session
+import com.acompany.lift.di.AppModule
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class ExerciseScreenViewModel @Inject constructor(
-    private val appRepository: AppRepository
+    private val appRepository: AppRepository,
+    @AppModule.AppCoroutineScope private val appScope: CoroutineScope
 ) : ViewModel() {
+
+    fun getRoutine(id: Long): Flow<Routine> {
+        return appRepository.getRoutines(listOf(id)).map { routines -> routines.first() }
+    }
 
     private val _selectedRoutineExercise: MutableStateFlow<RoutineExercise?> = MutableStateFlow(null)
     val selectedRoutineExercise: StateFlow<RoutineExercise?> = _selectedRoutineExercise.asStateFlow()
@@ -47,6 +55,27 @@ class ExerciseScreenViewModel @Inject constructor(
         }
     }
 
+    fun saveSession(routine: Routine) {
+        if (sessionProgress is SessionProgress.Complete) {
+            appScope.launch { // We use app scope here, as the ViewModel may go out of scope during a save
+                appRepository.createSession(
+                    session = Session(
+                        id = 0,
+                        startDate = sessionProgress.startDate!!,
+                        endDate = Date(),
+                        routineId = routine.id,
+                        exercises = routine.exercises.map { routineExercise ->
+                            routineExercise.toSessionExercise()
+                        }
+                    ),
+                    routine = routine
+                )
+            }
+        } else {
+            Timber.e("Cannot save incomplete session")
+        }
+    }
+
     sealed class ExerciseProgress {
         object None : ExerciseProgress()
         class InProgress(val set: Int) : ExerciseProgress()
@@ -66,7 +95,7 @@ class ExerciseScreenViewModel @Inject constructor(
 
     var sessionProgress by mutableStateOf<SessionProgress>(SessionProgress.None)
 
-    fun moveToNext(routine: Routine) {
+    fun updateProgress(routine: Routine) {
         when (val _sessionProgress = sessionProgress) {
             is SessionProgress.None -> {
                 routine.exercises.forEachIndexed { index, exercise ->
@@ -82,17 +111,14 @@ class ExerciseScreenViewModel @Inject constructor(
                 when (val currentExerciseProgress =
                     exerciseProgressMap[_sessionProgress.currentExercise]!!) {
                     is ExerciseProgress.None -> {
-                        exerciseProgressMap[_sessionProgress.currentExercise] =
-                            ExerciseProgress.InProgress(0)
+                        exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.InProgress(0)
                     }
                     is ExerciseProgress.InProgress -> {
-                        exerciseProgressMap[_sessionProgress.currentExercise] =
-                            ExerciseProgress.Resting(currentExerciseProgress.set)
+                        exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.Resting(currentExerciseProgress.set)
                     }
                     is ExerciseProgress.Resting -> {
                         if (currentExerciseProgress.set < _sessionProgress.currentExercise.sets - 1) {
-                            exerciseProgressMap[_sessionProgress.currentExercise] =
-                                ExerciseProgress.InProgress(currentExerciseProgress.set + 1)
+                            exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.InProgress(currentExerciseProgress.set + 1)
                         } else {
                             exerciseProgressMap[_sessionProgress.currentExercise] =
                                 ExerciseProgress.Complete
@@ -105,14 +131,17 @@ class ExerciseScreenViewModel @Inject constructor(
                                     nextExercise
                                 )
                             } else {
-                                sessionProgress =
-                                    SessionProgress.Complete(_sessionProgress.startDate)
+                                sessionProgress = SessionProgress.Complete(_sessionProgress.startDate)
                             }
                         }
                     }
                     is ExerciseProgress.Complete -> {
+
                     }
                 }
+            }
+            is SessionProgress.Complete -> {
+
             }
         }
     }

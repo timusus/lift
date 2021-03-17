@@ -4,6 +4,7 @@ import android.content.Context
 import com.acompany.lift.data.AppRepository
 import com.acompany.lift.data.LocalAppRepository
 import com.acompany.lift.data.Database
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import dagger.Module
 import dagger.Provides
@@ -20,12 +21,12 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideRealAppDatabase(@ApplicationContext context: Context): Database {
-        return Database(AndroidSqliteDriver(Database.Schema, context, "weights.db"))
+        return Database(AndroidSqliteDriver(Database.Schema, context, "lift.db"))
     }
 
     @Provides
     @Singleton
-    fun provideExerciseRepository(database: Database, @IoDispatcher dispatcher: CoroutineDispatcher): AppRepository {
-        return LocalAppRepository(database, dispatcher)
+    fun provideExerciseRepository(database: Database, @IoDispatcher dispatcher: CoroutineDispatcher, jsonDateAdapter: Rfc3339DateJsonAdapter): AppRepository {
+        return LocalAppRepository(database, dispatcher, jsonDateAdapter)
     }
 }

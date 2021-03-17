@@ -6,5 +6,5 @@ data class SessionExercise(
     val reps: Int?,
     val weight: Float?,
     val sessionId: Long,
-    val routineExerciseID: Long
+    val routineExercise: RoutineExercise
 )

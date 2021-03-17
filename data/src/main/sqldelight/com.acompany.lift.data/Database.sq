@@ -25,8 +25,9 @@ CREATE TABLE RoutineExercise (
 
 CREATE TABLE Session (
   id INTEGER PRIMARY KEY,
-  createdAt TEXT NOT NULL,
-  routineId INTEGER,
+  startDate TEXT NOT NULL,
+  endDate TEXT NOT NULL,
+  routineId INTEGER NOT NULL,
   FOREIGN KEY (routineId) REFERENCES Routine(id)
 );
 
@@ -35,8 +36,8 @@ CREATE TABLE SessionExercise (
   sets INTEGER AS Int,
   reps INTEGER AS Int,
   weight REAL AS Float,
-  sessionId INTEGER,
-  routineExerciseId INTEGER,
+  sessionId INTEGER NOT NULL,
+  routineExerciseId INTEGER NOT NULL,
   FOREIGN KEY (sessionId) REFERENCES Session(id),
   FOREIGN KEY (routineExerciseId) REFERENCES RoutineExercise(id)
 );
@@ -138,3 +139,14 @@ updateExerciseOneRepMax:
 UPDATE Exercise
 SET one_rep_max = :oneRepMax
 WHERE id = :id;
+
+createSession:
+INSERT INTO Session(startDate, endDate, routineId)
+VALUES ?;
+
+createSessionExercise:
+INSERT INTO SessionExercise(sets, reps, weight, sessionId, routineExerciseId)
+VALUES ?;
+
+lastInsertId:
+SELECT last_insert_rowid();

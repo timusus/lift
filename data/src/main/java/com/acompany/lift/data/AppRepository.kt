@@ -3,6 +3,7 @@ package com.acompany.lift.data
 import com.acompany.lift.data.model.Exercise
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
+import com.acompany.lift.data.model.Session
 import kotlinx.coroutines.flow.Flow
 
 interface AppRepository {
@@ -14,4 +15,5 @@ interface AppRepository {
     suspend fun updateRoutineExercisePercentOneRepMax(id: Long, percentOneRepMax: Float?)
     suspend fun updateRoutineExerciseWeight(id: Long, weight: Float?)
     suspend fun updateExerciseOneRepMax(id: Long, oneRepMax: Float?)
+    suspend fun createSession(session: Session, routine: Routine)
 }

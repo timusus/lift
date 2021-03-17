@@ -1,6 +1,7 @@
-package com.acompany.lift.di
+package com.acompany.lift.data.di
 
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -14,9 +15,16 @@ object SerializationModule {
 
     @Provides
     @Singleton
-    fun provideMoshi(): Moshi {
+    fun provideRfcDateAdapter(): Rfc3339DateJsonAdapter {
+        return Rfc3339DateJsonAdapter()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMoshi(rfc3339DateJsonAdapter: Rfc3339DateJsonAdapter): Moshi {
         return Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
+            .add(rfc3339DateJsonAdapter)
             .build()
     }
 }

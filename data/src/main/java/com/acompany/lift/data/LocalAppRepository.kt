@@ -2,10 +2,14 @@ package com.acompany.lift.data
 
 import com.acompany.lift.data.model.Exercise
 import com.acompany.lift.data.model.Mapper.toExercise
-import com.acompany.lift.data.model.Mapper.toRoutineExercise
 import com.acompany.lift.data.model.Mapper.toRoutine
+import com.acompany.lift.data.model.Mapper.toRoutineExercise
+import com.acompany.lift.data.model.Mapper.toSession
+import com.acompany.lift.data.model.Mapper.toSessionExercise
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
+import com.acompany.lift.data.model.Session
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,7 +20,8 @@ import kotlinx.coroutines.withContext
 
 class LocalAppRepository(
     private val database: Database,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher,
+    private val dateAdapter: Rfc3339DateJsonAdapter
 ) : AppRepository {
 
     override fun getAllRoutines(): Flow<List<Routine>> {
@@ -24,7 +29,7 @@ class LocalAppRepository(
             getRoutineExercises(),
             database.databaseQueries.selectAllRoutines().asFlow().mapToList()
         ) { routineExercises, routines ->
-            routines.map { routine -> routine.toRoutine { routineExercises.filter { it.routineId == routine.id } } }
+            routines.map { routine -> routine.toRoutine(routineExercises.filter { it.routineId == routine.id }) }
         }
     }
 
@@ -33,7 +38,7 @@ class LocalAppRepository(
             getRoutineExercises(),
             database.databaseQueries.selectRoutines(ids).asFlow().mapToList()
         ) { routineExercises, routines ->
-            routines.map { routine -> routine.toRoutine { routineExercises.filter { it.routineId == routine.id } } }
+            routines.map { routine -> routine.toRoutine(routineExercises.filter { it.routineId == routine.id }) }
         }
     }
 
@@ -43,7 +48,7 @@ class LocalAppRepository(
             database.databaseQueries.selectAllRoutineExercises().asFlow().mapToList()
         ) { exercises, routineExercises ->
             routineExercises
-                .map { routineExercise -> routineExercise.toRoutineExercise { exercises.first { exercise -> exercise.id == routineExercise.exerciseId } } }
+                .map { routineExercise -> routineExercise.toRoutineExercise(exercises.first { exercise -> exercise.id == routineExercise.exerciseId }) }
         }
     }
 
@@ -53,7 +58,7 @@ class LocalAppRepository(
             database.databaseQueries.selectRoutineExercises(routineIds).asFlow().mapToList()
         ) { exercises, routineExercises ->
             routineExercises
-                .map { routineExercise -> routineExercise.toRoutineExercise { exercises.first { exercise -> exercise.id == routineExercise.exerciseId } } }
+                .map { routineExercise -> routineExercise.toRoutineExercise(exercises.first { exercise -> exercise.id == routineExercise.exerciseId }) }
         }
     }
 
@@ -77,6 +82,20 @@ class LocalAppRepository(
     override suspend fun updateExerciseOneRepMax(id: Long, oneRepMax: Float?) {
         withContext(dispatcher) {
             database.databaseQueries.updateExerciseOneRepMax(oneRepMax, id)
+        }
+    }
+
+    override suspend fun createSession(session: Session, routine: Routine) {
+        withContext(dispatcher) {
+            val sessionId = database.transactionWithResult<Long> {
+                database.databaseQueries.createSession(session.toSession(dateAdapter))
+                database.databaseQueries.lastInsertId().executeAsOne()
+            }
+            database.transaction {
+                routine.exercises.map { routineExercise -> routineExercise.toSessionExercise() }.forEach {
+                    database.databaseQueries.createSessionExercise(it.toSessionExercise(sessionId))
+                }
+            }
         }
     }
 }

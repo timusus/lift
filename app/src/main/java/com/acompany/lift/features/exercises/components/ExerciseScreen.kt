@@ -19,9 +19,19 @@ import com.acompany.lift.features.main.data.DummyAppRepository
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 fun ExerciseScreen(
     viewModel: ExerciseScreenViewModel,
-    routine: Routine
+    routine: Routine,
+    onSessionComplete: () -> Unit
 ) {
+    val routine: Routine by viewModel.getRoutine(routine.id).collectAsState(initial = routine)
     val selectedExercise by viewModel.selectedRoutineExercise.collectAsState()
+
+    fun updateProgress(routine: Routine) {
+        viewModel.updateProgress(routine)
+        if (viewModel.sessionProgress is ExerciseScreenViewModel.SessionProgress.Complete) {
+            viewModel.saveSession(routine)
+            onSessionComplete()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -36,20 +46,20 @@ fun ExerciseScreen(
                             routineExercise = selectedExercise,
                             onOneRepMaxChanged = { oneRepMax ->
                                 viewModel.updateOneRepMax(
-                                    selectedExercise.id,
-                                    oneRepMax
+                                    exerciseId = selectedExercise.id,
+                                    value = oneRepMax
                                 )
                             },
                             onWeightChanged = { weight ->
                                 viewModel.updateRoutineExerciseWeight(
-                                    selectedExercise.id,
-                                    weight
+                                    exerciseId = selectedExercise.id,
+                                    value = weight
                                 )
                             },
                             onPercentOneRepMaxChanged = { percentOneRepMax ->
                                 viewModel.updateRoutineExercisePercentOneRepMax(
-                                    selectedExercise.id,
-                                    percentOneRepMax
+                                    exerciseId = selectedExercise.id,
+                                    value = percentOneRepMax
                                 )
                             },
                             onDoneClick = { hide() }
@@ -65,14 +75,17 @@ fun ExerciseScreen(
                             viewModel.setSelectedRoutineExercise(routineExercise)
                             show()
                         },
-                        onDoneClick = { viewModel.moveToNext(routine) }
+                        onDoneClick = {
+                            updateProgress(routine)
+                        }
                     )
                     SessionProgressFloatingActionButton(viewModel.sessionProgress) {
-                        viewModel.moveToNext(routine)
+                        updateProgress(routine)
                     }
                 }
             )
-        })
+        }
+    )
 }
 
 @Preview
@@ -81,6 +94,6 @@ private fun ExerciseScreenPreview(
     @PreviewParameter(ExerciseScreenPreviewProvider::class) preview: Pair<Colors, ExerciseScreenViewModel>
 ) {
     MaterialTheme(colors = preview.first) {
-        ExerciseScreen(preview.second, DummyAppRepository.routines.first())
+        ExerciseScreen(preview.second, DummyAppRepository.routines.first()) {}
     }
 }

@@ -39,8 +39,11 @@ android {
 }
 
 dependencies {
-    implementation(Dependencies.Moshi.kotlin)
     implementation(Dependencies.Timber())
+    Dependencies.Moshi.apply {
+        implementation(kotlin)
+        implementation(adapters)
+    }
     Dependencies.Coroutines.apply {
         implementation(core)
         implementation(android)

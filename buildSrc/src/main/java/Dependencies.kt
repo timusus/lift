@@ -79,6 +79,7 @@ object Dependencies {
         const val core = "com.squareup.moshi:moshi:$version"
         const val kotlin = "com.squareup.moshi:moshi-kotlin:$version"
         const val codegen = "com.squareup.moshi:moshi-kotlin-codegen:$version"
+        const val adapters = "com.squareup.moshi:moshi-adapters:$version"
     }
 
     object Okhttp {

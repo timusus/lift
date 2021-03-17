@@ -4,7 +4,8 @@ import java.util.*
 
 data class Session(
     val id: Long,
-    val createdAt: Date,
+    val startDate: Date,
+    val endDate: Date,
     val routineId: Long,
     val exercises: List<SessionExercise>
 )

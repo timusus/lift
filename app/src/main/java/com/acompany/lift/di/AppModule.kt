@@ -9,6 +9,7 @@ import timber.log.Timber
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import javax.inject.Named
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -32,7 +33,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    @Named("AppCoroutineScope")
+    @AppCoroutineScope
     fun provideAppCoroutineScope(
         @Named("AppSupervisorJob") job: Job,
         coroutineExceptionHandler: CoroutineExceptionHandler
@@ -47,4 +48,8 @@ object AppModule {
             SimpleDateFormat.MEDIUM
         )
     }
+
+    @Retention(AnnotationRetention.BINARY)
+    @Qualifier
+    annotation class AppCoroutineScope
 }
