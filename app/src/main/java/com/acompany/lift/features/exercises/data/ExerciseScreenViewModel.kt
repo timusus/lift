@@ -32,13 +32,6 @@ class ExerciseScreenViewModel @Inject constructor(
         return appRepository.getRoutines(listOf(id)).map { routines -> routines.first() }
     }
 
-    private val _selectedRoutineExercise: MutableStateFlow<RoutineExercise?> = MutableStateFlow(null)
-    val selectedRoutineExercise: StateFlow<RoutineExercise?> = _selectedRoutineExercise.asStateFlow()
-
-    fun setSelectedRoutineExercise(exercise: RoutineExercise) {
-        _selectedRoutineExercise.tryEmit(exercise)
-    }
-
     fun updateOneRepMax(exerciseId: Long, value: Float?) {
         viewModelScope.launch {
             appRepository.updateExerciseOneRepMax(exerciseId, value)
