@@ -1,3 +1,5 @@
+-- Table Creation
+
 CREATE TABLE Exercise (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
@@ -38,9 +40,94 @@ CREATE TABLE SessionExercise (
   weight REAL AS Float,
   sessionId INTEGER NOT NULL,
   routineExerciseId INTEGER NOT NULL,
-  FOREIGN KEY (sessionId) REFERENCES Session(id),
+  FOREIGN KEY (sessionId) REFERENCES Session(id) ON DELETE CASCADE,
   FOREIGN KEY (routineExerciseId) REFERENCES RoutineExercise(id)
 );
+
+
+-- Queries
+
+-- Exercises
+selectAllExercises:
+SELECT *
+FROM Exercise;
+
+selectExercises:
+SELECT *
+FROM Exercise;
+
+-- Routines
+
+selectAllRoutines:
+SELECT *
+FROM Routine
+ORDER BY sort_order;
+
+selectRoutines:
+SELECT *
+FROM Routine
+WHERE id IN :ids
+ORDER BY sort_order;
+
+updateExerciseOneRepMax:
+UPDATE Exercise
+SET one_rep_max = :oneRepMax
+WHERE id = :id;
+
+-- Routine Exercises
+
+selectAllRoutineExercises:
+SELECT *
+FROM RoutineExercise
+ORDER BY sort_order;
+
+selectRoutineExercises:
+SELECT *
+FROM RoutineExercise
+WHERE routineId IN :routineIds
+ORDER BY sort_order;
+
+updateRoutineExerciseWeight:
+UPDATE RoutineExercise
+SET weight = :weight
+WHERE id = :id;
+
+updateRoutineExercisePercentOneRepMax:
+UPDATE RoutineExercise
+SET percent_one_rep_max = :percentOneRepMax
+WHERE id = :id;
+
+-- Sessions
+
+createSession:
+INSERT INTO Session(startDate, endDate, routineId)
+VALUES ?;
+
+createSessionExercise:
+INSERT INTO SessionExercise(sets, reps, weight, sessionId, routineExerciseId)
+VALUES ?;
+
+selectAllSessions:
+SELECT *
+FROM Session;
+
+deleteSession:
+DELETE FROM Session
+WHERE id = :id;
+
+-- Session Exercises
+
+selectAllSessionExercises:
+SELECT *
+FROM SessionExercise;
+
+-- All
+
+lastInsertId:
+SELECT last_insert_rowid();
+
+
+-- Default Data
 
 INSERT INTO Exercise(id, name)
 VALUES
@@ -94,67 +181,3 @@ VALUES
     (3, 2, 12, NULL, NULL, 4, 8),
     (4, 2, 12, NULL, NULL, 4, 15),
     (5, 2, 12, NULL, NULL, 4, 16);
-
-selectAllExercises:
-SELECT *
-FROM Exercise;
-
-selectExercises:
-SELECT *
-FROM Exercise;
-
-selectAllRoutines:
-SELECT *
-FROM Routine
-ORDER BY sort_order;
-
-selectRoutines:
-SELECT *
-FROM Routine
-WHERE id IN :ids
-ORDER BY sort_order;
-
-selectAllRoutineExercises:
-SELECT *
-FROM RoutineExercise
-ORDER BY sort_order;
-
-selectRoutineExercises:
-SELECT *
-FROM RoutineExercise
-WHERE routineId IN :routineIds
-ORDER BY sort_order;
-
-updateRoutineExerciseWeight:
-UPDATE RoutineExercise
-SET weight = :weight
-WHERE id = :id;
-
-updateRoutineExercisePercentOneRepMax:
-UPDATE RoutineExercise
-SET percent_one_rep_max = :percentOneRepMax
-WHERE id = :id;
-
-updateExerciseOneRepMax:
-UPDATE Exercise
-SET one_rep_max = :oneRepMax
-WHERE id = :id;
-
-createSession:
-INSERT INTO Session(startDate, endDate, routineId)
-VALUES ?;
-
-createSessionExercise:
-INSERT INTO SessionExercise(sets, reps, weight, sessionId, routineExerciseId)
-VALUES ?;
-
-selectAllSessions:
-SELECT *
-FROM Session;
-
-selectAllSessionExercises:
-SELECT *
-FROM SessionExercise;
-
-lastInsertId:
-SELECT last_insert_rowid();

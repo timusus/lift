@@ -38,6 +38,13 @@ android {
     }
 }
 
+sqldelight {
+    database("Database") {
+        schemaOutputDirectory = file("src/main/sqldelight/databases")
+        verifyMigrations = true
+    }
+}
+
 dependencies {
     implementation(Dependencies.Timber())
     Dependencies.Moshi.apply {

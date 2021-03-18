@@ -1,0 +1,20 @@
+-- Add ON DELETE CASCADE to sessionId FK
+
+CREATE TABLE SessionExercise2 (
+  id INTEGER PRIMARY KEY,
+  sets INTEGER AS Int,
+  reps INTEGER AS Int,
+  weight REAL AS Float,
+  sessionId INTEGER NOT NULL,
+  routineExerciseId INTEGER NOT NULL,
+  FOREIGN KEY (sessionId) REFERENCES Session(id) ON DELETE CASCADE,
+  FOREIGN KEY (routineExerciseId) REFERENCES RoutineExercise(id)
+);
+
+INSERT INTO SessionExercise2(id, sets, reps, weight, sessionId, routineExerciseId)
+  SELECT id, sets, reps, weight, sessionId, routineExerciseId
+  FROM SessionExercise;
+
+DROP TABLE SessionExercise;
+
+ALTER TABLE SessionExercise2 RENAME TO SessionExercise;
