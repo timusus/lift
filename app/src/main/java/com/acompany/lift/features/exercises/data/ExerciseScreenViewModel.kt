@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.acompany.lift.common.SoundManager
 import com.acompany.lift.data.AppRepository
 import com.acompany.lift.data.model.Mapper.toSessionExercise
 import com.acompany.lift.data.model.Routine
@@ -23,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ExerciseScreenViewModel @Inject constructor(
     private val appRepository: AppRepository,
-    @AppModule.AppCoroutineScope private val appScope: CoroutineScope
+    @AppModule.AppCoroutineScope private val appScope: CoroutineScope,
+    private val soundManager: SoundManager
 ) : ViewModel() {
 
     fun getRoutine(id: Long): Flow<Routine> {
@@ -148,5 +150,9 @@ class ExerciseScreenViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun playRestTimerTone() {
+        soundManager.playSound(SoundManager.Sound.Tone)
     }
 }

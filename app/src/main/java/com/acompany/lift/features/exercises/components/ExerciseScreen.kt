@@ -93,6 +93,10 @@ fun ExerciseScreen(
                         },
                         onDoneClick = {
                             updateProgress(routine)
+                        },
+                        onRestTimeComplete = {
+                            updateProgress(routine)
+                            viewModel.playRestTimerTone()
                         }
                     )
                     SessionProgressFloatingActionButton(viewModel.sessionProgress) {

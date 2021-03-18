@@ -22,7 +22,8 @@ fun ExerciseList(
     currentExercise: RoutineExercise?,
     modifier: Modifier = Modifier,
     onExerciseClick: (RoutineExercise) -> Unit = {},
-    onDoneClick: (RoutineExercise) -> Unit = {}
+    onDoneClick: (RoutineExercise) -> Unit = {},
+    onRestTimeComplete: (RoutineExercise) -> Unit = {},
 ) {
     LazyColumn(
         modifier = modifier,
@@ -35,7 +36,8 @@ fun ExerciseList(
                 exerciseProgress = exerciseProgress[routineExercise] ?: ExerciseScreenViewModel.ExerciseProgress.None,
                 isCurrentExercise = routineExercise == currentExercise,
                 onExerciseClick = { onExerciseClick(routineExercise) },
-                onDoneClick = { onDoneClick(routineExercise) }
+                onDoneClick = { onDoneClick(routineExercise) },
+                onRestTimeComplete = { onRestTimeComplete(routineExercise) }
             )
         }
     }

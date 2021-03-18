@@ -35,12 +35,13 @@ fun ExerciseListItem(
     isCurrentExercise: Boolean,
     modifier: Modifier = Modifier,
     onExerciseClick: () -> Unit = {},
-    onDoneClick: () -> Unit = {}
+    onDoneClick: () -> Unit = {},
+    onRestTimeComplete: () -> Unit = {},
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
         Card(
             shape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 8.dp),
-            backgroundColor =  MaterialTheme.colors.surface,
+            backgroundColor = MaterialTheme.colors.surface,
             elevation = if (isCurrentExercise) 4.dp else 1.dp
         ) {
             Column(modifier = modifier.animateContentSize()) {
@@ -83,7 +84,7 @@ fun ExerciseListItem(
                         )
                     }
                 }
-                SessionStateIndicator(exerciseProgress, routineExercise, onDoneClick)
+                SessionStateIndicator(exerciseProgress, routineExercise, onDoneClick, onRestTimeComplete)
             }
         }
     }
@@ -93,7 +94,8 @@ fun ExerciseListItem(
 private fun SessionStateIndicator(
     exerciseProgress: ExerciseScreenViewModel.ExerciseProgress,
     routineExercise: RoutineExercise,
-    onDoneClick: () -> Unit
+    onDoneClick: () -> Unit,
+    onRestTimeComplete: () -> Unit
 ) {
     when (exerciseProgress) {
         is ExerciseScreenViewModel.ExerciseProgress.None -> {
@@ -128,7 +130,7 @@ private fun SessionStateIndicator(
                 val minutes = remainingTime / 60
                 val seconds = remainingTime % 60
                 if (remainingTime == 0L) {
-                    onDoneClick()
+                    onRestTimeComplete()
                 }
                 Text(
                     modifier = Modifier.weight(1f),
