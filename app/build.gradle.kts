@@ -5,6 +5,7 @@ plugins {
     kotlin("kapt")
     id("kotlin-android")
     id("dagger.hilt.android.plugin")
+    id("kotlin-parcelize")
 }
 
 kapt {
@@ -61,8 +62,9 @@ dependencies {
     Dependencies.AndroidX.apply {
         implementation(activity)
         implementation(activityCompose)
-        implementation(lifecycleViewmodelKtx)
+        implementation(lifecycleViewModelKtx)
         implementation(lifecycleViewModelCompose)
+        implementation(viewModelSavedState)
     }
     Dependencies.Compose.apply {
         implementation(material)
