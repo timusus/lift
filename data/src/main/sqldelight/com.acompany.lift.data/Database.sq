@@ -121,6 +121,10 @@ selectAllSessionExercises:
 SELECT *
 FROM SessionExercise;
 
+deleteExercisesForSession:
+DELETE FROM SessionExercise
+WHERE sessionId = :sessionId;
+
 -- All
 
 lastInsertId:

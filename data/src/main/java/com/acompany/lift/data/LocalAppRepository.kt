@@ -16,10 +16,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class LocalAppRepository(
-    private val database: Database,
+    private val databaseHelper: DatabaseHelper,
     private val dispatcher: CoroutineDispatcher,
     private val dateAdapter: Rfc3339DateJsonAdapter
 ) : AppRepository {
+
+    private val database by lazy {
+        databaseHelper.database
+    }
 
     override fun getAllRoutines(): Flow<List<Routine>> {
         return combine(
@@ -112,6 +116,18 @@ class LocalAppRepository(
                     database.databaseQueries.createSessionExercise(it.toSessionExercise(sessionId))
                 }
             }
+        }
+    }
+
+    override suspend fun deleteSession(session: Session) {
+        withContext(dispatcher) {
+            database.databaseQueries.deleteSession(session.id)
+        }
+    }
+
+    override suspend fun deleteSessionExercises(session: Session) {
+        withContext(dispatcher) {
+            database.databaseQueries.deleteExercisesForSession(session.id)
         }
     }
 }

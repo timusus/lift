@@ -53,6 +53,14 @@ class DummyAppRepository : AppRepository {
 
     }
 
+    override suspend fun deleteSession(session: Session) {
+
+    }
+
+    override suspend fun deleteSessionExercises(session: Session) {
+
+    }
+
     companion object {
         val routineExercises = listOf(
             RoutineExercise(
