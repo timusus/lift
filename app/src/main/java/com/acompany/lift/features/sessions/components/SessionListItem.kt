@@ -33,6 +33,7 @@ fun SessionListItem(
         Card(
             shape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 8.dp),
             backgroundColor = MaterialTheme.colors.surface,
+            modifier = modifier.clickable(onClick = onSessionClick)
         ) {
             Row(
                 modifier

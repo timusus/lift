@@ -9,7 +9,9 @@ import androidx.navigation.compose.navigate
 import com.acompany.lift.features.exercises.components.ExerciseScreen
 import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.features.main.data.NavDestination.ExerciseNavDestination.Companion.ARG_ROUTINE
+import com.acompany.lift.features.main.data.NavDestination.SessionDetailNavDestination.Companion.ARG_SESSION
 import com.acompany.lift.features.routines.components.RoutineScreen
+import com.acompany.lift.features.sessions.components.SessionDetailScreen
 import com.acompany.lift.features.sessions.components.SessionScreen
 
 @Composable
@@ -20,7 +22,8 @@ fun ListNavHost(
     val destinations = listOf(
         NavDestination.RoutineNavDestination,
         NavDestination.ExerciseNavDestination(),
-        NavDestination.SessionNavDestination
+        NavDestination.SessionNavDestination,
+        NavDestination.SessionDetailNavDestination()
     )
     NavHost(
         navController = navController,
@@ -32,13 +35,12 @@ fun ListNavHost(
                 arguments = destination.arguments
             ) {
                 when (destination) {
-                    NavDestination.RoutineNavDestination -> {
-                        val currentArguments = navController.currentBackStackEntry!!.arguments!!
+                    is NavDestination.RoutineNavDestination -> {
                         RoutineScreen(
                             viewModel = hiltNavGraphViewModel(),
                             onRoutineSelected = { routine ->
-                                currentArguments.putParcelable(ARG_ROUTINE, routine)
-                                navController.navigate(route = "routines/routine/exercises")
+                                navController.currentBackStackEntry?.arguments!!.putParcelable(ARG_ROUTINE, routine)
+                                navController.navigate(route = "routines/routine")
                             }
                         )
                     }
@@ -52,8 +54,20 @@ fun ListNavHost(
                             }
                         )
                     }
-                    NavDestination.SessionNavDestination -> {
-                        SessionScreen(viewModel = hiltNavGraphViewModel())
+                    is NavDestination.SessionNavDestination -> {
+                        SessionScreen(viewModel = hiltNavGraphViewModel(),
+                            onSessionClick = { session ->
+                                navController.currentBackStackEntry?.arguments!!.putParcelable(ARG_SESSION, session)
+                                navController.navigate(route = "sessions/session")
+                            })
+                    }
+                    is NavDestination.SessionDetailNavDestination -> {
+                        val previousArguments = navController.previousBackStackEntry!!.arguments!!
+                        SessionDetailScreen(
+                            viewModel = hiltNavGraphViewModel(),
+                            session = previousArguments.getParcelable(ARG_SESSION)!!, onSessionDeleted = {
+                                navController.popBackStack()
+                            })
                     }
                 }
             }

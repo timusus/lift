@@ -15,5 +15,4 @@ class SessionScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun getSessions(): Flow<List<Session>> = appRepository.getAllSessions()
-
 }

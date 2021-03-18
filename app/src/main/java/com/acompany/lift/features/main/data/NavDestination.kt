@@ -12,7 +12,7 @@ sealed class NavDestination(
     )
 
     class ExerciseNavDestination : NavDestination(
-        route = "routines/routine/exercises"
+        route = "routines/routine"
     ) {
         companion object {
             const val ARG_ROUTINE = "routine"
@@ -22,4 +22,12 @@ sealed class NavDestination(
     object SessionNavDestination : NavDestination(
         route = "sessions/all"
     )
+
+    class SessionDetailNavDestination : NavDestination(
+        route = "sessions/session"
+    ) {
+        companion object {
+            const val ARG_SESSION = "session"
+        }
+    }
 }

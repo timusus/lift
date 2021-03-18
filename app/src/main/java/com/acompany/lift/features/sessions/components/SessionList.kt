@@ -21,7 +21,8 @@ import com.acompany.lift.features.sessions.data.SessionListPreviewProvider
 fun SessionList(
     sessions: List<Session>,
     modifier: Modifier = Modifier,
-    dateFormatter: DateFormatter
+    dateFormatter: DateFormatter,
+    onSessionClick: (Session) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -33,7 +34,7 @@ fun SessionList(
                 session = session,
                 modifier = modifier,
                 dateFormatter = dateFormatter,
-                onSessionClick = {}
+                onSessionClick = { onSessionClick(session) }
             )
         }
     }
@@ -53,7 +54,8 @@ private fun SessionListPreview(
                 shortDateFormatter = AppModule.provideShortDateFormat(),
                 mediumDateTimeFormatter = AppModule.provideMediumDateTimeFormat(),
                 shortDateTimeFormatter = AppModule.provideShortDateTimeFormat()
-            )
+            ),
+            onSessionClick = {}
         )
     }
 }

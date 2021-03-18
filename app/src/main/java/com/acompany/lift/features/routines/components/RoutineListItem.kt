@@ -24,17 +24,17 @@ import com.acompany.lift.theme.MaterialTypography
 fun RoutineListItem(
     routine: Routine,
     modifier: Modifier = Modifier,
-    onSessionClick: () -> Unit = {}
+    onRoutineClick: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
         Card(
             shape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 8.dp),
             backgroundColor = MaterialTheme.colors.surface,
+            modifier = modifier.clickable(onClick = onRoutineClick)
         ) {
             Row(
                 modifier
                     .heightIn(min = 72.dp)
-                    .clickable(onClick = onSessionClick)
                     .padding(16.dp)
             ) {
                 CutCornerIcon(
