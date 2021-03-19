@@ -15,23 +15,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.acompany.lift.common.components.AnimatedFloatingActionButton
 import com.acompany.lift.common.effects.elapsedTimeMillis
-import com.acompany.lift.features.exercises.data.SessionProgress
+import com.acompany.lift.features.exercises.data.RoutineProgress
 import com.acompany.lift.features.main.data.DummyAppRepository
 import java.util.*
 
 @Composable
 fun SessionProgressFloatingActionButton(
-    sessionProgress: SessionProgress,
+    routineProgress: RoutineProgress,
     onClick: () -> Unit
 ) {
-    val (sessionIcon, sessionIconDescription) = when (sessionProgress) {
-        is SessionProgress.None -> Icons.Rounded.Timer to "start session"
-        is SessionProgress.InProgress -> Icons.Rounded.DoubleArrow to "next session"
-        is SessionProgress.Complete -> Icons.Rounded.CheckCircle to "completed"
+    val (sessionIcon, sessionIconDescription) = when (routineProgress) {
+        is RoutineProgress.None -> Icons.Rounded.Timer to "start session"
+        is RoutineProgress.InProgress -> Icons.Rounded.DoubleArrow to "next session"
+        is RoutineProgress.Complete -> Icons.Rounded.CheckCircle to "completed"
     }
-    val date = when (sessionProgress){
-        is SessionProgress.InProgress -> sessionProgress.startDate
-        is SessionProgress.Complete -> sessionProgress.startDate
+    val date = when (routineProgress){
+        is RoutineProgress.InProgress -> routineProgress.startDate
+        is RoutineProgress.Complete -> routineProgress.startDate
         else -> null
     }
     AnimatedFloatingActionButton(
@@ -40,7 +40,7 @@ fun SessionProgressFloatingActionButton(
         ),
         icon = sessionIcon,
         contentDescription = sessionIconDescription,
-        expanded = sessionProgress is SessionProgress.InProgress,
+        expanded = routineProgress is RoutineProgress.InProgress,
         onClick = onClick,
         modifier = Modifier.bottomEndFabPlacement()
     )
@@ -58,7 +58,7 @@ fun Modifier.bottomEndFabPlacement(): Modifier {
 @Composable
 private fun SessionProgressFloatingActionButtonPreview() {
     SessionProgressFloatingActionButton(
-        sessionProgress = SessionProgress.InProgress(
+        routineProgress = RoutineProgress.InProgress(
             startDate = Date(),
             currentExercise = DummyAppRepository.routineExercises.first()
         ),

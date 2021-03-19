@@ -4,7 +4,7 @@ import com.acompany.lift.data.model.Exercise
 import com.acompany.lift.data.model.RoutineExercise
 import java.lang.Math.round
 
-object ExerciseHelper {
+object RoutineExerciseHelper {
 
     /**
      * Retrieve an initial weight for this exercise, derived from the exercise's [Exercise.oneRepMax], multiplied by ([RoutineExercise.percentOneRepMax] or 1, if unavailable)

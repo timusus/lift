@@ -22,7 +22,7 @@ import com.acompany.lift.common.components.CutCornerIcon
 import com.acompany.lift.common.components.Icon
 import com.acompany.lift.common.effects.remainingTimeMillis
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
+import com.acompany.lift.features.exercises.data.RoutineExerciseHelper.initialWeight
 import com.acompany.lift.features.exercises.data.ExerciseProgress
 import com.acompany.lift.features.exercises.data.RoutineExerciseListItemPreviewProvider
 import com.acompany.lift.theme.MaterialColors

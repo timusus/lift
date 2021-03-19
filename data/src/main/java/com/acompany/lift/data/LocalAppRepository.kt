@@ -25,38 +25,29 @@ class LocalAppRepository(
         databaseHelper.database
     }
 
-    override fun getAllRoutines(): Flow<List<Routine>> {
+    override fun getRoutines(ids: Collection<Long>?): Flow<List<Routine>> {
+        val selectRoutineQuery = (ids?.let {
+            database.databaseQueries.selectRoutines(ids)
+        } ?: database.databaseQueries.selectAllRoutines())
+            .asFlow().mapToList()
+
         return combine(
             getRoutineExercises(),
-            database.databaseQueries.selectAllRoutines().asFlow().mapToList()
+            selectRoutineQuery
         ) { routineExercises, routines ->
             routines.map { routine -> routine.toRoutine(routineExercises.filter { it.routineId == routine.id }) }
         }
     }
 
-    override fun getRoutines(ids: Collection<Long>): Flow<List<Routine>> {
-        return combine(
-            getRoutineExercises(),
-            database.databaseQueries.selectRoutines(ids).asFlow().mapToList()
-        ) { routineExercises, routines ->
-            routines.map { routine -> routine.toRoutine(routineExercises.filter { it.routineId == routine.id }) }
-        }
-    }
+    override fun getRoutineExercises(routineIds: Collection<Long>?): Flow<List<RoutineExercise>> {
+        val selectRoutineExercisesQuery = (routineIds?.let {
+            database.databaseQueries.selectRoutineExercises(routineIds)
+        } ?: database.databaseQueries.selectAllRoutineExercises())
+            .asFlow().mapToList()
 
-    override fun getRoutineExercises(): Flow<List<RoutineExercise>> {
         return combine(
             getAllExercises(),
-            database.databaseQueries.selectAllRoutineExercises().asFlow().mapToList()
-        ) { exercises, routineExercises ->
-            routineExercises
-                .map { routineExercise -> routineExercise.toRoutineExercise(exercises.first { exercise -> exercise.id == routineExercise.exerciseId }) }
-        }
-    }
-
-    override fun getRoutineExercises(routineIds: Collection<Long>): Flow<List<RoutineExercise>> {
-        return combine(
-            getAllExercises(),
-            database.databaseQueries.selectRoutineExercises(routineIds).asFlow().mapToList()
+            selectRoutineExercisesQuery
         ) { exercises, routineExercises ->
             routineExercises
                 .map { routineExercise -> routineExercise.toRoutineExercise(exercises.first { exercise -> exercise.id == routineExercise.exerciseId }) }
@@ -68,17 +59,22 @@ class LocalAppRepository(
             .map { list -> list.map { exercise -> exercise.toExercise() } }
     }
 
-    override fun getAllSessions(): Flow<List<Session>> {
+    override fun getSessions(sessionIds: Collection<Long>?): Flow<List<Session>> {
+        val selectSessionQuery = (sessionIds?.let {
+            database.databaseQueries.selectSessions(sessionIds)
+        } ?: database.databaseQueries.selectAllSessions())
+            .asFlow().mapToList()
+
         return combine(
-            getAllRoutines(),
-            getAllSessionExercises(),
-            database.databaseQueries.selectAllSessions().asFlow().mapToList()
+            getRoutines(),
+            getSessionExercises(),
+            selectSessionQuery
         ) { routines, sessionExercises, sessions ->
             sessions.map { session -> session.toSession(dateAdapter, routines.first { session.routineId == it.id }, sessionExercises) }
         }
     }
 
-    override fun getAllSessionExercises(): Flow<List<SessionExercise>> {
+    override fun getSessionExercises(): Flow<List<SessionExercise>> {
         return combine(
             getRoutineExercises(),
             database.databaseQueries.selectAllSessionExercises().asFlow().mapToList()

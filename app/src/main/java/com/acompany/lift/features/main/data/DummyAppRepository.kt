@@ -9,31 +9,23 @@ import java.util.*
 
 class DummyAppRepository : AppRepository {
 
-    override fun getAllRoutines(): Flow<List<Routine>> {
-        return flowOf(routines)
+    override fun getRoutines(ids: Collection<Long>?): Flow<List<Routine>> {
+        return flowOf(routines.filter { ids?.contains(it.id) == true })
     }
 
-    override fun getRoutines(ids: Collection<Long>): Flow<List<Routine>> {
-        return flowOf(routines.filter { ids.contains(it.id) })
-    }
-
-    override fun getRoutineExercises(): Flow<List<RoutineExercise>> {
-        return flowOf(routineExercises)
-    }
-
-    override fun getRoutineExercises(routineIds: Collection<Long>): Flow<List<RoutineExercise>> {
-        return flowOf(routineExercises.filter { routineIds.contains(it.routineId) })
+    override fun getRoutineExercises(routineIds: Collection<Long>?): Flow<List<RoutineExercise>> {
+        return flowOf(routineExercises.filter { routineIds?.contains(it.routineId) == true })
     }
 
     override fun getAllExercises(): Flow<List<Exercise>> {
         return flowOf(routineExercises.map { it.exercise })
     }
 
-    override fun getAllSessions(): Flow<List<Session>> {
+    override fun getSessions(sessionIds: Collection<Long>?): Flow<List<Session>> {
         return flowOf(sessions)
     }
 
-    override fun getAllSessionExercises(): Flow<List<SessionExercise>> {
+    override fun getSessionExercises(): Flow<List<SessionExercise>> {
         return flowOf(sessionExercises)
     }
 

@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import com.acompany.lift.common.components.FloatTextField
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
+import com.acompany.lift.features.exercises.data.RoutineExerciseHelper.initialWeight
 import com.acompany.lift.features.main.data.DummyAppRepository
 
 @Composable

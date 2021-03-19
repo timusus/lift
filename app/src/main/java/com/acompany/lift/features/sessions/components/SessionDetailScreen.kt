@@ -3,34 +3,55 @@ package com.acompany.lift.features.sessions.components
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DeleteForever
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.tooling.preview.Preview
 import com.acompany.lift.data.model.Session
 import com.acompany.lift.features.main.data.DummyAppRepository
+import com.acompany.lift.features.sessions.data.ScreenState
 import com.acompany.lift.features.sessions.data.SessionDetailViewModel
-import kotlinx.coroutines.GlobalScope
 
 @Composable
-fun SessionDetailScreen(viewModel: SessionDetailViewModel, session: Session, onSessionDeleted: () -> Unit) {
-    val openDialog = remember { mutableStateOf(false) }
+fun SessionDetailScreen(
+    viewModel: SessionDetailViewModel,
+    onSessionDeleted: () -> Unit
+) {
+    val screenState: ScreenState by viewModel.screenState.collectAsState()
+
+    SessionDetailScreen(
+        screenState = screenState,
+        deleteSession = { session ->
+            viewModel.deleteSession(session)
+            onSessionDeleted()
+        }
+    )
+}
+
+@Composable
+fun SessionDetailScreen(
+    screenState: ScreenState,
+    deleteSession: (session: Session) -> Unit
+) {
+    var sessionToDelete by rememberSaveable { mutableStateOf<Session?>(null) }
 
     Scaffold(topBar = {
-        TopAppBar(title = { Text(text = session.routine.name) }, actions = {
-            IconButton(onClick = { openDialog.value = true }) {
-                Icon(imageVector = Icons.Rounded.DeleteForever, contentDescription = "Delete")
+        TopAppBar(title = {
+            Text(text = (screenState as? ScreenState.Ready)?.session?.routine?.name ?: "Session")
+        }, actions = {
+            if (screenState is ScreenState.Ready) {
+                IconButton(onClick = { sessionToDelete = screenState.session }) {
+                    Icon(imageVector = Icons.Rounded.DeleteForever, contentDescription = "Delete")
+                }
             }
         })
     }) {
-
-        if (openDialog.value) {
-            DeleteConfirmationAlertDialog { confirmation ->
+        sessionToDelete?.let { session ->
+            DeleteConfirmationAlertDialog(onDismiss = { confirmation ->
                 if (confirmation) {
-                    viewModel.deleteSession(session)
-                    onSessionDeleted()
+                    deleteSession(session)
                 }
-            }
+                sessionToDelete = null
+            })
         }
     }
 }
@@ -70,7 +91,6 @@ fun DeleteConfirmationAlertDialog(onDismiss: (confirmation: Boolean) -> Unit) {
 @Composable
 fun SessionDetailScreenPreview() {
     SessionDetailScreen(
-        viewModel = SessionDetailViewModel(DummyAppRepository(), GlobalScope),
-        session = DummyAppRepository.sessions.first()
+        screenState = ScreenState.Ready(DummyAppRepository.sessions.first())
     ) {}
 }

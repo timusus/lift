@@ -27,10 +27,11 @@ sealed class NavDestination(
     )
 
     class SessionDetailNavDestination : NavDestination(
-        route = "sessions/session"
+        route = "sessions/session/{sessionId}",
+        arguments = listOf(navArgument(ARG_SESSION_ID) { type = NavType.LongType })
     ) {
         companion object {
-            const val ARG_SESSION = "session"
+            const val ARG_SESSION_ID = "sessionId"
         }
     }
 }

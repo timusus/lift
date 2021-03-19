@@ -111,6 +111,11 @@ selectAllSessions:
 SELECT *
 FROM Session;
 
+selectSessions:
+SELECT *
+FROM Session
+WHERE id IN :ids;
+
 deleteSession:
 DELETE FROM Session
 WHERE id = :id;

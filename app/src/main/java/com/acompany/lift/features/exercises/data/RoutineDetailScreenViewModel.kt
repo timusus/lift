@@ -23,18 +23,18 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class ExerciseScreenViewModel @Inject constructor(
+class RoutineDetailScreenViewModel @Inject constructor(
     private val appRepository: AppRepository,
     @AppModule.AppCoroutineScope private val appCoroutineScope: CoroutineScope,
     private val soundManager: SoundManager,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    private val routineId = savedStateHandle.get<Long>("routineId")!!
+
     val exerciseProgressMap = mutableStateMapOf<RoutineExercise, ExerciseProgress>()
 
-    var sessionProgress by mutableStateOf<SessionProgress>(SessionProgress.None)
-
-    private val routineId = savedStateHandle.get<Long>("routineId")!!
+    var sessionProgress by mutableStateOf<RoutineProgress>(RoutineProgress.None)
 
     val screenState = appRepository.getRoutines(listOf(routineId))
         .mapNotNull { routines -> routines.firstOrNull() }
@@ -43,7 +43,7 @@ class ExerciseScreenViewModel @Inject constructor(
 
     init {
         if (savedStateHandle.contains(KEY_SESSION_PROGRESS)) {
-            savedStateHandle.get<SessionProgress>(KEY_SESSION_PROGRESS)?.let {
+            savedStateHandle.get<RoutineProgress>(KEY_SESSION_PROGRESS)?.let {
                 sessionProgress = it
             }
         }
@@ -77,7 +77,7 @@ class ExerciseScreenViewModel @Inject constructor(
 
     fun saveSession(routine: Routine) {
         when (val _sessionProgress = sessionProgress) {
-            is SessionProgress.Complete -> {
+            is RoutineProgress.Complete -> {
                 appCoroutineScope.launch { // We use app scope here, as the ViewModel may go out of scope during a save
                     appRepository.createSession(
                         session = Session(
@@ -101,7 +101,7 @@ class ExerciseScreenViewModel @Inject constructor(
 
     fun updateProgress(routine: Routine) {
         when (val _sessionProgress = sessionProgress) {
-            is SessionProgress.None -> {
+            is RoutineProgress.None -> {
                 routine.exercises.forEachIndexed { index, exercise ->
                     if (index == 0) {
                         exerciseProgressMap[exercise] = ExerciseProgress.InProgress(0)
@@ -109,9 +109,9 @@ class ExerciseScreenViewModel @Inject constructor(
                         exerciseProgressMap[exercise] = ExerciseProgress.None
                     }
                 }
-                sessionProgress = SessionProgress.InProgress(Date(), routine.exercises.first())
+                sessionProgress = RoutineProgress.InProgress(Date(), routine.exercises.first())
             }
-            is SessionProgress.InProgress -> {
+            is RoutineProgress.InProgress -> {
                 when (val currentExerciseProgress =
                     exerciseProgressMap[_sessionProgress.currentExercise]!!) {
                     is ExerciseProgress.None -> {
@@ -129,12 +129,12 @@ class ExerciseScreenViewModel @Inject constructor(
                             if (index < exerciseProgressMap.size - 1) {
                                 val nextExercise = routine.exercises[index + 1]
                                 exerciseProgressMap[nextExercise] = ExerciseProgress.InProgress(0)
-                                sessionProgress = SessionProgress.InProgress(
+                                sessionProgress = RoutineProgress.InProgress(
                                     startDate = _sessionProgress.startDate,
                                     currentExercise = nextExercise
                                 )
                             } else {
-                                sessionProgress = SessionProgress.Complete(
+                                sessionProgress = RoutineProgress.Complete(
                                     startDate = _sessionProgress.startDate,
                                     shouldSave = false
                                 )
@@ -145,9 +145,9 @@ class ExerciseScreenViewModel @Inject constructor(
                     }
                 }
             }
-            is SessionProgress.Complete -> {
+            is RoutineProgress.Complete -> {
                 if (!_sessionProgress.shouldSave) {
-                    sessionProgress = SessionProgress.Complete(
+                    sessionProgress = RoutineProgress.Complete(
                         startDate = _sessionProgress.startDate,
                         shouldSave = true
                     )

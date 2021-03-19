@@ -24,7 +24,7 @@ import java.util.*
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 fun ExerciseScreen(
     modifier: Modifier = Modifier,
-    viewModel: ExerciseScreenViewModel,
+    viewModel: RoutineDetailScreenViewModel,
     onSessionComplete: () -> Unit,
 ) {
 
@@ -35,7 +35,7 @@ fun ExerciseScreen(
         modifier = modifier,
         screenState = screenState,
         selectedExercise = selectedExercise,
-        sessionProgress = viewModel.sessionProgress,
+        routineProgress = viewModel.sessionProgress,
         exerciseProgressMap = viewModel.exerciseProgressMap,
         onSessionComplete = onSessionComplete,
         onExerciseSelected = { routineExercise ->
@@ -62,7 +62,7 @@ fun ExerciseScreen(
         onUpdateExerciseProgress = { routine ->
             viewModel.updateProgress(routine)
             when (val sessionProgress = viewModel.sessionProgress) {
-                is SessionProgress.Complete -> {
+                is RoutineProgress.Complete -> {
                     if (sessionProgress.shouldSave) {
                         viewModel.saveSession(routine)
                         onSessionComplete()
@@ -82,7 +82,7 @@ fun ExerciseScreen(
     modifier: Modifier = Modifier,
     screenState: ScreenState,
     selectedExercise: RoutineExercise?,
-    sessionProgress: SessionProgress,
+    routineProgress: RoutineProgress,
     exerciseProgressMap: Map<RoutineExercise, ExerciseProgress>,
     onExerciseSelected: (RoutineExercise) -> Unit = {},
     onSessionComplete: () -> Unit = {},
@@ -147,7 +147,7 @@ fun ExerciseScreen(
                             ExerciseList(
                                 routineExercises = screenState.routine.exercises,
                                 exerciseProgress = exerciseProgressMap,
-                                currentExercise = (sessionProgress as? SessionProgress.InProgress)?.currentExercise,
+                                currentExercise = (routineProgress as? RoutineProgress.InProgress)?.currentExercise,
                                 onExerciseClick = { routineExercise ->
                                     onExerciseSelected(routineExercise)
                                     show()
@@ -160,7 +160,7 @@ fun ExerciseScreen(
                                     onRestTimeComplete()
                                 }
                             )
-                            SessionProgressFloatingActionButton(sessionProgress) {
+                            SessionProgressFloatingActionButton(routineProgress) {
                                 onUpdateExerciseProgress(screenState.routine)
                             }
                         }
@@ -174,13 +174,13 @@ fun ExerciseScreen(
 @Preview
 @Composable
 private fun ExerciseScreenPreview(
-    @PreviewParameter(ExerciseScreenPreviewProvider::class) preview: Colors
+    @PreviewParameter(RoutineDetailScreenPreviewProvider::class) preview: Colors
 ) {
     MaterialTheme(colors = preview) {
         ExerciseScreen(
             screenState = ScreenState.Ready(DummyAppRepository.routines.first()),
             selectedExercise = null,
-            sessionProgress = SessionProgress.InProgress(Date(), DummyAppRepository.routineExercises.first()),
+            routineProgress = RoutineProgress.InProgress(Date(), DummyAppRepository.routineExercises.first()),
             exerciseProgressMap = mapOf()
         )
     }

@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
 import com.acompany.lift.features.exercises.components.ExerciseScreen
 import com.acompany.lift.features.main.data.NavDestination
-import com.acompany.lift.features.main.data.NavDestination.SessionDetailNavDestination.Companion.ARG_SESSION
 import com.acompany.lift.features.routines.components.RoutineScreen
 import com.acompany.lift.features.sessions.components.SessionDetailScreen
 import com.acompany.lift.features.sessions.components.SessionScreen
@@ -53,17 +52,16 @@ fun ListNavHost(
                     is NavDestination.SessionNavDestination -> {
                         SessionScreen(viewModel = hiltNavGraphViewModel(),
                             onSessionClick = { session ->
-                                navController.currentBackStackEntry?.arguments!!.putParcelable(ARG_SESSION, session)
-                                navController.navigate(route = "sessions/session")
+                                navController.navigate(route = "sessions/session/${session.id}")
                             })
                     }
                     is NavDestination.SessionDetailNavDestination -> {
-                        val previousArguments = navController.previousBackStackEntry!!.arguments!!
                         SessionDetailScreen(
                             viewModel = hiltNavGraphViewModel(),
-                            session = previousArguments.getParcelable(ARG_SESSION)!!, onSessionDeleted = {
+                            onSessionDeleted = {
                                 navController.popBackStack()
-                            })
+                            }
+                        )
                     }
                 }
             }

@@ -14,5 +14,5 @@ class SessionScreenViewModel @Inject constructor(
     val dateFormatter: DateFormatter
 ) : ViewModel() {
 
-    fun getSessions(): Flow<List<Session>> = appRepository.getAllSessions()
+    fun getSessions(): Flow<List<Session>> = appRepository.getSessions()
 }
