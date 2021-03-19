@@ -8,5 +8,33 @@ The app guides you through your weight lifting routine and reminds you of your s
 Lift is an open source Jetpack Compose app, built to learn & demonstrate Compose UI along with modern Android architecture.
 
 ## Screenshots
-
-<img src="../assets/assets/Exercise%20Detail.png?raw=true" width="250">
+<table style="padding:10px">
+    <tr>
+        <td>
+            <img src="../assets/assets/1.png?raw=true" width="125">
+        </td>
+        <td>
+            <img src="../assets/assets/2.png?raw=true" width="125">
+        </td>
+        <td>
+            <img src="../assets/assets/3.png?raw=true" width="125">
+        </td>
+        <td>
+            <img src="../assets/assets/4.png?raw=true" width="125">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="../assets/assets/5.png?raw=true" width="125">
+        </td>
+        <td>
+            <img src="../assets/assets/6.png?raw=true" width="125">
+        </td>
+        <td>
+            <img src="../assets/assets/8.png?raw=true" width="125">
+        </td>
+        <td>
+            <img src="../assets/assets/9.png?raw=true" width="125">
+        </td>
+    </tr>
+</table>
