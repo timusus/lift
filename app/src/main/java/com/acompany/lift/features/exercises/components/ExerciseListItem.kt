@@ -23,7 +23,7 @@ import com.acompany.lift.common.components.Icon
 import com.acompany.lift.common.effects.remainingTimeMillis
 import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.exercises.data.ExerciseHelper.initialWeight
-import com.acompany.lift.features.exercises.data.ExerciseScreenViewModel
+import com.acompany.lift.features.exercises.data.ExerciseProgress
 import com.acompany.lift.features.exercises.data.RoutineExerciseListItemPreviewProvider
 import com.acompany.lift.theme.MaterialColors
 import com.acompany.lift.theme.MaterialTypography
@@ -31,7 +31,7 @@ import com.acompany.lift.theme.MaterialTypography
 @Composable
 fun ExerciseListItem(
     routineExercise: RoutineExercise,
-    exerciseProgress: ExerciseScreenViewModel.ExerciseProgress,
+    exerciseProgress: ExerciseProgress,
     isCurrentExercise: Boolean,
     modifier: Modifier = Modifier,
     onExerciseClick: () -> Unit = {},
@@ -53,7 +53,7 @@ fun ExerciseListItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     CutCornerIcon(
-                        icon = if (exerciseProgress is ExerciseScreenViewModel.ExerciseProgress.Complete) Icons.Rounded.Check else Icons.Rounded.FitnessCenter,
+                        icon = if (exerciseProgress is ExerciseProgress.Complete) Icons.Rounded.Check else Icons.Rounded.FitnessCenter,
                         modifier = Modifier.padding(8.dp),
                         tint = MaterialColors.primary
                     )
@@ -92,17 +92,17 @@ fun ExerciseListItem(
 
 @Composable
 private fun SessionStateIndicator(
-    exerciseProgress: ExerciseScreenViewModel.ExerciseProgress,
+    exerciseProgress: ExerciseProgress,
     routineExercise: RoutineExercise,
     onDoneClick: () -> Unit,
     onRestTimeComplete: () -> Unit
 ) {
     when (exerciseProgress) {
-        is ExerciseScreenViewModel.ExerciseProgress.None -> {
+        is ExerciseProgress.None -> {
         }
-        is ExerciseScreenViewModel.ExerciseProgress.Complete -> {
+        is ExerciseProgress.Complete -> {
         }
-        is ExerciseScreenViewModel.ExerciseProgress.InProgress -> {
+        is ExerciseProgress.InProgress -> {
             Row(
                 modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -121,7 +121,7 @@ private fun SessionStateIndicator(
                 }
             }
         }
-        is ExerciseScreenViewModel.ExerciseProgress.Resting -> {
+        is ExerciseProgress.Resting -> {
             Row(
                 modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -162,7 +162,7 @@ private fun ExerciseListItemPreview(
         ) {
             ExerciseListItem(
                 routineExercise = preview.second,
-                exerciseProgress = ExerciseScreenViewModel.ExerciseProgress.InProgress(1),
+                exerciseProgress = ExerciseProgress.InProgress(1),
                 isCurrentExercise = true
             )
         }

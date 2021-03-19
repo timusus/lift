@@ -12,13 +12,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.exercises.data.ExerciseScreenViewModel
+import com.acompany.lift.features.exercises.data.ExerciseProgress
 import com.acompany.lift.features.exercises.data.RoutineExerciseListPreviewProvider
 
 @Composable
 fun ExerciseList(
     routineExercises: List<RoutineExercise>,
-    exerciseProgress: Map<RoutineExercise, ExerciseScreenViewModel.ExerciseProgress>,
+    exerciseProgress: Map<RoutineExercise, ExerciseProgress>,
     currentExercise: RoutineExercise?,
     modifier: Modifier = Modifier,
     onExerciseClick: (RoutineExercise) -> Unit = {},
@@ -33,7 +33,7 @@ fun ExerciseList(
         items(routineExercises) { routineExercise ->
             ExerciseListItem(
                 routineExercise = routineExercise,
-                exerciseProgress = exerciseProgress[routineExercise] ?: ExerciseScreenViewModel.ExerciseProgress.None,
+                exerciseProgress = exerciseProgress[routineExercise] ?: ExerciseProgress.None,
                 isCurrentExercise = routineExercise == currentExercise,
                 onExerciseClick = { onExerciseClick(routineExercise) },
                 onDoneClick = { onDoneClick(routineExercise) },
@@ -51,7 +51,7 @@ private fun ExerciseListPreview(
     MaterialTheme(colors = preview.first) {
         ExerciseList(
             routineExercises = preview.second,
-            mapOf(preview.second.first() to ExerciseScreenViewModel.ExerciseProgress.None),
+            mapOf(preview.second.first() to ExerciseProgress.None),
             preview.second.first()
         )
     }

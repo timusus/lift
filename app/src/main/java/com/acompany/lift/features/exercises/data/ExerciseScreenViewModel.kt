@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acompany.lift.common.SoundManager
@@ -24,12 +25,36 @@ import javax.inject.Inject
 @HiltViewModel
 class ExerciseScreenViewModel @Inject constructor(
     private val appRepository: AppRepository,
-    @AppModule.AppCoroutineScope private val appScope: CoroutineScope,
-    private val soundManager: SoundManager
+    @AppModule.AppCoroutineScope private val appCoroutineScope: CoroutineScope,
+    private val soundManager: SoundManager,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    fun getRoutine(id: Long): Flow<Routine> {
-        return appRepository.getRoutines(listOf(id)).map { routines -> routines.first() }
+    val exerciseProgressMap = mutableStateMapOf<RoutineExercise, ExerciseProgress>()
+
+    var sessionProgress by mutableStateOf<SessionProgress>(SessionProgress.None)
+
+    private val routineId = savedStateHandle.get<Long>("routineId")!!
+
+    val screenState = appRepository.getRoutines(listOf(routineId))
+        .mapNotNull { routines -> routines.firstOrNull() }
+        .map { routine -> ScreenState.Ready(routine) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ScreenState.Loading)
+
+    init {
+        if (savedStateHandle.contains(KEY_SESSION_PROGRESS)) {
+            savedStateHandle.get<SessionProgress>(KEY_SESSION_PROGRESS)?.let {
+                sessionProgress = it
+            }
+        }
+        viewModelScope.launch {
+            val exercises = screenState.filterIsInstance<ScreenState.Ready>().first().routine.exercises
+            exercises.forEach { exercise ->
+                savedStateHandle.get<ExerciseProgress>("$KEY_EXERCISE_ID/${exercise.id}")?.let { exerciseProgress ->
+                    exerciseProgressMap[exercise] = exerciseProgress
+                }
+            }
+        }
     }
 
     fun updateOneRepMax(exerciseId: Long, value: Float?) {
@@ -51,42 +76,28 @@ class ExerciseScreenViewModel @Inject constructor(
     }
 
     fun saveSession(routine: Routine) {
-        if (sessionProgress is SessionProgress.Complete) {
-            appScope.launch { // We use app scope here, as the ViewModel may go out of scope during a save
-                appRepository.createSession(
-                    session = Session(
-                        id = 0,
-                        startDate = sessionProgress.startDate!!,
-                        endDate = Date(),
-                        routine = routine,
-                        exercises = routine.exercises.map { routineExercise ->
-                            routineExercise.toSessionExercise()
-                        }
-                    ),
-                    routine = routine
-                )
+        when (val _sessionProgress = sessionProgress) {
+            is SessionProgress.Complete -> {
+                appCoroutineScope.launch { // We use app scope here, as the ViewModel may go out of scope during a save
+                    appRepository.createSession(
+                        session = Session(
+                            id = 0,
+                            startDate = _sessionProgress.startDate,
+                            endDate = Date(),
+                            routine = routine,
+                            exercises = routine.exercises.map { routineExercise ->
+                                routineExercise.toSessionExercise()
+                            }
+                        ),
+                        routine = routine
+                    )
+                }
             }
-        } else {
-            Timber.e("Cannot save incomplete session")
+            else -> {
+                Timber.e("Cannot save incomplete session")
+            }
         }
     }
-
-    sealed class ExerciseProgress {
-        object None : ExerciseProgress()
-        class InProgress(val set: Int) : ExerciseProgress()
-        class Resting(val set: Int) : ExerciseProgress()
-        object Complete : ExerciseProgress()
-    }
-
-    val exerciseProgressMap = mutableStateMapOf<RoutineExercise, ExerciseProgress>()
-
-    sealed class SessionProgress(val startDate: Date?) {
-        object None : SessionProgress(null)
-        class InProgress(startDate: Date?, val currentExercise: RoutineExercise) : SessionProgress(startDate)
-        class Complete(startDate: Date?, val shouldSave: Boolean) : SessionProgress(startDate)
-    }
-
-    var sessionProgress by mutableStateOf<SessionProgress>(SessionProgress.None)
 
     fun updateProgress(routine: Routine) {
         when (val _sessionProgress = sessionProgress) {
@@ -143,9 +154,20 @@ class ExerciseScreenViewModel @Inject constructor(
                 }
             }
         }
+
+        exerciseProgressMap.keys.forEach { routineExercise ->
+            val progress = exerciseProgressMap[routineExercise]
+            savedStateHandle.set("$KEY_EXERCISE_ID/${routineExercise.id}", progress)
+        }
+        savedStateHandle.set(KEY_SESSION_PROGRESS, sessionProgress)
     }
 
     fun playRestTimerTone() {
         soundManager.playSound(SoundManager.Sound.Tone)
+    }
+
+    companion object {
+        const val KEY_SESSION_PROGRESS = "session_progress"
+        const val KEY_EXERCISE_ID = "exercise_id/"
     }
 }
