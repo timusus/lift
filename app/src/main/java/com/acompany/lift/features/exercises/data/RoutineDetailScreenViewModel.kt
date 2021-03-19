@@ -112,8 +112,7 @@ class RoutineDetailScreenViewModel @Inject constructor(
                 sessionProgress = RoutineProgress.InProgress(Date(), routine.exercises.first())
             }
             is RoutineProgress.InProgress -> {
-                when (val currentExerciseProgress =
-                    exerciseProgressMap[_sessionProgress.currentExercise]!!) {
+                when (val currentExerciseProgress = exerciseProgressMap[_sessionProgress.currentExercise]!!) {
                     is ExerciseProgress.None -> {
                         exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.InProgress(0)
                     }
