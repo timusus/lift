@@ -1,16 +1,17 @@
 package com.acompany.lift.features.main.components
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.StackedLineChart
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.acompany.lift.common.navigation.currentRoute
 import com.acompany.lift.features.main.data.NavDestination
@@ -23,7 +24,11 @@ fun LiftBottomNavigation(
     onNavigationItemClick: (LiftNavigationItem) -> Unit
 ) {
     val currentRoute = navController.currentRoute()
-    BottomNavigation(modifier = modifier) {
+    BottomNavigation(
+        modifier = modifier
+            .padding(16.dp)
+            .clip(CircleShape)
+    ) {
         LiftNavigationItem.values().forEach { item ->
             LiftBottomNavigationItem(
                 liftNavigationItem = item,
@@ -43,24 +48,25 @@ fun RowScope.LiftBottomNavigationItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val iconTint = with(MaterialColors) {
-        if (selected) {
-            if (isLight) onPrimary else primary
-        } else {
-            val disabledAlpha = ContentAlpha.disabled
-            if (isLight) onPrimary.copy(alpha = disabledAlpha) else onSurface.copy(alpha = disabledAlpha)
-        }
-    }
     BottomNavigationItem(
         modifier = modifier,
         selected = selected,
         onClick = onClick,
+        alwaysShowLabel = selected,
+        selectedContentColor = with(MaterialColors) {
+            if (isLight) onPrimary else primary
+        },
+        unselectedContentColor = with(MaterialColors) {
+            if (isLight) onPrimary else onSurface
+        }.copy(alpha = ContentAlpha.medium),
         icon = {
             Icon(
                 imageVector = liftNavigationItem.icon,
-                contentDescription = liftNavigationItem.contentDescription,
-                tint = iconTint
+                contentDescription = liftNavigationItem.contentDescription
             )
+        },
+        label = {
+            Text(text = liftNavigationItem.name)
         }
     )
 }
