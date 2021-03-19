@@ -20,6 +20,9 @@ class SoundManager @Inject constructor(@ApplicationContext val context: Context)
         mediaPlayer.setOnPreparedListener {
             mediaPlayer.start()
         }
+        mediaPlayer.setOnCompletionListener {
+            mediaPlayer.reset()
+        }
         mediaPlayer.prepareAsync()
     }
 }
