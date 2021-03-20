@@ -1,4 +1,4 @@
-package com.acompany.lift.features.sessions.data
+package com.acompany.lift.features.sessions.detail.data
 
 import android.os.Parcelable
 import com.acompany.lift.data.model.Session
@@ -9,5 +9,5 @@ sealed class ScreenState : Parcelable {
     object Loading : ScreenState()
 
     @Parcelize
-    class Ready(val sessions: List<Session>) : ScreenState()
+    class Ready(val session: Session) : ScreenState()
 }

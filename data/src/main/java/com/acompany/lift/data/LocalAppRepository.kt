@@ -70,7 +70,11 @@ class LocalAppRepository(
             getSessionExercises(),
             selectSessionQuery
         ) { routines, sessionExercises, sessions ->
-            sessions.map { session -> session.toSession(dateAdapter, routines.first { session.routineId == it.id }, sessionExercises) }
+            sessions.map { session ->
+                session.toSession(
+                    dateAdapter = dateAdapter, routine = routines.first { session.routineId == it.id },
+                    exercises = sessionExercises.filter { it.sessionId == session.id })
+            }
         }
     }
 

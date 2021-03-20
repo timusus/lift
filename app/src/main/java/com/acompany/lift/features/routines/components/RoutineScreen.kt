@@ -3,6 +3,7 @@ package com.acompany.lift.features.routines.components
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -17,10 +18,10 @@ fun RoutineScreen(
     modifier: Modifier = Modifier,
     onRoutineSelected: (Routine) -> Unit = {}
 ) {
-    val routines = viewModel.allRoutines.collectAsState()
+    val routines by viewModel.allRoutines.collectAsState()
 
     RoutineScreen(
-        routines = routines.value,
+        routines = routines,
         modifier = modifier,
         onRoutineSelected = onRoutineSelected
     )

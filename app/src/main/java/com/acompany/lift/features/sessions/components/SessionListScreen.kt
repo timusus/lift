@@ -1,7 +1,5 @@
 package com.acompany.lift.features.sessions.components
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -14,21 +12,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.lift.common.DateFormatter
+import com.acompany.lift.common.components.LoadingIndicator
 import com.acompany.lift.data.model.Session
 import com.acompany.lift.di.AppModule
 import com.acompany.lift.features.main.data.DummyAppRepository
+import com.acompany.lift.features.sessions.data.ScreenState
 import com.acompany.lift.features.sessions.data.SessionScreenPreviewProvider
 import com.acompany.lift.features.sessions.data.SessionScreenViewModel
 
 @Composable
-fun SessionScreen(
+fun SessionListScreen(
     viewModel: SessionScreenViewModel,
     modifier: Modifier = Modifier,
     onSessionClick: (Session) -> Unit
 ) {
-    val sessions by viewModel.getSessions().collectAsState(null)
-    SessionScreen(
-        sessions = sessions,
+    val screenState: ScreenState by viewModel.screenState.collectAsState()
+    SessionListScreen(
+        screenState = screenState,
         dateFormatter = viewModel.dateFormatter,
         modifier = modifier,
         onSessionClick = onSessionClick
@@ -36,8 +36,8 @@ fun SessionScreen(
 }
 
 @Composable
-fun SessionScreen(
-    sessions: List<Session>?,
+fun SessionListScreen(
+    screenState: ScreenState,
     dateFormatter: DateFormatter,
     modifier: Modifier = Modifier,
     onSessionClick: (Session) -> Unit
@@ -48,25 +48,26 @@ fun SessionScreen(
             TopAppBar(title = { Text(text = "Sessions") })
         },
         content = {
-            if (sessions == null) {
-                Box(
-                    modifier = modifier.fillMaxSize(),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    CircularProgressIndicator(modifier.padding(top = 16.dp))
+            when (screenState) {
+                is ScreenState.Loading -> {
+                    LoadingIndicator(
+                        showLoading = true,
+                        contentAlignment = Alignment.TopCenter
+                    )
                 }
-            } else {
-                if (sessions.isEmpty()) {
-                    Text(
-                        modifier = Modifier.padding(16.dp),
-                        text = "No sessions recorded"
-                    )
-                } else {
-                    SessionList(
-                        sessions = sessions,
-                        dateFormatter = dateFormatter,
-                        onSessionClick = onSessionClick
-                    )
+                is ScreenState.Ready -> {
+                    if (screenState.sessions.isEmpty()) {
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            text = "No sessions recorded"
+                        )
+                    } else {
+                        SessionList(
+                            sessions = screenState.sessions,
+                            dateFormatter = dateFormatter,
+                            onSessionClick = onSessionClick
+                        )
+                    }
                 }
             }
         }
@@ -79,8 +80,8 @@ private fun SessionScreenPreview(
     @PreviewParameter(SessionScreenPreviewProvider::class) preview: Colors
 ) {
     MaterialTheme(colors = preview) {
-        SessionScreen(
-            sessions = DummyAppRepository.sessions,
+        SessionListScreen(
+            ScreenState.Ready(sessions = DummyAppRepository.sessions),
             dateFormatter = DateFormatter(
                 context = LocalContext.current,
                 mediumDateFormatter = AppModule.provideMediumDateFormat(),

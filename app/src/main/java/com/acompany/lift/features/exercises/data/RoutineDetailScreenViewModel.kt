@@ -36,7 +36,8 @@ class RoutineDetailScreenViewModel @Inject constructor(
 
     var sessionProgress by mutableStateOf<RoutineProgress>(RoutineProgress.None)
 
-    val screenState = appRepository.getRoutines(listOf(routineId))
+    val screenState = appRepository
+        .getRoutines(listOf(routineId))
         .mapNotNull { routines -> routines.firstOrNull() }
         .map { routine -> ScreenState.Ready(routine) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ScreenState.Loading)

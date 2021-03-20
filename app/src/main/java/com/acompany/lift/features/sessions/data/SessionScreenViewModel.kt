@@ -1,18 +1,24 @@
 package com.acompany.lift.features.sessions.data
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.acompany.lift.common.DateFormatter
 import com.acompany.lift.data.AppRepository
-import com.acompany.lift.data.model.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class SessionScreenViewModel @Inject constructor(
-    private val appRepository: AppRepository,
+    appRepository: AppRepository,
     val dateFormatter: DateFormatter
 ) : ViewModel() {
 
-    fun getSessions(): Flow<List<Session>> = appRepository.getSessions()
+    val screenState: StateFlow<ScreenState> = appRepository
+        .getSessions()
+        .mapNotNull { sessions -> ScreenState.Ready(sessions) }
+        .stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(), initialValue = ScreenState.Loading)
 }

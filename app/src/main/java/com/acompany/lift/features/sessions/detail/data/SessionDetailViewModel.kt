@@ -1,8 +1,9 @@
-package com.acompany.lift.features.sessions.data
+package com.acompany.lift.features.sessions.detail.data
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.acompany.lift.common.DateFormatter
 import com.acompany.lift.data.AppRepository
 import com.acompany.lift.data.model.Session
 import com.acompany.lift.di.AppModule
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class SessionDetailViewModel @Inject constructor(
     private val appRepository: AppRepository,
     @AppModule.AppCoroutineScope val appCoroutineScope: CoroutineScope,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    val dateFormatter: DateFormatter
 ) : ViewModel() {
 
     private val sessionId = savedStateHandle.get<Long>("sessionId")!!
