@@ -1,5 +1,5 @@
 object Dependencies {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha11"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha12"
 
     object Accompanist {
         private const val version = "0.6.2"
@@ -12,10 +12,10 @@ object Dependencies {
     }
 
     object AndroidX {
-        private const val lifecycleVersion = "2.3.0"
+        private const val lifecycleVersion = "2.4.0-alpha01"
 
-        const val activity = "androidx.activity:activity:1.3.0-SNAPSHOT"
-        const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha03"
+        const val activity = "androidx.activity:activity:1.3.0-alpha05"
+        const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha05"
         const val ktx = "androidx.core:core-ktx:1.5.0-beta01"
         const val core = "androidx.core:core:1.5.0-alpha03"
         const val datastore = "androidx.datastore:datastore-preferences:1.0.0-alpha06"
@@ -32,7 +32,7 @@ object Dependencies {
     }
 
     object Compose {
-        const val version = "1.0.0-beta02"
+        const val version = "1.0.0-beta03"
         const val snapshot = "7141639"
         const val snapshotUrl =
             "https://androidx.dev/snapshots/builds/$snapshot/artifacts/repository/"
