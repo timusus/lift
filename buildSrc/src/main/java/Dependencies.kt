@@ -21,7 +21,6 @@ object Dependencies {
         const val datastore = "androidx.datastore:datastore-preferences:1.0.0-alpha06"
         const val palette = "androidx.palette:palette:1.0.0"
         const val work = "androidx.work:work-runtime-ktx:2.5.0"
-        const val hiltCompiler = "androidx.hilt:hilt-compiler:1.0.0-beta01"
         const val lifecycleViewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
         const val lifecycleViewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03"
         const val viewModelSavedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion"
