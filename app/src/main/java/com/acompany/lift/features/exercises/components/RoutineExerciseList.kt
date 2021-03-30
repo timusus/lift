@@ -18,8 +18,8 @@ import com.acompany.lift.features.exercises.data.RoutineExerciseListPreviewProvi
 @Composable
 fun ExerciseList(
     routineExercises: List<RoutineExercise>,
-    exerciseProgress: Map<RoutineExercise, ExerciseProgress>,
-    currentExercise: RoutineExercise?,
+    exerciseProgress: Map<Long, ExerciseProgress>,
+    currentRoutineExerciseId: Long?,
     modifier: Modifier = Modifier,
     onExerciseClick: (RoutineExercise) -> Unit = {},
     onDoneClick: (RoutineExercise) -> Unit = {},
@@ -33,8 +33,8 @@ fun ExerciseList(
         items(routineExercises) { routineExercise ->
             ExerciseListItem(
                 routineExercise = routineExercise,
-                exerciseProgress = exerciseProgress[routineExercise] ?: ExerciseProgress.None,
-                isCurrentExercise = routineExercise == currentExercise,
+                exerciseProgress = exerciseProgress[routineExercise.id] ?: ExerciseProgress.None,
+                isCurrentExercise = routineExercise.id == currentRoutineExerciseId,
                 onExerciseClick = { onExerciseClick(routineExercise) },
                 onDoneClick = { onDoneClick(routineExercise) },
                 onRestTimeComplete = { onRestTimeComplete(routineExercise) }
@@ -51,8 +51,8 @@ private fun ExerciseListPreview(
     MaterialTheme(colors = preview.first) {
         ExerciseList(
             routineExercises = preview.second,
-            mapOf(preview.second.first() to ExerciseProgress.None),
-            preview.second.first()
+            mapOf(preview.second.first().id to ExerciseProgress.None),
+            preview.second.first().id
         )
     }
 }

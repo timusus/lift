@@ -11,7 +11,6 @@ import com.acompany.lift.common.SoundManager
 import com.acompany.lift.data.AppRepository
 import com.acompany.lift.data.model.Mapper.toSessionExercise
 import com.acompany.lift.data.model.Routine
-import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.data.model.Session
 import com.acompany.lift.di.AppModule
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +31,7 @@ class RoutineDetailScreenViewModel @Inject constructor(
 
     private val routineId = savedStateHandle.get<Long>("routineId")!!
 
-    val exerciseProgressMap = mutableStateMapOf<RoutineExercise, ExerciseProgress>()
+    val exerciseProgressMap = mutableStateMapOf<Long, ExerciseProgress>()
 
     var sessionProgress by mutableStateOf<RoutineProgress>(RoutineProgress.None)
 
@@ -50,9 +49,9 @@ class RoutineDetailScreenViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val exercises = screenState.filterIsInstance<ScreenState.Ready>().first().routine.exercises
-            exercises.forEach { exercise ->
-                savedStateHandle.get<ExerciseProgress>("$KEY_EXERCISE_ID/${exercise.id}")?.let { exerciseProgress ->
-                    exerciseProgressMap[exercise] = exerciseProgress
+            exercises.forEach { routineExercise ->
+                savedStateHandle.get<ExerciseProgress>("$KEY_EXERCISE_ID/${routineExercise.id}")?.let { exerciseProgress ->
+                    exerciseProgressMap[routineExercise.id] = exerciseProgress
                 }
             }
         }
@@ -103,35 +102,37 @@ class RoutineDetailScreenViewModel @Inject constructor(
     fun updateProgress(routine: Routine) {
         when (val _sessionProgress = sessionProgress) {
             is RoutineProgress.None -> {
-                routine.exercises.forEachIndexed { index, exercise ->
+                routine.exercises.forEachIndexed { index, routineExercise ->
                     if (index == 0) {
-                        exerciseProgressMap[exercise] = ExerciseProgress.InProgress(0)
+                        exerciseProgressMap[routineExercise.id] = ExerciseProgress.InProgress(0)
                     } else {
-                        exerciseProgressMap[exercise] = ExerciseProgress.None
+                        exerciseProgressMap[routineExercise.id] = ExerciseProgress.None
                     }
                 }
-                sessionProgress = RoutineProgress.InProgress(Date(), routine.exercises.first())
+                sessionProgress = RoutineProgress.InProgress(Date(), routine.exercises.first().id)
             }
             is RoutineProgress.InProgress -> {
-                when (val currentExerciseProgress = exerciseProgressMap[_sessionProgress.currentExercise]!!) {
+                val currentRoutineExerciseId = _sessionProgress.currentRoutineExerciseId
+                val currentRoutineExercise = routine.exercises.first { it.id == currentRoutineExerciseId }
+                when (val currentExerciseProgress = exerciseProgressMap[currentRoutineExerciseId]!!) {
                     is ExerciseProgress.None -> {
-                        exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.InProgress(0)
+                        exerciseProgressMap[currentRoutineExerciseId] = ExerciseProgress.InProgress(0)
                     }
                     is ExerciseProgress.InProgress -> {
-                        exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.Resting(currentExerciseProgress.set)
+                        exerciseProgressMap[currentRoutineExerciseId] = ExerciseProgress.Resting(currentExerciseProgress.set)
                     }
                     is ExerciseProgress.Resting -> {
-                        if (currentExerciseProgress.set < _sessionProgress.currentExercise.sets - 1) {
-                            exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.InProgress(currentExerciseProgress.set + 1)
+                        if (currentExerciseProgress.set < currentRoutineExercise.sets - 1) {
+                            exerciseProgressMap[currentRoutineExerciseId] = ExerciseProgress.InProgress(currentExerciseProgress.set + 1)
                         } else {
-                            exerciseProgressMap[_sessionProgress.currentExercise] = ExerciseProgress.Complete
-                            val index = routine.exercises.indexOf(_sessionProgress.currentExercise)
+                            exerciseProgressMap[currentRoutineExerciseId] = ExerciseProgress.Complete
+                            val index = routine.exercises.indexOf(currentRoutineExercise)
                             if (index < exerciseProgressMap.size - 1) {
-                                val nextExercise = routine.exercises[index + 1]
-                                exerciseProgressMap[nextExercise] = ExerciseProgress.InProgress(0)
+                                val nextExerciseId = routine.exercises[index + 1].id
+                                exerciseProgressMap[nextExerciseId] = ExerciseProgress.InProgress(0)
                                 sessionProgress = RoutineProgress.InProgress(
                                     startDate = _sessionProgress.startDate,
-                                    currentExercise = nextExercise
+                                    currentRoutineExerciseId = nextExerciseId
                                 )
                             } else {
                                 sessionProgress = RoutineProgress.Complete(
@@ -155,9 +156,9 @@ class RoutineDetailScreenViewModel @Inject constructor(
             }
         }
 
-        exerciseProgressMap.keys.forEach { routineExercise ->
-            val progress = exerciseProgressMap[routineExercise]
-            savedStateHandle.set("$KEY_EXERCISE_ID/${routineExercise.id}", progress)
+        exerciseProgressMap.keys.forEach { routineExerciseId ->
+            val progress = exerciseProgressMap[routineExerciseId]
+            savedStateHandle.set("$KEY_EXERCISE_ID/${routineExerciseId}", progress)
         }
         savedStateHandle.set(KEY_SESSION_PROGRESS, sessionProgress)
     }

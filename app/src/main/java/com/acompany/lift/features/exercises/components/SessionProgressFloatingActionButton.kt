@@ -29,14 +29,14 @@ fun SessionProgressFloatingActionButton(
         is RoutineProgress.InProgress -> Icons.Rounded.DoubleArrow to "next session"
         is RoutineProgress.Complete -> Icons.Rounded.CheckCircle to "completed"
     }
-    val date = when (routineProgress){
+    val date = when (routineProgress) {
         is RoutineProgress.InProgress -> routineProgress.startDate
         is RoutineProgress.Complete -> routineProgress.startDate
         else -> null
     }
     AnimatedFloatingActionButton(
         text = DateUtils.formatElapsedTime(
-            elapsedTimeMillis(date?: Date())
+            elapsedTimeMillis(date ?: Date())
         ),
         icon = sessionIcon,
         contentDescription = sessionIconDescription,
@@ -60,7 +60,7 @@ private fun SessionProgressFloatingActionButtonPreview() {
     SessionProgressFloatingActionButton(
         routineProgress = RoutineProgress.InProgress(
             startDate = Date(),
-            currentExercise = DummyAppRepository.routineExercises.first()
+            currentRoutineExerciseId = DummyAppRepository.routineExercises.first().id
         ),
         onClick = {}
     )

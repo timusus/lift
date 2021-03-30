@@ -83,7 +83,7 @@ fun ExerciseScreen(
     screenState: ScreenState,
     selectedExercise: RoutineExercise?,
     routineProgress: RoutineProgress,
-    exerciseProgressMap: Map<RoutineExercise, ExerciseProgress>,
+    exerciseProgressMap: Map<Long, ExerciseProgress>,
     onExerciseSelected: (RoutineExercise) -> Unit = {},
     onSessionComplete: () -> Unit = {},
     onOneRepMaxChanged: (RoutineExercise, Float?) -> Unit = { _, _ -> },
@@ -147,7 +147,7 @@ fun ExerciseScreen(
                             ExerciseList(
                                 routineExercises = screenState.routine.exercises,
                                 exerciseProgress = exerciseProgressMap,
-                                currentExercise = (routineProgress as? RoutineProgress.InProgress)?.currentExercise,
+                                currentRoutineExerciseId = (routineProgress as? RoutineProgress.InProgress)?.currentRoutineExerciseId,
                                 onExerciseClick = { routineExercise ->
                                     onExerciseSelected(routineExercise)
                                     show()
@@ -180,7 +180,7 @@ private fun ExerciseScreenPreview(
         ExerciseScreen(
             screenState = ScreenState.Ready(DummyAppRepository.routines.first()),
             selectedExercise = null,
-            routineProgress = RoutineProgress.InProgress(Date(), DummyAppRepository.routineExercises.first()),
+            routineProgress = RoutineProgress.InProgress(Date(), DummyAppRepository.routineExercises.first().id),
             exerciseProgressMap = mapOf()
         )
     }

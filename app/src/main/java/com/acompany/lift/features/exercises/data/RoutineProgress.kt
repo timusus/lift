@@ -6,11 +6,12 @@ import kotlinx.parcelize.Parcelize
 import java.util.*
 
 sealed class RoutineProgress : Parcelable {
+
     @Parcelize
     object None : RoutineProgress()
 
     @Parcelize
-    class InProgress(val startDate: Date, val currentExercise: RoutineExercise) : RoutineProgress()
+    class InProgress(val startDate: Date, val currentRoutineExerciseId: Long) : RoutineProgress()
 
     @Parcelize
     class Complete(val startDate: Date, val shouldSave: Boolean) : RoutineProgress()
