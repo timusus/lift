@@ -2,8 +2,6 @@ package com.acompany.lift.features.sessions.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Download
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,10 +21,6 @@ import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.features.sessions.data.ScreenState
 import com.acompany.lift.features.sessions.data.SessionScreenPreviewProvider
 import com.acompany.lift.features.sessions.data.SessionScreenViewModel
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Types
-import timber.log.Timber
-import java.lang.reflect.Type
 
 
 @Composable
@@ -44,12 +38,6 @@ fun SessionListScreen(
         dateFormatter = viewModel.dateFormatter,
         modifier = modifier,
         onSessionClick = onSessionClick,
-        onExportClick = { sessions ->
-            val type: Type = Types.newParameterizedType(MutableList::class.java, Session::class.java)
-            val adapter: JsonAdapter<List<Session>> = viewModel.moshi.adapter(type)
-            val json = adapter.toJson(sessions)
-            Timber.i("Json: $json")
-        },
         onNavigate = onNavigate
     )
 }
@@ -61,21 +49,14 @@ fun SessionListScreen(
     dateFormatter: DateFormatter,
     modifier: Modifier = Modifier,
     onSessionClick: (Session) -> Unit,
-    onExportClick: (List<Session>) -> Unit,
     onNavigate: (String) -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(text = "Sessions") },
-                actions = {
-                    if (screenState is ScreenState.Ready) {
-                        IconButton(onClick = { onExportClick(screenState.sessions) }) {
-                            Icon(imageVector = Icons.Rounded.Download, contentDescription = "Export")
-                        }
-                    }
-                })
+                title = { Text(text = "Sessions") }
+            )
         },
         content = {
             when (screenState) {
@@ -125,8 +106,7 @@ private fun SessionScreenPreview(
                 mediumDateTimeFormatter = AppModule.provideMediumDateTimeFormat(),
                 shortDateTimeFormatter = AppModule.provideShortDateTimeFormat()
             ),
-            onSessionClick = {},
-            onExportClick = {}
+            onSessionClick = {}
         )
     }
 }

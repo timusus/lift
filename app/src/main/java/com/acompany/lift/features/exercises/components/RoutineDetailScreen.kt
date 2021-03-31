@@ -137,7 +137,7 @@ fun ExerciseScreen(
                                 )
                             }
                         },
-                        title = { Text(text = (screenState as? ScreenState.Ready)?.routine?.name ?: "Lift") }
+                        title = { Text(text = (screenState as? ScreenState.Ready)?.routine?.name ?: "") }
                     )
                 },
                 content = {
