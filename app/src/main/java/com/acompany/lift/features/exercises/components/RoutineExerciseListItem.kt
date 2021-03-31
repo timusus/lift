@@ -40,7 +40,7 @@ fun ExerciseListItem(
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
         Card(
-            shape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 8.dp),
+            shape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp),
             backgroundColor = MaterialTheme.colors.surface,
             elevation = if (isCurrentExercise) 4.dp else 1.dp
         ) {

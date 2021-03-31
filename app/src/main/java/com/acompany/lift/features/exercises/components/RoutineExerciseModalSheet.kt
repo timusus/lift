@@ -2,6 +2,7 @@ package com.acompany.lift.features.exercises.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -49,6 +50,7 @@ fun ExerciseModalSheet(
 ) {
     val modalSheetScope = rememberModalSheetScope(sheetState)
     ModalBottomSheetLayout(
+        sheetShape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp),
         sheetState = sheetState,
         sheetContent = {
             Column(

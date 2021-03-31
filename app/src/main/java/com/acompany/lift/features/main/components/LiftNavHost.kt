@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.acompany.lift.common.navigation.currentRoute
 import com.acompany.lift.features.exercises.components.ExerciseScreen
 import com.acompany.lift.features.main.data.NavDestination
-import com.acompany.lift.features.routines.components.RoutineScreen
+import com.acompany.lift.features.routines.components.RoutineListScreen
 import com.acompany.lift.features.sessions.components.SessionListScreen
 import com.acompany.lift.features.sessions.detail.components.SessionDetailScreen
 
@@ -36,7 +36,7 @@ fun LiftNavHost(
             ) {
                 when (destination) {
                     is NavDestination.RoutineNavDestination -> {
-                        RoutineScreen(
+                        RoutineListScreen(
                             viewModel = hiltNavGraphViewModel(),
                             currentRoute = navController.currentRoute(),
                             onRoutineSelected = { routine ->

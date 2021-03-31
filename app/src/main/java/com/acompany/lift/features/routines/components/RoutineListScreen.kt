@@ -1,5 +1,7 @@
 package com.acompany.lift.features.routines.components
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,7 +17,7 @@ import com.acompany.lift.features.routines.data.RoutineScreenPreviewProvider
 import com.acompany.lift.features.routines.data.RoutineScreenViewModel
 
 @Composable
-fun RoutineScreen(
+fun RoutineListScreen(
     viewModel: RoutineScreenViewModel,
     modifier: Modifier = Modifier,
     currentRoute: String?,
@@ -24,7 +26,7 @@ fun RoutineScreen(
 ) {
     val routines by viewModel.allRoutines.collectAsState()
 
-    RoutineScreen(
+    RoutineListScreen(
         routines = routines,
         modifier = modifier,
         currentRoute = currentRoute,
@@ -34,7 +36,7 @@ fun RoutineScreen(
 }
 
 @Composable
-private fun RoutineScreen(
+private fun RoutineListScreen(
     routines: List<Routine>,
     modifier: Modifier = Modifier,
     currentRoute: String?,
@@ -48,13 +50,15 @@ private fun RoutineScreen(
                 title = { Text(text = "Routines") },
             )
         },
-        content = {
-            RoutineList(
-                routines = routines,
-                onRoutineClick = { routine ->
-                    onRoutineSelected(routine)
-                }
-            )
+        content = { paddingValues ->
+            Box(modifier = Modifier.padding(paddingValues)) {
+                RoutineList(
+                    routines = routines,
+                    onRoutineClick = { routine ->
+                        onRoutineSelected(routine)
+                    }
+                )
+            }
         },
         bottomBar = {
             LiftBottomNavigation(currentRoute) { item ->
@@ -70,6 +74,6 @@ private fun RoutineScreenPreview(
     @PreviewParameter(RoutineScreenPreviewProvider::class) preview: Pair<Colors, RoutineScreenViewModel>
 ) {
     MaterialTheme(colors = preview.first) {
-        RoutineScreen(DummyAppRepository.routines, currentRoute = NavDestination.RoutineNavDestination.route)
+        RoutineListScreen(DummyAppRepository.routines, currentRoute = NavDestination.RoutineNavDestination.route)
     }
 }

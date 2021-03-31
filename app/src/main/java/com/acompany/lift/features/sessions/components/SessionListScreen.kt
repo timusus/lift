@@ -1,5 +1,6 @@
 package com.acompany.lift.features.sessions.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -58,26 +59,29 @@ fun SessionListScreen(
                 title = { Text(text = "Sessions") }
             )
         },
-        content = {
-            when (screenState) {
-                is ScreenState.Loading -> {
-                    LoadingIndicator(
-                        showLoading = true,
-                        contentAlignment = Alignment.TopCenter
-                    )
-                }
-                is ScreenState.Ready -> {
-                    if (screenState.sessions.isEmpty()) {
-                        Text(
-                            modifier = Modifier.padding(16.dp),
-                            text = "No sessions recorded"
+        content = { paddingValues ->
+            Box(modifier = Modifier.padding(paddingValues)) {
+                when (screenState) {
+                    is ScreenState.Loading -> {
+                        LoadingIndicator(
+                            showLoading = true,
+                            contentAlignment = Alignment.TopCenter
                         )
-                    } else {
-                        SessionList(
-                            sessions = screenState.sessions,
-                            dateFormatter = dateFormatter,
-                            onSessionClick = onSessionClick
-                        )
+                    }
+                    is ScreenState.Ready -> {
+                        if (screenState.sessions.isEmpty()) {
+                            Text(
+                                modifier = Modifier.padding(16.dp),
+                                text = "No sessions recorded"
+                            )
+                        } else {
+                            SessionList(
+                                modifier = modifier,
+                                sessions = screenState.sessions,
+                                dateFormatter = dateFormatter,
+                                onSessionClick = onSessionClick
+                            )
+                        }
                     }
                 }
             }

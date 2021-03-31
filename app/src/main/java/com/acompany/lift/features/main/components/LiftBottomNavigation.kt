@@ -2,7 +2,7 @@ package com.acompany.lift.features.main.components
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.StackedLineChart
@@ -24,7 +24,7 @@ fun LiftBottomNavigation(
     BottomNavigation(
         modifier = modifier
             .padding(16.dp)
-            .clip(CircleShape)
+            .clip(CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp))
     ) {
         LiftNavigationItem.values().forEach { item ->
             LiftBottomNavigationItem(

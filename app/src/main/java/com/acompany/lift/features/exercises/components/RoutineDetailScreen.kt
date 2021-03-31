@@ -140,35 +140,37 @@ fun ExerciseScreen(
                         title = { Text(text = (screenState as? ScreenState.Ready)?.routine?.name ?: "") }
                     )
                 },
-                content = {
-                    when (screenState) {
-                        is ScreenState.Loading -> {
-                            Box(
-                                modifier = modifier.fillMaxSize(),
-                                contentAlignment = Alignment.TopCenter
-                            ) {
-                                CircularProgressIndicator(modifier.padding(top = 16.dp))
-                            }
-                        }
-                        is ScreenState.Ready -> {
-                            ExerciseList(
-                                routineExercises = screenState.routine.exercises,
-                                exerciseProgress = exerciseProgressMap,
-                                currentRoutineExerciseId = (routineProgress as? RoutineProgress.InProgress)?.currentRoutineExerciseId,
-                                onExerciseClick = { routineExercise ->
-                                    onExerciseSelected(routineExercise)
-                                    show()
-                                },
-                                onDoneClick = {
-                                    onUpdateExerciseProgress(screenState.routine)
-                                },
-                                onRestTimeComplete = {
-                                    onUpdateExerciseProgress(screenState.routine)
-                                    onRestTimeComplete()
+                content = { paddingValues ->
+                    Box(modifier = Modifier.padding(paddingValues)) {
+                        when (screenState) {
+                            is ScreenState.Loading -> {
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.TopCenter
+                                ) {
+                                    CircularProgressIndicator(modifier.padding(top = 16.dp))
                                 }
-                            )
-                            SessionProgressFloatingActionButton(routineProgress) {
-                                onUpdateExerciseProgress(screenState.routine)
+                            }
+                            is ScreenState.Ready -> {
+                                ExerciseList(
+                                    routineExercises = screenState.routine.exercises,
+                                    exerciseProgress = exerciseProgressMap,
+                                    currentRoutineExerciseId = (routineProgress as? RoutineProgress.InProgress)?.currentRoutineExerciseId,
+                                    onExerciseClick = { routineExercise ->
+                                        onExerciseSelected(routineExercise)
+                                        show()
+                                    },
+                                    onDoneClick = {
+                                        onUpdateExerciseProgress(screenState.routine)
+                                    },
+                                    onRestTimeComplete = {
+                                        onUpdateExerciseProgress(screenState.routine)
+                                        onRestTimeComplete()
+                                    }
+                                )
+                                SessionProgressFloatingActionButton(routineProgress) {
+                                    onUpdateExerciseProgress(screenState.routine)
+                                }
                             }
                         }
                     }
