@@ -41,7 +41,7 @@ class DummyAppRepository : AppRepository {
 
     }
 
-    override suspend fun createSession(session: Session, routine: Routine) {
+    override suspend fun createSession(session: Session) {
 
     }
 

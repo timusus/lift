@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.util.*
 import javax.inject.Singleton
 
 @Module
@@ -24,7 +25,7 @@ object SerializationModule {
     fun provideMoshi(rfc3339DateJsonAdapter: Rfc3339DateJsonAdapter): Moshi {
         return Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
-            .add(rfc3339DateJsonAdapter)
+            .add(Date::class.java, rfc3339DateJsonAdapter)
             .build()
     }
 }

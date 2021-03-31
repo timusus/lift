@@ -105,14 +105,14 @@ class LocalAppRepository(
         }
     }
 
-    override suspend fun createSession(session: Session, routine: Routine) {
+    override suspend fun createSession(session: Session) {
         withContext(dispatcher) {
             val sessionId = database.transactionWithResult<Long> {
                 database.databaseQueries.createSession(session.toSession(dateAdapter))
                 database.databaseQueries.lastInsertId().executeAsOne()
             }
             database.transaction {
-                routine.exercises.map { routineExercise -> routineExercise.toSessionExercise() }.forEach {
+                session.routine.exercises.map { routineExercise -> routineExercise.toSessionExercise() }.forEach {
                     database.databaseQueries.createSessionExercise(it.toSessionExercise(sessionId))
                 }
             }

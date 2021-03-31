@@ -88,8 +88,7 @@ class RoutineDetailScreenViewModel @Inject constructor(
                             exercises = routine.exercises.map { routineExercise ->
                                 routineExercise.toSessionExercise()
                             }
-                        ),
-                        routine = routine
+                        )
                     )
                 }
             }

@@ -9,8 +9,9 @@ import androidx.navigation.compose.navigate
 import com.acompany.lift.features.exercises.components.ExerciseScreen
 import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.features.routines.components.RoutineScreen
-import com.acompany.lift.features.sessions.detail.components.SessionDetailScreen
 import com.acompany.lift.features.sessions.components.SessionListScreen
+import com.acompany.lift.features.sessions.detail.components.SessionDetailScreen
+import com.squareup.moshi.Moshi
 
 @Composable
 fun ListNavHost(
@@ -50,7 +51,8 @@ fun ListNavHost(
                         )
                     }
                     is NavDestination.SessionNavDestination -> {
-                        SessionListScreen(viewModel = hiltNavGraphViewModel(),
+                        SessionListScreen(
+                            viewModel = hiltNavGraphViewModel(),
                             onSessionClick = { session ->
                                 navController.navigate(route = "sessions/session/${session.id}")
                             })

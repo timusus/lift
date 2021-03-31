@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acompany.lift.common.DateFormatter
 import com.acompany.lift.data.AppRepository
+import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SessionScreenViewModel @Inject constructor(
     appRepository: AppRepository,
-    val dateFormatter: DateFormatter
+    val dateFormatter: DateFormatter,
+    val moshi: Moshi
 ) : ViewModel() {
 
     val screenState: StateFlow<ScreenState> = appRepository

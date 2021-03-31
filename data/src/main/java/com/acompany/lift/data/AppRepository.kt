@@ -12,7 +12,7 @@ interface AppRepository {
     suspend fun updateRoutineExercisePercentOneRepMax(id: Long, percentOneRepMax: Float?)
     suspend fun updateRoutineExerciseWeight(id: Long, weight: Float?)
     suspend fun updateExerciseOneRepMax(id: Long, oneRepMax: Float?)
-    suspend fun createSession(session: Session, routine: Routine)
+    suspend fun createSession(session: Session)
     suspend fun deleteSession(session: Session)
     suspend fun deleteSessionExercises(session: Session)
 }

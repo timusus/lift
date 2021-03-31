@@ -109,12 +109,14 @@ VALUES ?;
 
 selectAllSessions:
 SELECT *
-FROM Session;
+FROM Session
+ORDER BY startDate;
 
 selectSessions:
 SELECT *
 FROM Session
-WHERE id IN :ids;
+WHERE id IN :ids
+ORDER BY startDate;
 
 deleteSession:
 DELETE FROM Session
