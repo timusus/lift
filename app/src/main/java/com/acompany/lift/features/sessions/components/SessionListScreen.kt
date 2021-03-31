@@ -87,8 +87,8 @@ fun SessionListScreen(
             }
         },
         bottomBar = {
-            LiftBottomNavigation(currentRoute) { item ->
-                onNavigate(item.destination.route)
+            LiftBottomNavigation(currentRoute) { destination ->
+                onNavigate(destination.route)
             }
         }
     )

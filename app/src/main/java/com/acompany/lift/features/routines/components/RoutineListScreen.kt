@@ -62,7 +62,7 @@ private fun RoutineListScreen(
         },
         bottomBar = {
             LiftBottomNavigation(currentRoute) { item ->
-                onNavigate(item.destination.route)
+                onNavigate(item.route)
             }
         }
     )
