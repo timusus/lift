@@ -12,18 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.acompany.lift.common.navigation.currentRoute
 import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.theme.MaterialColors
 
 @Composable
 fun LiftBottomNavigation(
-    navController: NavHostController,
+    currentRoute: String?,
     modifier: Modifier = Modifier,
     onNavigationItemClick: (LiftNavigationItem) -> Unit
 ) {
-    val currentRoute = navController.currentRoute()
     BottomNavigation(
         modifier = modifier
             .padding(16.dp)
@@ -32,7 +29,7 @@ fun LiftBottomNavigation(
         LiftNavigationItem.values().forEach { item ->
             LiftBottomNavigationItem(
                 liftNavigationItem = item,
-                selected = currentRoute == item.destination.route,
+                selected = currentRoute?.let { currentRoute.startsWith(item.destination.route) } ?: false,
                 onClick = {
                     onNavigationItemClick(item)
                 }

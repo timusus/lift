@@ -17,12 +17,13 @@ import com.acompany.lift.common.DateFormatter
 import com.acompany.lift.common.components.LoadingIndicator
 import com.acompany.lift.data.model.Session
 import com.acompany.lift.di.AppModule
+import com.acompany.lift.features.main.components.LiftBottomNavigation
 import com.acompany.lift.features.main.data.DummyAppRepository
+import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.features.sessions.data.ScreenState
 import com.acompany.lift.features.sessions.data.SessionScreenPreviewProvider
 import com.acompany.lift.features.sessions.data.SessionScreenViewModel
 import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import timber.log.Timber
 import java.lang.reflect.Type
@@ -31,12 +32,15 @@ import java.lang.reflect.Type
 @Composable
 fun SessionListScreen(
     viewModel: SessionScreenViewModel,
+    currentRoute: String?,
     modifier: Modifier = Modifier,
-    onSessionClick: (Session) -> Unit
+    onSessionClick: (Session) -> Unit,
+    onNavigate: (String) -> Unit
 ) {
     val screenState: ScreenState by viewModel.screenState.collectAsState()
     SessionListScreen(
         screenState = screenState,
+        currentRoute = currentRoute,
         dateFormatter = viewModel.dateFormatter,
         modifier = modifier,
         onSessionClick = onSessionClick,
@@ -45,17 +49,20 @@ fun SessionListScreen(
             val adapter: JsonAdapter<List<Session>> = viewModel.moshi.adapter(type)
             val json = adapter.toJson(sessions)
             Timber.i("Json: $json")
-        }
+        },
+        onNavigate = onNavigate
     )
 }
 
 @Composable
 fun SessionListScreen(
     screenState: ScreenState,
+    currentRoute: String?,
     dateFormatter: DateFormatter,
     modifier: Modifier = Modifier,
     onSessionClick: (Session) -> Unit,
-    onExportClick: (List<Session>) -> Unit
+    onExportClick: (List<Session>) -> Unit,
+    onNavigate: (String) -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
@@ -93,6 +100,11 @@ fun SessionListScreen(
                     }
                 }
             }
+        },
+        bottomBar = {
+            LiftBottomNavigation(currentRoute) { item ->
+                onNavigate(item.destination.route)
+            }
         }
     )
 }
@@ -105,6 +117,7 @@ private fun SessionScreenPreview(
     MaterialTheme(colors = preview) {
         SessionListScreen(
             ScreenState.Ready(sessions = DummyAppRepository.sessions),
+            currentRoute = NavDestination.SessionNavDestination.route,
             dateFormatter = DateFormatter(
                 context = LocalContext.current,
                 mediumDateFormatter = AppModule.provideMediumDateFormat(),

@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
 import com.acompany.lift.features.exercises.data.*
+import com.acompany.lift.features.main.components.LiftBottomNavigation
 import com.acompany.lift.features.main.data.DummyAppRepository
+import com.acompany.lift.features.main.data.NavDestination
 import java.util.*
 
 @Composable
@@ -25,19 +27,21 @@ import java.util.*
 fun ExerciseScreen(
     modifier: Modifier = Modifier,
     viewModel: RoutineDetailScreenViewModel,
-    onSessionComplete: () -> Unit,
+    currentRoute: String?,
+    onDismiss: () -> Unit,
+    onNavigate: (String) -> Unit
 ) {
-
     val screenState: ScreenState by viewModel.screenState.collectAsState()
     var selectedExercise by rememberSaveable { mutableStateOf<RoutineExercise?>(null) }
 
     ExerciseScreen(
         modifier = modifier,
         screenState = screenState,
+        currentRoute = currentRoute,
         selectedExercise = selectedExercise,
         routineProgress = viewModel.sessionProgress,
         exerciseProgressMap = viewModel.exerciseProgressMap,
-        onSessionComplete = onSessionComplete,
+        onDismiss = onDismiss,
         onExerciseSelected = { routineExercise ->
             selectedExercise = routineExercise
         },
@@ -65,14 +69,15 @@ fun ExerciseScreen(
                 is RoutineProgress.Complete -> {
                     if (sessionProgress.shouldSave) {
                         viewModel.saveSession(routine)
-                        onSessionComplete()
+                        onDismiss()
                     }
                 }
             }
         },
         onRestTimeComplete = {
             viewModel.playRestTimerTone()
-        }
+        },
+        onNavigate = onNavigate
     )
 }
 
@@ -81,57 +86,59 @@ fun ExerciseScreen(
 fun ExerciseScreen(
     modifier: Modifier = Modifier,
     screenState: ScreenState,
+    currentRoute: String?,
     selectedExercise: RoutineExercise?,
     routineProgress: RoutineProgress,
     exerciseProgressMap: Map<Long, ExerciseProgress>,
     onExerciseSelected: (RoutineExercise) -> Unit = {},
-    onSessionComplete: () -> Unit = {},
+    onDismiss: () -> Unit = {},
     onOneRepMaxChanged: (RoutineExercise, Float?) -> Unit = { _, _ -> },
     onWeightChanged: (RoutineExercise, Float?) -> Unit = { _, _ -> },
     onPercentOneRepMaxChanged: (RoutineExercise, Float?) -> Unit = { _, _ -> },
     onUpdateExerciseProgress: (Routine) -> Unit = {},
-    onRestTimeComplete: () -> Unit = {}
+    onRestTimeComplete: () -> Unit = {},
+    onNavigate: (String) -> Unit = {}
 ) {
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = onSessionComplete) {
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
-                            contentDescription = "back to routines"
-                        )
-                    }
-                },
-                title = { Text(text = (screenState as? ScreenState.Ready)?.routine?.name ?: "Lift") }
-            )
-        },
-        content = {
-            ExerciseModalSheet(
-                sheetContent = {
-                    selectedExercise?.let { selectedExercise ->
-                        when (screenState) {
-                            is ScreenState.Loading -> {
-                                Box(
-                                    modifier = modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.TopCenter
-                                ) {
-                                    CircularProgressIndicator(modifier.padding(top = 16.dp))
-                                }
-                            }
-                            is ScreenState.Ready -> {
-                                SheetContent(
-                                    routine = screenState.routine,
-                                    routineExercise = selectedExercise,
-                                    onOneRepMaxChanged = { oneRepMax -> onOneRepMaxChanged(selectedExercise, oneRepMax) },
-                                    onWeightChanged = { weight -> onWeightChanged(selectedExercise, weight) },
-                                    onPercentOneRepMaxChanged = { percentOneRepMax -> onPercentOneRepMaxChanged(selectedExercise, percentOneRepMax) },
-                                    onDoneClick = { hide() }
-                                )
-                            }
+    ExerciseModalSheet(
+        sheetContent = {
+            selectedExercise?.let { selectedExercise ->
+                when (screenState) {
+                    is ScreenState.Loading -> {
+                        Box(
+                            modifier = modifier.fillMaxSize(),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            CircularProgressIndicator(modifier.padding(top = 16.dp))
                         }
                     }
+                    is ScreenState.Ready -> {
+                        SheetContent(
+                            routine = screenState.routine,
+                            routineExercise = selectedExercise,
+                            onOneRepMaxChanged = { oneRepMax -> onOneRepMaxChanged(selectedExercise, oneRepMax) },
+                            onWeightChanged = { weight -> onWeightChanged(selectedExercise, weight) },
+                            onPercentOneRepMaxChanged = { percentOneRepMax -> onPercentOneRepMaxChanged(selectedExercise, percentOneRepMax) },
+                            onDoneClick = { hide() }
+                        )
+                    }
+                }
+            }
+        },
+        content = {
+            Scaffold(
+                modifier = modifier,
+                topBar = {
+                    TopAppBar(
+                        navigationIcon = {
+                            IconButton(onClick = onDismiss) {
+                                Icon(
+                                    imageVector = Icons.Rounded.ArrowBack,
+                                    contentDescription = "back to routines"
+                                )
+                            }
+                        },
+                        title = { Text(text = (screenState as? ScreenState.Ready)?.routine?.name ?: "Lift") }
+                    )
                 },
                 content = {
                     when (screenState) {
@@ -165,10 +172,14 @@ fun ExerciseScreen(
                             }
                         }
                     }
+                },
+                bottomBar = {
+                    LiftBottomNavigation(currentRoute) { item ->
+                        onNavigate(item.destination.route)
+                    }
                 }
             )
-        }
-    )
+        })
 }
 
 @Preview
@@ -179,6 +190,7 @@ private fun ExerciseScreenPreview(
     MaterialTheme(colors = preview) {
         ExerciseScreen(
             screenState = ScreenState.Ready(DummyAppRepository.routines.first()),
+            currentRoute = NavDestination.ExerciseNavDestination().route,
             selectedExercise = null,
             routineProgress = RoutineProgress.InProgress(Date(), DummyAppRepository.routineExercises.first().id),
             exerciseProgressMap = mapOf()

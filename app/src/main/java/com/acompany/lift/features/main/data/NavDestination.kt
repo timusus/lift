@@ -10,7 +10,7 @@ sealed class NavDestination(
 ) {
 
     object RoutineNavDestination : NavDestination(
-        route = "routines/all"
+        route = "routines"
     )
 
     class ExerciseNavDestination : NavDestination(
@@ -23,7 +23,7 @@ sealed class NavDestination(
     }
 
     object SessionNavDestination : NavDestination(
-        route = "sessions/all"
+        route = "sessions"
     )
 
     class SessionDetailNavDestination : NavDestination(

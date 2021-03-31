@@ -8,7 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.acompany.lift.data.model.Routine
+import com.acompany.lift.features.main.components.LiftBottomNavigation
 import com.acompany.lift.features.main.data.DummyAppRepository
+import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.features.routines.data.RoutineScreenPreviewProvider
 import com.acompany.lift.features.routines.data.RoutineScreenViewModel
 
@@ -16,14 +18,18 @@ import com.acompany.lift.features.routines.data.RoutineScreenViewModel
 fun RoutineScreen(
     viewModel: RoutineScreenViewModel,
     modifier: Modifier = Modifier,
-    onRoutineSelected: (Routine) -> Unit = {}
+    currentRoute: String?,
+    onRoutineSelected: (Routine) -> Unit,
+    onNavigate: (String) -> Unit
 ) {
     val routines by viewModel.allRoutines.collectAsState()
 
     RoutineScreen(
         routines = routines,
         modifier = modifier,
-        onRoutineSelected = onRoutineSelected
+        currentRoute = currentRoute,
+        onRoutineSelected = onRoutineSelected,
+        onNavigate = onNavigate
     )
 }
 
@@ -31,7 +37,9 @@ fun RoutineScreen(
 private fun RoutineScreen(
     routines: List<Routine>,
     modifier: Modifier = Modifier,
-    onRoutineSelected: (Routine) -> Unit = {}
+    currentRoute: String?,
+    onRoutineSelected: (Routine) -> Unit = {},
+    onNavigate: (String) -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
@@ -47,6 +55,11 @@ private fun RoutineScreen(
                     onRoutineSelected(routine)
                 }
             )
+        },
+        bottomBar = {
+            LiftBottomNavigation(currentRoute) { item ->
+                onNavigate(item.destination.route)
+            }
         }
     )
 }
@@ -57,6 +70,6 @@ private fun RoutineScreenPreview(
     @PreviewParameter(RoutineScreenPreviewProvider::class) preview: Pair<Colors, RoutineScreenViewModel>
 ) {
     MaterialTheme(colors = preview.first) {
-        RoutineScreen(DummyAppRepository.routines)
+        RoutineScreen(DummyAppRepository.routines, currentRoute = NavDestination.RoutineNavDestination.route)
     }
 }

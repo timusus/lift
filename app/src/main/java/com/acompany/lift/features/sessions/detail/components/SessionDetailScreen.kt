@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -16,7 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acompany.lift.common.DateFormatter
 import com.acompany.lift.data.model.Session
+import com.acompany.lift.features.main.components.LiftBottomNavigation
 import com.acompany.lift.features.main.data.DummyAppRepository
+import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.features.sessions.detail.data.ScreenState
 import com.acompany.lift.features.sessions.detail.data.SessionDetailViewModel
 import com.acompany.lift.theme.MaterialColors
@@ -25,39 +28,57 @@ import com.acompany.lift.theme.MaterialTypography
 @Composable
 fun SessionDetailScreen(
     viewModel: SessionDetailViewModel,
-    onSessionDeleted: () -> Unit
+    currentRoute: String?,
+    onNavigate: (String) -> Unit,
+    onDismiss: () -> Unit
 ) {
     val screenState: ScreenState by viewModel.screenState.collectAsState()
 
     SessionDetailScreen(
         screenState = screenState,
+        currentRoute = currentRoute,
         dateFormatter = viewModel.dateFormatter,
         deleteSession = { session ->
             viewModel.deleteSession(session)
-            onSessionDeleted()
-        }
+            onDismiss()
+        },
+        onNavigate = onNavigate,
+        onDismiss = onDismiss
     )
 }
 
 @Composable
 fun SessionDetailScreen(
     screenState: ScreenState,
+    currentRoute: String?,
     dateFormatter: DateFormatter,
-    deleteSession: (session: Session) -> Unit
+    deleteSession: (session: Session) -> Unit = {},
+    onNavigate: (String) -> Unit = {},
+    onDismiss: () -> Unit = {}
 ) {
     var sessionToDelete by rememberSaveable { mutableStateOf<Session?>(null) }
 
     Scaffold(topBar = {
-        TopAppBar(title = {
-            Text(text = (screenState as? ScreenState.Ready)?.session?.routine?.name ?: "Session")
-        }, actions = {
-            if (screenState is ScreenState.Ready) {
-                IconButton(onClick = { sessionToDelete = screenState.session }) {
-                    Icon(imageVector = Icons.Rounded.DeleteForever, contentDescription = "Delete")
+        TopAppBar(
+            title = {
+                Text(text = (screenState as? ScreenState.Ready)?.session?.routine?.name ?: "Session")
+            },
+            navigationIcon = {
+                IconButton(onClick = onDismiss) {
+                    Icon(
+                        imageVector = Icons.Rounded.ArrowBack,
+                        contentDescription = "back to routines"
+                    )
                 }
-            }
-        })
-    }) {
+            },
+            actions = {
+                if (screenState is ScreenState.Ready) {
+                    IconButton(onClick = { sessionToDelete = screenState.session }) {
+                        Icon(imageVector = Icons.Rounded.DeleteForever, contentDescription = "Delete")
+                    }
+                }
+            })
+    }, content = {
         sessionToDelete?.let { session ->
             DeleteConfirmationAlertDialog(onDismiss = { confirmation ->
                 if (confirmation) {
@@ -67,6 +88,9 @@ fun SessionDetailScreen(
             })
         }
         when (screenState) {
+            is ScreenState.Loading -> {
+
+            }
             is ScreenState.Ready -> {
                 val duration = (screenState.session.endDate.time - screenState.session.startDate.time) / 1000
                 Column {
@@ -129,7 +153,12 @@ fun SessionDetailScreen(
                 }
             }
         }
-    }
+    },
+        bottomBar = {
+            LiftBottomNavigation(currentRoute) { item ->
+                onNavigate(item.destination.route)
+            }
+        })
 }
 
 @Composable
@@ -168,6 +197,7 @@ fun DeleteConfirmationAlertDialog(onDismiss: (confirmation: Boolean) -> Unit) {
 fun SessionDetailScreenPreview() {
     SessionDetailScreen(
         screenState = ScreenState.Ready(DummyAppRepository.sessions.first()),
+        currentRoute = NavDestination.SessionDetailNavDestination().route,
         dateFormatter = null as DateFormatter
-    ) {}
+    )
 }
