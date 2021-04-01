@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.data
+package com.acompany.lift.features.routines.detail.data
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf

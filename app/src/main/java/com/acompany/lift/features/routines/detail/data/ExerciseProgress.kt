@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.data
+package com.acompany.lift.features.routines.detail.data
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

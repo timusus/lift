@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.components
+package com.acompany.lift.features.routines.detail.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*

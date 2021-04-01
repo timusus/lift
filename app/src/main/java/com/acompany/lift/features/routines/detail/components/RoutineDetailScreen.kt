@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.components
+package com.acompany.lift.features.routines.detail.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
@@ -16,10 +16,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.exercises.data.*
 import com.acompany.lift.features.main.components.LiftBottomNavigation
 import com.acompany.lift.features.main.data.DummyAppRepository
 import com.acompany.lift.features.main.data.NavDestination
+import com.acompany.lift.features.routines.detail.data.*
 import java.util.*
 
 @Composable

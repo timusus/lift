@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.components
+package com.acompany.lift.features.routines.detail.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import com.acompany.lift.common.components.FloatTextField
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.exercises.data.RoutineExerciseHelper.initialWeight
+import com.acompany.lift.common.RoutineExerciseHelper.initialWeight
 import com.acompany.lift.features.main.data.DummyAppRepository
 
 @Composable

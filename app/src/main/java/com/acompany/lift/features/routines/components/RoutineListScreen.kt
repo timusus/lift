@@ -13,12 +13,12 @@ import com.acompany.lift.data.model.Routine
 import com.acompany.lift.features.main.components.LiftBottomNavigation
 import com.acompany.lift.features.main.data.DummyAppRepository
 import com.acompany.lift.features.main.data.NavDestination
+import com.acompany.lift.features.routines.data.RoutineListScreenViewModel
 import com.acompany.lift.features.routines.data.RoutineScreenPreviewProvider
-import com.acompany.lift.features.routines.data.RoutineScreenViewModel
 
 @Composable
 fun RoutineListScreen(
-    viewModel: RoutineScreenViewModel,
+    viewModel: RoutineListScreenViewModel,
     modifier: Modifier = Modifier,
     currentRoute: String?,
     onRoutineSelected: (Routine) -> Unit,
@@ -71,7 +71,7 @@ private fun RoutineListScreen(
 @Preview
 @Composable
 private fun RoutineScreenPreview(
-    @PreviewParameter(RoutineScreenPreviewProvider::class) preview: Pair<Colors, RoutineScreenViewModel>
+    @PreviewParameter(RoutineScreenPreviewProvider::class) preview: Pair<Colors, RoutineListScreenViewModel>
 ) {
     MaterialTheme(colors = preview.first) {
         RoutineListScreen(DummyAppRepository.routines, currentRoute = NavDestination.RoutineNavDestination.route)

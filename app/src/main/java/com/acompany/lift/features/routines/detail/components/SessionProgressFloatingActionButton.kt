@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.components
+package com.acompany.lift.features.routines.detail.components
 
 import android.text.format.DateUtils
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.acompany.lift.common.components.AnimatedFloatingActionButton
 import com.acompany.lift.common.effects.elapsedTimeMillis
-import com.acompany.lift.features.exercises.data.RoutineProgress
+import com.acompany.lift.features.routines.detail.data.RoutineProgress
 import com.acompany.lift.features.main.data.DummyAppRepository
 import java.util.*
 

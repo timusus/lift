@@ -6,9 +6,9 @@ import com.acompany.lift.features.main.data.DummyAppRepository
 import com.acompany.lift.theme.ThemedPreviewProvider
 
 class RoutineScreenPreviewProvider :
-    PreviewParameterProvider<Pair<Colors, RoutineScreenViewModel>> {
-    override val values: Sequence<Pair<Colors, RoutineScreenViewModel>>
+    PreviewParameterProvider<Pair<Colors, RoutineListScreenViewModel>> {
+    override val values: Sequence<Pair<Colors, RoutineListScreenViewModel>>
         get() = ThemedPreviewProvider().values.map { colors ->
-            colors to RoutineScreenViewModel(DummyAppRepository())
+            colors to RoutineListScreenViewModel(DummyAppRepository())
         }
 }

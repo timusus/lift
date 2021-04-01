@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 object AppColors {
     val primary = Color(0xFF38a07b)
     val secondary = Color(0xFF3a68a1)
-    val background = Color(0xFFFFFFFF)
+    val background = Color(0xFFF7F7F7)
     val onBackground = Color(0xFF212121)
     val surface = Color(0xFFFFFFFF)
 

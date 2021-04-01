@@ -19,10 +19,11 @@ fun LiftBottomNavigation(
 ) {
     BottomNavigation(
         modifier = modifier
-            .padding(16.dp)
+            .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
             .clip(CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp))
     ) {
         listOf(
+            NavDestination.HomeNavDestination,
             NavDestination.RoutineNavDestination,
             NavDestination.SessionNavDestination
         )

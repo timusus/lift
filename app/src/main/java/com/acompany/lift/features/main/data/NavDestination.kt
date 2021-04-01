@@ -1,6 +1,7 @@
 package com.acompany.lift.features.main.data
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.StackedLineChart
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -14,6 +15,12 @@ sealed class NavDestination(
     val icon: ImageVector,
     val contentDescription: String,
 ) {
+
+    object HomeNavDestination : NavDestination(
+        route = "home",
+        icon = Icons.Rounded.Home,
+        contentDescription = "Home"
+    )
 
     object RoutineNavDestination : NavDestination(
         route = "routines",

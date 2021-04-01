@@ -9,11 +9,15 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class RoutineScreenViewModel @Inject constructor(
+class RoutineListScreenViewModel @Inject constructor(
     appRepository: AppRepository
 ) : ViewModel() {
 
     val allRoutines = appRepository
         .getRoutines()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = emptyList()
+        )
 }
