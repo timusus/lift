@@ -54,6 +54,59 @@ class DummyAppRepository : AppRepository {
     }
 
     companion object {
+        val exercises = listOf(
+            Exercise(
+                id = 1,
+                name = "Squat",
+                oneRepMax = 80f
+            ),
+            Exercise(
+                id = 2,
+                name = "Deadlift",
+                oneRepMax = 120f
+            ),
+            Exercise(
+                id = 3,
+                name = "Single Leg",
+                oneRepMax = null
+            ),
+            Exercise(
+                id = 4,
+                name = "Standing calf-raises",
+                oneRepMax = null
+            ),
+            Exercise(
+                id = 5,
+                name = "Horizontal Push",
+                oneRepMax = 85f
+            ),
+            Exercise(
+                id = 6,
+                name = "Horizontal Pull",
+                oneRepMax = null
+            ),
+            Exercise(
+                id = 7,
+                name = "Vertical Push",
+                oneRepMax = 70f
+            ),
+            Exercise(
+                id = 8,
+                name = "Vertical Pull",
+                oneRepMax = null
+            ),
+            Exercise(
+                id = 9,
+                name = "Flys",
+                oneRepMax = null
+            ),
+            Exercise(
+                id = 9,
+                name = "Hip hinge variant",
+                oneRepMax = null
+            )
+        )
+
         val routineExercises = listOf(
             RoutineExercise(
                 id = 1,
@@ -63,11 +116,7 @@ class DummyAppRepository : AppRepository {
                 percentOneRepMax = 0.825f,
                 weight = 90f,
                 routineId = 1,
-                exercise = Exercise(
-                    id = 1,
-                    name = "Squat",
-                    oneRepMax = 80f
-                )
+                exercise = exercises[0]
             ),
             RoutineExercise(
                 id = 2,
@@ -77,11 +126,7 @@ class DummyAppRepository : AppRepository {
                 percentOneRepMax = 0.825f,
                 weight = 120f,
                 routineId = 1,
-                exercise = Exercise(
-                    id = 2,
-                    name = "Deadlift",
-                    oneRepMax = 120f
-                )
+                exercise = exercises[1]
             ),
             RoutineExercise(
                 id = 3,
@@ -91,11 +136,7 @@ class DummyAppRepository : AppRepository {
                 percentOneRepMax = null,
                 weight = null,
                 routineId = 1,
-                exercise = Exercise(
-                    id = 3,
-                    name = "Single Leg",
-                    oneRepMax = null
-                )
+                exercise = exercises[2]
             ),
             RoutineExercise(
                 id = 4,
@@ -105,11 +146,7 @@ class DummyAppRepository : AppRepository {
                 percentOneRepMax = null,
                 weight = null,
                 routineId = 1,
-                exercise = Exercise(
-                    id = 4,
-                    name = "Standing calf-raises",
-                    oneRepMax = null
-                )
+                exercise = exercises[3]
             ),
             RoutineExercise(
                 id = 5,
@@ -119,11 +156,7 @@ class DummyAppRepository : AppRepository {
                 percentOneRepMax = 0.825f,
                 weight = 80f,
                 routineId = 2,
-                exercise = Exercise(
-                    id = 5,
-                    name = "Horizontal Push",
-                    oneRepMax = 85f
-                )
+                exercise = exercises[4]
             ),
             RoutineExercise(
                 id = 6,
@@ -133,11 +166,7 @@ class DummyAppRepository : AppRepository {
                 percentOneRepMax = null,
                 weight = 70f,
                 routineId = 2,
-                exercise = Exercise(
-                    id = 6,
-                    name = "Horizontal Pull",
-                    oneRepMax = null
-                )
+                exercise = exercises[5]
             ),
             RoutineExercise(
                 id = 7,
@@ -147,11 +176,7 @@ class DummyAppRepository : AppRepository {
                 percentOneRepMax = 0.725f,
                 weight = 50f,
                 routineId = 2,
-                exercise = Exercise(
-                    id = 7,
-                    name = "Vertical Push",
-                    oneRepMax = 70f
-                )
+                exercise = exercises[6]
             ),
             RoutineExercise(
                 id = 8,
@@ -161,11 +186,7 @@ class DummyAppRepository : AppRepository {
                 percentOneRepMax = null,
                 weight = null,
                 routineId = 2,
-                exercise = Exercise(
-                    id = 8,
-                    name = "Vertical Pull",
-                    oneRepMax = null
-                )
+                exercise = exercises[7]
             ),
             RoutineExercise(
                 id = 9,
@@ -175,11 +196,7 @@ class DummyAppRepository : AppRepository {
                 percentOneRepMax = null,
                 weight = null,
                 routineId = 2,
-                exercise = Exercise(
-                    id = 9,
-                    name = "Flys",
-                    oneRepMax = null
-                )
+                exercise = exercises[8]
             ),
             RoutineExercise(
                 id = 10,
@@ -189,11 +206,7 @@ class DummyAppRepository : AppRepository {
                 percentOneRepMax = null,
                 weight = 40f,
                 routineId = 3,
-                exercise = Exercise(
-                    id = 9,
-                    name = "Hip hinge variant",
-                    oneRepMax = null
-                )
+                exercise = exercises[9]
             ),
         )
 

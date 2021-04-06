@@ -20,4 +20,12 @@ class RoutineListScreenViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(),
             initialValue = emptyList()
         )
+
+    val allExercises = appRepository
+        .getAllExercises()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = emptyList()
+        )
 }

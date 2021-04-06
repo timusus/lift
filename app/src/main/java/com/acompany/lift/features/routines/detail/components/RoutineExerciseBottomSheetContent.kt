@@ -12,10 +12,10 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.acompany.lift.common.RoutineExerciseHelper.initialWeight
 import com.acompany.lift.common.components.FloatTextField
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.common.RoutineExerciseHelper.initialWeight
 import com.acompany.lift.features.main.data.DummyAppRepository
 
 @Composable
