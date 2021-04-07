@@ -24,6 +24,7 @@ import com.acompany.lift.features.sessions.detail.data.ScreenState
 import com.acompany.lift.features.sessions.detail.data.SessionDetailViewModel
 import com.acompany.lift.theme.MaterialColors
 import com.acompany.lift.theme.MaterialTypography
+import java.util.*
 
 @Composable
 fun SessionDetailScreen(
@@ -92,7 +93,7 @@ fun SessionDetailScreen(
 
             }
             is ScreenState.Ready -> {
-                val duration = (screenState.session.endDate.time - screenState.session.startDate.time) / 1000
+                val duration = ((screenState.session.endDate ?: Date()).time - screenState.session.startDate.time) / 1000
                 Column {
                     Spacer(Modifier.size(16.dp))
                     Text(

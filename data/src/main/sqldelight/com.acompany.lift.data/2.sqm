@@ -1,0 +1,17 @@
+-- Make end date nullable
+
+CREATE TABLE Session2 (
+  id INTEGER PRIMARY KEY,
+  startDate TEXT NOT NULL,
+  endDate TEXT,
+  routineId INTEGER NOT NULL,
+  FOREIGN KEY (routineId) REFERENCES Routine(id)
+);
+
+INSERT INTO Session2(id, startDate, endDate, routineId)
+  SELECT id, startDate, endDate, routineId
+  FROM Session;
+
+DROP TABLE Session;
+
+ALTER TABLE Session2 RENAME TO Session;

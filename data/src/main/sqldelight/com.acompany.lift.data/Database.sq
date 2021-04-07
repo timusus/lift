@@ -28,7 +28,7 @@ CREATE TABLE RoutineExercise (
 CREATE TABLE Session (
   id INTEGER PRIMARY KEY,
   startDate TEXT NOT NULL,
-  endDate TEXT NOT NULL,
+  endDate TEXT,
   routineId INTEGER NOT NULL,
   FOREIGN KEY (routineId) REFERENCES Routine(id)
 );
