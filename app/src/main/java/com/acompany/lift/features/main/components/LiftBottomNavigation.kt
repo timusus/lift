@@ -2,15 +2,11 @@ package com.acompany.lift.features.main.components
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.StackedLineChart
-import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.theme.MaterialColors
@@ -19,28 +15,33 @@ import com.acompany.lift.theme.MaterialColors
 fun LiftBottomNavigation(
     currentRoute: String?,
     modifier: Modifier = Modifier,
-    onNavigationItemClick: (LiftNavigationItem) -> Unit
+    onNavigationItemClick: (NavDestination) -> Unit
 ) {
     BottomNavigation(
         modifier = modifier
-            .padding(16.dp)
-            .clip(CircleShape)
+            .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
+            .clip(CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp))
     ) {
-        LiftNavigationItem.values().forEach { item ->
-            LiftBottomNavigationItem(
-                liftNavigationItem = item,
-                selected = currentRoute?.let { currentRoute.startsWith(item.destination.route) } ?: false,
-                onClick = {
-                    onNavigationItemClick(item)
-                }
-            )
-        }
+        listOf(
+            NavDestination.HomeNavDestination,
+            NavDestination.RoutineNavDestination,
+            NavDestination.SessionNavDestination
+        )
+            .forEach { navDestination ->
+                LiftBottomNavigationItem(
+                    navDestination = navDestination,
+                    selected = currentRoute?.let { currentRoute.startsWith(navDestination.route) } ?: false,
+                    onClick = {
+                        onNavigationItemClick(navDestination)
+                    }
+                )
+            }
     }
 }
 
 @Composable
 fun RowScope.LiftBottomNavigationItem(
-    liftNavigationItem: LiftNavigationItem,
+    navDestination: NavDestination,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
@@ -58,29 +59,12 @@ fun RowScope.LiftBottomNavigationItem(
         }.copy(alpha = ContentAlpha.medium),
         icon = {
             Icon(
-                imageVector = liftNavigationItem.icon,
-                contentDescription = liftNavigationItem.contentDescription
+                imageVector = navDestination.icon,
+                contentDescription = navDestination.contentDescription
             )
         },
         label = {
-            Text(text = liftNavigationItem.name)
+            Text(text = navDestination.contentDescription)
         }
-    )
-}
-
-enum class LiftNavigationItem(
-    val icon: ImageVector,
-    val contentDescription: String,
-    val destination: NavDestination
-) {
-    Routines(
-        icon = Icons.Rounded.Timer,
-        contentDescription = "routines",
-        destination = NavDestination.RoutineNavDestination
-    ),
-    Sessions(
-        icon = Icons.Rounded.StackedLineChart,
-        contentDescription = "sessions",
-        destination = NavDestination.SessionNavDestination
     )
 }

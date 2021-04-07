@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.components
+package com.acompany.lift.features.routines.detail.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,8 +12,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.exercises.data.ExerciseProgress
-import com.acompany.lift.features.exercises.data.RoutineExerciseListPreviewProvider
+import com.acompany.lift.features.routines.detail.data.ExerciseProgress
+import com.acompany.lift.features.routines.detail.data.RoutineExerciseListPreviewProvider
 
 @Composable
 fun ExerciseList(

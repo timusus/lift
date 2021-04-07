@@ -1,5 +1,7 @@
 package com.acompany.lift.features.routines.components
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -11,12 +13,12 @@ import com.acompany.lift.data.model.Routine
 import com.acompany.lift.features.main.components.LiftBottomNavigation
 import com.acompany.lift.features.main.data.DummyAppRepository
 import com.acompany.lift.features.main.data.NavDestination
+import com.acompany.lift.features.routines.data.RoutineListScreenViewModel
 import com.acompany.lift.features.routines.data.RoutineScreenPreviewProvider
-import com.acompany.lift.features.routines.data.RoutineScreenViewModel
 
 @Composable
-fun RoutineScreen(
-    viewModel: RoutineScreenViewModel,
+fun RoutineListScreen(
+    viewModel: RoutineListScreenViewModel,
     modifier: Modifier = Modifier,
     currentRoute: String?,
     onRoutineSelected: (Routine) -> Unit,
@@ -24,7 +26,7 @@ fun RoutineScreen(
 ) {
     val routines by viewModel.allRoutines.collectAsState()
 
-    RoutineScreen(
+    RoutineListScreen(
         routines = routines,
         modifier = modifier,
         currentRoute = currentRoute,
@@ -34,7 +36,7 @@ fun RoutineScreen(
 }
 
 @Composable
-private fun RoutineScreen(
+private fun RoutineListScreen(
     routines: List<Routine>,
     modifier: Modifier = Modifier,
     currentRoute: String?,
@@ -48,17 +50,19 @@ private fun RoutineScreen(
                 title = { Text(text = "Routines") },
             )
         },
-        content = {
-            RoutineList(
-                routines = routines,
-                onRoutineClick = { routine ->
-                    onRoutineSelected(routine)
-                }
-            )
+        content = { paddingValues ->
+            Box(modifier = Modifier.padding(paddingValues)) {
+                RoutineList(
+                    routines = routines,
+                    onRoutineClick = { routine ->
+                        onRoutineSelected(routine)
+                    }
+                )
+            }
         },
         bottomBar = {
             LiftBottomNavigation(currentRoute) { item ->
-                onNavigate(item.destination.route)
+                onNavigate(item.route)
             }
         }
     )
@@ -67,9 +71,9 @@ private fun RoutineScreen(
 @Preview
 @Composable
 private fun RoutineScreenPreview(
-    @PreviewParameter(RoutineScreenPreviewProvider::class) preview: Pair<Colors, RoutineScreenViewModel>
+    @PreviewParameter(RoutineScreenPreviewProvider::class) preview: Pair<Colors, RoutineListScreenViewModel>
 ) {
     MaterialTheme(colors = preview.first) {
-        RoutineScreen(DummyAppRepository.routines, currentRoute = NavDestination.RoutineNavDestination.route)
+        RoutineListScreen(DummyAppRepository.routines, currentRoute = NavDestination.RoutineNavDestination.route)
     }
 }

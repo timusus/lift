@@ -61,7 +61,7 @@ class DummyAppRepository : AppRepository {
                 sets = 3,
                 reps = 5,
                 percentOneRepMax = 0.825f,
-                weight = null,
+                weight = 90f,
                 routineId = 1,
                 exercise = Exercise(
                     id = 1,
@@ -75,7 +75,7 @@ class DummyAppRepository : AppRepository {
                 sets = 3,
                 reps = 5,
                 percentOneRepMax = 0.825f,
-                weight = null,
+                weight = 120f,
                 routineId = 1,
                 exercise = Exercise(
                     id = 2,
@@ -84,7 +84,7 @@ class DummyAppRepository : AppRepository {
                 )
             ),
             RoutineExercise(
-                id = 2,
+                id = 3,
                 order = 2,
                 sets = 3,
                 reps = 8,
@@ -98,7 +98,7 @@ class DummyAppRepository : AppRepository {
                 )
             ),
             RoutineExercise(
-                id = 2,
+                id = 4,
                 order = 3,
                 sets = 3,
                 reps = 12,
@@ -112,12 +112,12 @@ class DummyAppRepository : AppRepository {
                 )
             ),
             RoutineExercise(
-                id = 2,
+                id = 5,
                 order = 0,
                 sets = 3,
                 reps = 12,
                 percentOneRepMax = 0.825f,
-                weight = null,
+                weight = 80f,
                 routineId = 2,
                 exercise = Exercise(
                     id = 5,
@@ -126,12 +126,12 @@ class DummyAppRepository : AppRepository {
                 )
             ),
             RoutineExercise(
-                id = 2,
+                id = 6,
                 order = 1,
                 sets = 3,
                 reps = 12,
                 percentOneRepMax = null,
-                weight = null,
+                weight = 70f,
                 routineId = 2,
                 exercise = Exercise(
                     id = 6,
@@ -140,12 +140,12 @@ class DummyAppRepository : AppRepository {
                 )
             ),
             RoutineExercise(
-                id = 2,
+                id = 7,
                 order = 2,
                 sets = 3,
                 reps = 12,
                 percentOneRepMax = 0.725f,
-                weight = null,
+                weight = 50f,
                 routineId = 2,
                 exercise = Exercise(
                     id = 7,
@@ -154,7 +154,7 @@ class DummyAppRepository : AppRepository {
                 )
             ),
             RoutineExercise(
-                id = 2,
+                id = 8,
                 order = 3,
                 sets = 3,
                 reps = 12,
@@ -168,7 +168,7 @@ class DummyAppRepository : AppRepository {
                 )
             ),
             RoutineExercise(
-                id = 2,
+                id = 9,
                 order = 4,
                 sets = 3,
                 reps = 12,
@@ -180,7 +180,21 @@ class DummyAppRepository : AppRepository {
                     name = "Flys",
                     oneRepMax = null
                 )
-            )
+            ),
+            RoutineExercise(
+                id = 10,
+                order = 0,
+                sets = 3,
+                reps = 8,
+                percentOneRepMax = null,
+                weight = 40f,
+                routineId = 3,
+                exercise = Exercise(
+                    id = 9,
+                    name = "Hip hinge variant",
+                    oneRepMax = null
+                )
+            ),
         )
 
         val routines = listOf(
@@ -214,7 +228,21 @@ class DummyAppRepository : AppRepository {
                 startDate = Date(Date().time - 24 * 60 * 60 * 1000),
                 endDate = Date(),
                 routine = routines.first(),
-                exercises = sessionExercises
+                exercises = routineExercises.filter { it.routineId == routines.first().id }.map { it.toSessionExercise() }
+            ),
+            Session(
+                id = 2,
+                startDate = Date(Date().time - 3 * 24 * 60 * 60 * 1000),
+                endDate = Date(),
+                routine = routines[1],
+                exercises = routineExercises.filter { it.routineId == routines[1].id }.map { it.toSessionExercise() }
+            ),
+            Session(
+                id = 3,
+                startDate = Date(Date().time - 4 * 24 * 60 * 60 * 1000),
+                endDate = Date(),
+                routine = routines[2],
+                exercises = routineExercises.filter { it.routineId == routines[2].id }.map { it.toSessionExercise() }
             )
         )
     }

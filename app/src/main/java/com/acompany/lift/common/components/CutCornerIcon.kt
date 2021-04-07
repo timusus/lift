@@ -26,7 +26,7 @@ fun CutCornerIcon(
         colorFilter = ColorFilter.tint(tint),
         modifier = Modifier
             .size(CutCornerIconDefaults.PreferredIconSize)
-            .clip(CutCornerShape(8.dp, 4.dp, 8.dp, 4.dp))
+            .clip(CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp))
             .background(color = tint.copy(alpha = CutCornerIconDefaults.IconTintAlpha))
             .then(modifier)
     )

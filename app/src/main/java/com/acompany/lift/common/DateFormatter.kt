@@ -13,7 +13,7 @@ class DateFormatter @Inject constructor(
     @AppModule.MediumDateFormat private val mediumDateFormatter: DateFormat,
     @AppModule.ShortDateFormat private val shortDateFormatter: DateFormat,
     @AppModule.MediumDateTimeFormat private val mediumDateTimeFormatter: DateFormat,
-    @AppModule.ShortDateTimeFormat private val shortDateTimeFormatter: DateFormat,
+    @AppModule.ShortDateTimeFormat private val shortDateTimeFormatter: DateFormat
 ) {
 
     fun formatMediumDate(date: Date): String {

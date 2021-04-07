@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.data
+package com.acompany.lift.features.routines.detail.data
 
 import androidx.compose.material.Colors
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider

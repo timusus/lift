@@ -7,19 +7,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.acompany.lift.common.navigation.currentRoute
-import com.acompany.lift.features.exercises.components.ExerciseScreen
+import com.acompany.lift.features.home.components.HomeScreen
 import com.acompany.lift.features.main.data.NavDestination
-import com.acompany.lift.features.routines.components.RoutineScreen
+import com.acompany.lift.features.routines.components.RoutineListScreen
+import com.acompany.lift.features.routines.detail.components.ExerciseScreen
 import com.acompany.lift.features.sessions.components.SessionListScreen
 import com.acompany.lift.features.sessions.detail.components.SessionDetailScreen
 
 @Composable
 fun LiftNavHost(
-    startDestination: NavDestination = NavDestination.RoutineNavDestination
+    startDestination: NavDestination = NavDestination.HomeNavDestination
 ) {
     val navController = rememberNavController()
 
     val destinations = listOf(
+        NavDestination.HomeNavDestination,
         NavDestination.RoutineNavDestination,
         NavDestination.ExerciseNavDestination(),
         NavDestination.SessionNavDestination,
@@ -35,8 +37,16 @@ fun LiftNavHost(
                 arguments = destination.arguments
             ) {
                 when (destination) {
+                    is NavDestination.HomeNavDestination -> {
+                        HomeScreen(
+                            viewModel = hiltNavGraphViewModel(),
+                            currentRoute = navController.currentRoute(),
+                            onNavigate = { route ->
+                                navController.navigate(route)
+                            })
+                    }
                     is NavDestination.RoutineNavDestination -> {
-                        RoutineScreen(
+                        RoutineListScreen(
                             viewModel = hiltNavGraphViewModel(),
                             currentRoute = navController.currentRoute(),
                             onRoutineSelected = { routine ->

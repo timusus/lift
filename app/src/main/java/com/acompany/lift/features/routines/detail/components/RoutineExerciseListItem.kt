@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.components
+package com.acompany.lift.features.routines.detail.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -22,9 +22,9 @@ import com.acompany.lift.common.components.CutCornerIcon
 import com.acompany.lift.common.components.Icon
 import com.acompany.lift.common.effects.remainingTimeMillis
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.exercises.data.RoutineExerciseHelper.initialWeight
-import com.acompany.lift.features.exercises.data.ExerciseProgress
-import com.acompany.lift.features.exercises.data.RoutineExerciseListItemPreviewProvider
+import com.acompany.lift.common.RoutineExerciseHelper.initialWeight
+import com.acompany.lift.features.routines.detail.data.ExerciseProgress
+import com.acompany.lift.features.routines.detail.data.RoutineExerciseListItemPreviewProvider
 import com.acompany.lift.theme.MaterialColors
 import com.acompany.lift.theme.MaterialTypography
 
@@ -40,7 +40,7 @@ fun ExerciseListItem(
 ) {
     CompositionLocalProvider(LocalContentColor provides MaterialColors.primary) {
         Card(
-            shape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 8.dp),
+            shape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp),
             backgroundColor = MaterialTheme.colors.surface,
             elevation = if (isCurrentExercise) 4.dp else 1.dp
         ) {

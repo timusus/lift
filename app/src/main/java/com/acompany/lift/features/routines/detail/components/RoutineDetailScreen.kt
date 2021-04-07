@@ -1,4 +1,4 @@
-package com.acompany.lift.features.exercises.components
+package com.acompany.lift.features.routines.detail.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
@@ -16,10 +16,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.exercises.data.*
 import com.acompany.lift.features.main.components.LiftBottomNavigation
 import com.acompany.lift.features.main.data.DummyAppRepository
 import com.acompany.lift.features.main.data.NavDestination
+import com.acompany.lift.features.routines.detail.data.*
 import java.util.*
 
 @Composable
@@ -140,42 +140,44 @@ fun ExerciseScreen(
                         title = { Text(text = (screenState as? ScreenState.Ready)?.routine?.name ?: "") }
                     )
                 },
-                content = {
-                    when (screenState) {
-                        is ScreenState.Loading -> {
-                            Box(
-                                modifier = modifier.fillMaxSize(),
-                                contentAlignment = Alignment.TopCenter
-                            ) {
-                                CircularProgressIndicator(modifier.padding(top = 16.dp))
-                            }
-                        }
-                        is ScreenState.Ready -> {
-                            ExerciseList(
-                                routineExercises = screenState.routine.exercises,
-                                exerciseProgress = exerciseProgressMap,
-                                currentRoutineExerciseId = (routineProgress as? RoutineProgress.InProgress)?.currentRoutineExerciseId,
-                                onExerciseClick = { routineExercise ->
-                                    onExerciseSelected(routineExercise)
-                                    show()
-                                },
-                                onDoneClick = {
-                                    onUpdateExerciseProgress(screenState.routine)
-                                },
-                                onRestTimeComplete = {
-                                    onUpdateExerciseProgress(screenState.routine)
-                                    onRestTimeComplete()
+                content = { paddingValues ->
+                    Box(modifier = Modifier.padding(paddingValues)) {
+                        when (screenState) {
+                            is ScreenState.Loading -> {
+                                Box(
+                                    modifier = modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.TopCenter
+                                ) {
+                                    CircularProgressIndicator(modifier.padding(top = 16.dp))
                                 }
-                            )
-                            SessionProgressFloatingActionButton(routineProgress) {
-                                onUpdateExerciseProgress(screenState.routine)
+                            }
+                            is ScreenState.Ready -> {
+                                ExerciseList(
+                                    routineExercises = screenState.routine.exercises,
+                                    exerciseProgress = exerciseProgressMap,
+                                    currentRoutineExerciseId = (routineProgress as? RoutineProgress.InProgress)?.currentRoutineExerciseId,
+                                    onExerciseClick = { routineExercise ->
+                                        onExerciseSelected(routineExercise)
+                                        show()
+                                    },
+                                    onDoneClick = {
+                                        onUpdateExerciseProgress(screenState.routine)
+                                    },
+                                    onRestTimeComplete = {
+                                        onUpdateExerciseProgress(screenState.routine)
+                                        onRestTimeComplete()
+                                    }
+                                )
+                                SessionProgressFloatingActionButton(routineProgress) {
+                                    onUpdateExerciseProgress(screenState.routine)
+                                }
                             }
                         }
                     }
                 },
                 bottomBar = {
-                    LiftBottomNavigation(currentRoute) { item ->
-                        onNavigate(item.destination.route)
+                    LiftBottomNavigation(currentRoute) { destination ->
+                        onNavigate(destination.route)
                     }
                 }
             )
