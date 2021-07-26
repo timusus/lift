@@ -200,6 +200,58 @@ private fun HomeScreen(
                                         Text(modifier = modifier.align(Alignment.CenterHorizontally), text = "Bench", fontSize = 12.sp)
                                     }
                                 }
+
+                                Card(
+                                    shape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp),
+                                    backgroundColor = MaterialTheme.colors.surface,
+                                    modifier = modifier
+                                        .padding(4.dp)
+                                ) {
+                                    Column(
+                                        modifier = modifier
+                                            .padding(16.dp)
+                                    ) {
+                                        LineChart(
+                                            modifier = modifier
+                                                .fillMaxWidth()
+                                                .height(120.dp),
+                                            dataPoints = screenState.sessions
+                                                .mapNotNull { session ->
+                                                    session.exercises.firstOrNull { it.routineExercise.exercise.id == 1L }?.weight?.let {
+                                                        Pair(session.startDate, it)
+                                                    }
+                                                }
+                                                .map { PointD(it.first.time.toDouble(), it.second.toDouble()) }
+                                        )
+                                        Text(modifier = modifier.align(Alignment.CenterHorizontally), text = "Squat", fontSize = 12.sp)
+                                    }
+                                }
+
+                                Card(
+                                    shape = CutCornerShape(topStart = 8.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp),
+                                    backgroundColor = MaterialTheme.colors.surface,
+                                    modifier = modifier
+                                        .padding(4.dp)
+                                ) {
+                                    Column(
+                                        modifier = modifier
+                                            .padding(16.dp)
+                                    ) {
+                                        LineChart(
+                                            modifier = modifier
+                                                .fillMaxWidth()
+                                                .height(120.dp),
+                                            dataPoints = screenState.sessions
+                                                .mapNotNull { session ->
+                                                    session.exercises.firstOrNull { it.routineExercise.exercise.id == 2L }?.weight?.let {
+                                                        Pair(session.startDate, it)
+                                                    }
+                                                }
+                                                .map { PointD(it.first.time.toDouble(), it.second.toDouble()) }
+                                        )
+                                        Text(modifier = modifier.align(Alignment.CenterHorizontally), text = "Deadlift", fontSize = 12.sp)
+                                    }
+                                }
                             }
                         }
                     }

@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("com.google.secrets_gradle_plugin") version "0.5"
+    id("com.google.secrets_gradle_plugin") version "0.6.1"
     kotlin("android")
     kotlin("kapt")
     id("kotlin-android")
@@ -14,13 +14,13 @@ kapt {
 }
 
 android {
-    compileSdkVersion(30)
-    buildToolsVersion("30.0.3")
+    compileSdk = 30
+    buildToolsVersion = "30.0.3"
 
     defaultConfig {
         applicationId = "com.acompany.lift"
-        minSdkVersion(21)
-        targetSdkVersion(30)
+        minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
         versionCode = 1
         versionName = "1.0"
     }
@@ -38,12 +38,15 @@ android {
         compose = true
     }
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
+//        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
         kotlinCompilerExtensionVersion = Dependencies.Compose.version
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
@@ -51,12 +54,11 @@ dependencies {
     implementation(project(":data"))
     coreLibraryDesugaring(Dependencies.AndroidTools.desugarJdk)
 
-    implementation(Dependencies.Coil())
+//    implementation(Dependencies.Coil())
     implementation(Dependencies.PrettyTime())
     implementation(Dependencies.Timber())
 
     Dependencies.Accompanist.apply {
-        implementation(coil)
         implementation(insets)
     }
     Dependencies.AndroidX.apply {
@@ -71,6 +73,8 @@ dependencies {
         implementation(materialIconsExtended)
         implementation(savable)
         implementation(tooling)
+        implementation(ui)
+        implementation(foundation)
         androidTestImplementation(test)
     }
     Dependencies.Compose.Navigation.apply {

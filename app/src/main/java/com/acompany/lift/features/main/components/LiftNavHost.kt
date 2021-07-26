@@ -1,12 +1,10 @@
 package com.acompany.lift.features.main.components
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
-import com.acompany.lift.common.navigation.currentRoute
 import com.acompany.lift.features.home.components.HomeScreen
 import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.features.routines.components.RoutineListScreen
@@ -39,16 +37,16 @@ fun LiftNavHost(
                 when (destination) {
                     is NavDestination.HomeNavDestination -> {
                         HomeScreen(
-                            viewModel = hiltNavGraphViewModel(),
-                            currentRoute = navController.currentRoute(),
+                            viewModel = hiltViewModel(),
+                            currentRoute = navController.currentBackStackEntry?.destination?.route,
                             onNavigate = { route ->
                                 navController.navigate(route)
                             })
                     }
                     is NavDestination.RoutineNavDestination -> {
                         RoutineListScreen(
-                            viewModel = hiltNavGraphViewModel(),
-                            currentRoute = navController.currentRoute(),
+                            viewModel = hiltViewModel(),
+                            currentRoute = navController.currentBackStackEntry?.destination?.route,
                             onRoutineSelected = { routine ->
                                 navController.navigate(route = "routines/routine/${routine.id}")
                             },
@@ -59,8 +57,8 @@ fun LiftNavHost(
                     }
                     is NavDestination.ExerciseNavDestination -> {
                         ExerciseScreen(
-                            viewModel = hiltNavGraphViewModel(),
-                            currentRoute = navController.currentRoute(),
+                            viewModel = hiltViewModel(),
+                            currentRoute = navController.currentBackStackEntry?.destination?.route,
                             onDismiss = {
                                 navController.popBackStack()
                             },
@@ -71,8 +69,8 @@ fun LiftNavHost(
                     }
                     is NavDestination.SessionNavDestination -> {
                         SessionListScreen(
-                            viewModel = hiltNavGraphViewModel(),
-                            currentRoute = navController.currentRoute(),
+                            viewModel = hiltViewModel(),
+                            currentRoute = navController.currentBackStackEntry?.destination?.route,
                             onSessionClick = { session ->
                                 navController.navigate(route = "sessions/session/${session.id}")
                             },
@@ -82,8 +80,8 @@ fun LiftNavHost(
                     }
                     is NavDestination.SessionDetailNavDestination -> {
                         SessionDetailScreen(
-                            viewModel = hiltNavGraphViewModel(),
-                            currentRoute = navController.currentRoute(),
+                            viewModel = hiltViewModel(),
+                            currentRoute = navController.currentBackStackEntry?.destination?.route,
                             onNavigate = { route ->
                                 navController.navigate(route)
                             },
