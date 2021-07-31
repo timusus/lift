@@ -9,50 +9,66 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NamedNavArgument
 import androidx.navigation.compose.navArgument
 
-sealed class NavDestination(
+sealed class Screen(
     val route: String,
     val arguments: List<NamedNavArgument> = emptyList(),
-    val icon: ImageVector,
-    val contentDescription: String,
+    val title: String
 ) {
 
-    object HomeNavDestination : NavDestination(
+    abstract class RootScreen(
+        route: String,
+        arguments: List<NamedNavArgument> = emptyList(),
+        title: String,
+        val icon: ImageVector
+    ) : Screen(route, arguments, title)
+
+    object HomeScreen : RootScreen(
         route = "home",
-        icon = Icons.Rounded.Home,
-        contentDescription = "Home"
+        title = "Home",
+        icon = Icons.Rounded.Home
     )
 
-    object RoutineNavDestination : NavDestination(
+    object RoutineListScreen : RootScreen(
         route = "routines",
-        icon = Icons.Rounded.Timer,
-        contentDescription = "Routines",
+        title = "Routines",
+        icon = Icons.Rounded.Timer
     )
 
-    class ExerciseNavDestination : NavDestination(
+    object SessionListScreen : RootScreen(
+        route = "sessions",
+        title = "Sessions",
+        icon = Icons.Rounded.StackedLineChart
+    )
+
+    class ExerciseDetailScreen : Screen(
         route = "routines/routine/{routineId}",
         arguments = listOf(navArgument(ARG_ROUTINE) { type = NavType.LongType }),
-        icon = Icons.Rounded.Timer,
-        contentDescription = "Routines",
+        title = "Routines",
     ) {
         companion object {
             const val ARG_ROUTINE = "routineId"
         }
     }
 
-    object SessionNavDestination : NavDestination(
-        route = "sessions",
-        icon = Icons.Rounded.StackedLineChart,
-        contentDescription = "Sessions"
-    )
-
-    class SessionDetailNavDestination : NavDestination(
+    class SessionDetailScreen : Screen(
         route = "sessions/session/{sessionId}",
         arguments = listOf(navArgument(ARG_SESSION_ID) { type = NavType.LongType }),
-        icon = Icons.Rounded.StackedLineChart,
-        contentDescription = "Sessions"
+        title = "Sessions"
     ) {
         companion object {
             const val ARG_SESSION_ID = "sessionId"
         }
+    }
+
+    companion object {
+        val allScreens = listOf(
+            HomeScreen,
+            RoutineListScreen,
+            SessionListScreen,
+            ExerciseDetailScreen(),
+            SessionDetailScreen()
+        )
+
+        val rootScreens = allScreens.filterIsInstance<RootScreen>()
     }
 }

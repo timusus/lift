@@ -2,95 +2,73 @@ package com.acompany.lift.features.main.components
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.acompany.lift.features.home.components.HomeScreen
-import com.acompany.lift.features.main.data.NavDestination
-import com.acompany.lift.features.routines.components.RoutineListScreen
+import com.acompany.lift.features.home.components.Home
+import com.acompany.lift.features.main.data.Screen
+import com.acompany.lift.features.routines.components.RoutineList
 import com.acompany.lift.features.routines.detail.components.ExerciseScreen
-import com.acompany.lift.features.sessions.components.SessionListScreen
+import com.acompany.lift.features.sessions.components.SessionList
 import com.acompany.lift.features.sessions.detail.components.SessionDetailScreen
 
 @Composable
 fun LiftNavHost(
-    startDestination: NavDestination = NavDestination.HomeNavDestination
+    navController: NavHostController,
+    startDestination: Screen = Screen.HomeScreen
 ) {
-    val navController = rememberNavController()
-
-    val destinations = listOf(
-        NavDestination.HomeNavDestination,
-        NavDestination.RoutineNavDestination,
-        NavDestination.ExerciseNavDestination(),
-        NavDestination.SessionNavDestination,
-        NavDestination.SessionDetailNavDestination()
-    )
     NavHost(
         navController = navController,
         startDestination = startDestination.route
     ) {
-        destinations.forEach { destination ->
-            composable(
-                route = destination.route,
-                arguments = destination.arguments
-            ) {
-                when (destination) {
-                    is NavDestination.HomeNavDestination -> {
-                        HomeScreen(
-                            viewModel = hiltViewModel(),
-                            currentRoute = navController.currentBackStackEntry?.destination?.route,
-                            onNavigate = { route ->
-                                navController.navigate(route)
-                            })
-                    }
-                    is NavDestination.RoutineNavDestination -> {
-                        RoutineListScreen(
-                            viewModel = hiltViewModel(),
-                            currentRoute = navController.currentBackStackEntry?.destination?.route,
-                            onRoutineSelected = { routine ->
-                                navController.navigate(route = "routines/routine/${routine.id}")
-                            },
-                            onNavigate = { route ->
-                                navController.navigate(route)
-                            }
-                        )
-                    }
-                    is NavDestination.ExerciseNavDestination -> {
-                        ExerciseScreen(
-                            viewModel = hiltViewModel(),
-                            currentRoute = navController.currentBackStackEntry?.destination?.route,
-                            onDismiss = {
-                                navController.popBackStack()
-                            },
-                            onNavigate = { route ->
-                                navController.navigate(route)
-                            }
-                        )
-                    }
-                    is NavDestination.SessionNavDestination -> {
-                        SessionListScreen(
-                            viewModel = hiltViewModel(),
-                            currentRoute = navController.currentBackStackEntry?.destination?.route,
-                            onSessionClick = { session ->
-                                navController.navigate(route = "sessions/session/${session.id}")
-                            },
-                            onNavigate = { route ->
-                                navController.navigate(route)
-                            })
-                    }
-                    is NavDestination.SessionDetailNavDestination -> {
-                        SessionDetailScreen(
-                            viewModel = hiltViewModel(),
-                            currentRoute = navController.currentBackStackEntry?.destination?.route,
-                            onNavigate = { route ->
-                                navController.navigate(route)
-                            },
-                            onDismiss = {
-                                navController.popBackStack()
-                            }
-                        )
-                    }
+        composable(
+            route = Screen.HomeScreen.route,
+            arguments = Screen.HomeScreen.arguments
+        ) {
+            Home(
+                viewModel = hiltViewModel()
+            )
+        }
+        composable(
+            route = Screen.RoutineListScreen.route,
+            arguments = Screen.RoutineListScreen.arguments
+        ) {
+            RoutineList(
+                viewModel = hiltViewModel(),
+                onRoutineSelected = { routine ->
+                    navController.navigate(route = "routines/routine/${routine.id}")
                 }
+            )
+        }
+        composable(
+            route = Screen.SessionListScreen.route,
+            arguments = Screen.SessionListScreen.arguments
+        ) {
+            SessionList(
+                viewModel = hiltViewModel(),
+                onSessionClick = { session ->
+                    navController.navigate(route = "sessions/session/${session.id}")
+                })
+        }
+        composable(
+            route = Screen.ExerciseDetailScreen().route,
+            arguments = Screen.ExerciseDetailScreen().arguments
+        ) {
+            ExerciseScreen(
+                viewModel = hiltViewModel(),
+                onDismiss = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(
+            route = Screen.SessionDetailScreen().route,
+            arguments = Screen.SessionDetailScreen().arguments
+        ) {
+            SessionDetailScreen(
+                viewModel = hiltViewModel()
+            ) {
+                navController.popBackStack()
             }
         }
     }

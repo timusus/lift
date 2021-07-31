@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_package = "com.acompany.lift";
+option java_multiple_files = true;
+
+message RoutineProgressProto {
+  enum Type {
+    None = 0;
+    InProgress = 1;
+    Complete = 2;
+  }
+  Type type = 1;
+  optional string startDate = 2;
+  optional int64 currentExerciseId = 3;
+}
+
+message ExerciseProgressProto {
+  enum Type {
+    None = 0;
+    InProgress = 1;
+    Resting = 2;
+    Complete = 3;
+  }
+  Type type = 1;
+  optional int32 set = 2;
+}

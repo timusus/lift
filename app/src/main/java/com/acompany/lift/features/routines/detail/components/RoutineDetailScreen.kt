@@ -16,9 +16,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.acompany.lift.data.model.Routine
 import com.acompany.lift.data.model.RoutineExercise
-import com.acompany.lift.features.main.components.LiftBottomNavigation
 import com.acompany.lift.features.main.data.DummyAppRepository
-import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.features.routines.detail.data.*
 import java.util.*
 
@@ -26,10 +24,8 @@ import java.util.*
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 fun ExerciseScreen(
     modifier: Modifier = Modifier,
-    viewModel: RoutineDetailScreenViewModel,
-    currentRoute: String?,
-    onDismiss: () -> Unit,
-    onNavigate: (String) -> Unit
+    viewModel: RoutineDetailViewModel,
+    onDismiss: () -> Unit
 ) {
     val screenState: ScreenState by viewModel.screenState.collectAsState()
     var selectedExercise by rememberSaveable { mutableStateOf<RoutineExercise?>(null) }
@@ -37,14 +33,13 @@ fun ExerciseScreen(
     ExerciseScreen(
         modifier = modifier,
         screenState = screenState,
-        currentRoute = currentRoute,
         selectedExercise = selectedExercise,
         routineProgress = viewModel.sessionProgress,
         exerciseProgressMap = viewModel.exerciseProgressMap,
-        onDismiss = onDismiss,
         onExerciseSelected = { routineExercise ->
             selectedExercise = routineExercise
         },
+        onDismiss = onDismiss,
         onOneRepMaxChanged = { routineExercise, oneRepMax ->
             viewModel.updateOneRepMax(
                 exerciseId = routineExercise.id,
@@ -67,18 +62,14 @@ fun ExerciseScreen(
             viewModel.updateProgress(routine)
             when (val sessionProgress = viewModel.sessionProgress) {
                 is RoutineProgress.Complete -> {
-                    if (sessionProgress.shouldSave) {
-                        viewModel.saveSession(routine)
-                        onDismiss()
-                    }
+                    viewModel.saveSession(routine)
+                    onDismiss()
                 }
             }
-        },
-        onRestTimeComplete = {
-            viewModel.playRestTimerTone()
-        },
-        onNavigate = onNavigate
-    )
+        }
+    ) {
+        viewModel.playRestTimerTone()
+    }
 }
 
 @Composable
@@ -86,7 +77,6 @@ fun ExerciseScreen(
 fun ExerciseScreen(
     modifier: Modifier = Modifier,
     screenState: ScreenState,
-    currentRoute: String?,
     selectedExercise: RoutineExercise?,
     routineProgress: RoutineProgress,
     exerciseProgressMap: Map<Long, ExerciseProgress>,
@@ -96,8 +86,7 @@ fun ExerciseScreen(
     onWeightChanged: (RoutineExercise, Float?) -> Unit = { _, _ -> },
     onPercentOneRepMaxChanged: (RoutineExercise, Float?) -> Unit = { _, _ -> },
     onUpdateExerciseProgress: (Routine) -> Unit = {},
-    onRestTimeComplete: () -> Unit = {},
-    onNavigate: (String) -> Unit = {}
+    onRestTimeComplete: () -> Unit = {}
 ) {
     ExerciseModalSheet(
         sheetContent = {
@@ -174,11 +163,6 @@ fun ExerciseScreen(
                             }
                         }
                     }
-                },
-                bottomBar = {
-                    LiftBottomNavigation(currentRoute) { destination ->
-                        onNavigate(destination.route)
-                    }
                 }
             )
         })
@@ -192,7 +176,6 @@ private fun ExerciseScreenPreview(
     MaterialTheme(colors = preview) {
         ExerciseScreen(
             screenState = ScreenState.Ready(DummyAppRepository.routines.first()),
-            currentRoute = NavDestination.ExerciseNavDestination().route,
             selectedExercise = null,
             routineProgress = RoutineProgress.InProgress(Date(), DummyAppRepository.routineExercises.first().id),
             exerciseProgressMap = mapOf()

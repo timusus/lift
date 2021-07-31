@@ -18,7 +18,7 @@ import com.acompany.lift.di.AppModule
 import com.acompany.lift.features.sessions.data.SessionListPreviewProvider
 
 @Composable
-fun SessionList(
+fun LazySessionList(
     sessions: List<Session>,
     modifier: Modifier = Modifier,
     dateFormatter: DateFormatter,
@@ -46,7 +46,7 @@ private fun SessionListPreview(
     @PreviewParameter(SessionListPreviewProvider::class) preview: Pair<Colors, List<Session>>
 ) {
     MaterialTheme(colors = preview.first) {
-        SessionList(
+        LazySessionList(
             sessions = preview.second,
             dateFormatter = DateFormatter(
                 context = LocalContext.current,

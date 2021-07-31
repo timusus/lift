@@ -1,5 +1,5 @@
 object Dependencies {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.0-alpha04"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.1.0-alpha05"
 
     object Accompanist {
         private const val version = "0.14.0"
@@ -18,6 +18,8 @@ object Dependencies {
         const val lifecycleViewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
         const val lifecycleViewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
         const val viewModelSavedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion"
+        const val datastorePreferences = "androidx.datastore:datastore-preferences:1.0.0-rc02"
+        const val datastore = "androidx.datastore:datastore-core:1.0.0-rc02"
     }
 
     object Coil {
@@ -36,7 +38,8 @@ object Dependencies {
         const val savable = "androidx.compose.runtime:runtime-saveable:$version"
         const val ui = "androidx.compose.ui:ui:$version"
         const val foundation = "androidx.compose.foundation:foundation:$version"
-        const val test = "androidx.compose.ui:ui-test:$version"
+        const val test = "androidx.compose.ui:ui-test-junit4:$version"
+        const val testManifest = "androidx.compose.ui:ui-test-manifest:$version"
         const val tooling = "androidx.compose.ui:ui-tooling:$version"
 
         object Navigation {
@@ -58,6 +61,8 @@ object Dependencies {
         const val hiltPlugin = "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
         const val hilt = "com.google.dagger:hilt-android:$hiltVersion"
         const val hiltKapt = "com.google.dagger:hilt-compiler:$hiltVersion"
+        const val hiltTest = "com.google.dagger:hilt-android-testing:$hiltVersion"
+        const val hiltTestKapt = "com.google.dagger:hilt-android-compiler:$hiltVersion"
     }
 
     object Kotlin {
@@ -111,5 +116,9 @@ object Dependencies {
 
     object Timber {
         operator fun invoke() = "com.jakewharton.timber:timber:4.7.1"
+    }
+
+    object ProtoBuf {
+        operator fun invoke() = "com.google.protobuf:protobuf-javalite:3.15.0"
     }
 }

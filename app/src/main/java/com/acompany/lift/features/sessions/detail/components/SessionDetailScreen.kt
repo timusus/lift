@@ -17,9 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acompany.lift.common.DateFormatter
 import com.acompany.lift.data.model.Session
-import com.acompany.lift.features.main.components.LiftBottomNavigation
 import com.acompany.lift.features.main.data.DummyAppRepository
-import com.acompany.lift.features.main.data.NavDestination
 import com.acompany.lift.features.sessions.detail.data.ScreenState
 import com.acompany.lift.features.sessions.detail.data.SessionDetailViewModel
 import com.acompany.lift.theme.MaterialColors
@@ -29,21 +27,17 @@ import java.util.*
 @Composable
 fun SessionDetailScreen(
     viewModel: SessionDetailViewModel,
-    currentRoute: String?,
-    onNavigate: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
     val screenState: ScreenState by viewModel.screenState.collectAsState()
 
     SessionDetailScreen(
         screenState = screenState,
-        currentRoute = currentRoute,
         dateFormatter = viewModel.dateFormatter,
         deleteSession = { session ->
             viewModel.deleteSession(session)
             onDismiss()
         },
-        onNavigate = onNavigate,
         onDismiss = onDismiss
     )
 }
@@ -51,10 +45,8 @@ fun SessionDetailScreen(
 @Composable
 fun SessionDetailScreen(
     screenState: ScreenState,
-    currentRoute: String?,
     dateFormatter: DateFormatter,
     deleteSession: (session: Session) -> Unit = {},
-    onNavigate: (String) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
     var sessionToDelete by rememberSaveable { mutableStateOf<Session?>(null) }
@@ -156,12 +148,7 @@ fun SessionDetailScreen(
                 }
             }
         }
-    },
-        bottomBar = {
-            LiftBottomNavigation(currentRoute) { destination ->
-                onNavigate(destination.route)
-            }
-        })
+    })
 }
 
 @Composable
@@ -200,7 +187,6 @@ fun DeleteConfirmationAlertDialog(onDismiss: (confirmation: Boolean) -> Unit) {
 fun SessionDetailScreenPreview() {
     SessionDetailScreen(
         screenState = ScreenState.Ready(DummyAppRepository.sessions.first()),
-        currentRoute = NavDestination.SessionDetailNavDestination().route,
         dateFormatter = null as DateFormatter
     )
 }
