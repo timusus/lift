@@ -29,63 +29,46 @@ class RoutineManager @AssistedInject constructor(
         fun createRoutineManager(routine: Routine): RoutineManager
     }
 
-    private var routineProgress = MutableStateFlow<RoutineProgress?>(null)
+    private var routineProgress = MutableStateFlow<RoutineProgress>(
+        RoutineProgress.None(routine = routine)
+    )
 
-    fun advance(routine: Routine): RoutineProgress {
-        when (val _routineProgress = routineProgress.value) {
-            null -> {
-                routineProgress.value = RoutineProgress.InProgress(
-                    routine = routine,
-                    startDate = Date(),
-                    exerciseProgress = routine.exercises.map { exercise -> ExerciseProgress.InProgress(exercise, 0) }
-                )
-            }
-            is RoutineProgress.InProgress -> {
-                if (_routineProgress.exerciseProgress.all { it is ExerciseProgress.Complete }) {
-                    routineProgress.value = RoutineProgress.Complete(routine, _routineProgress.startDate)
-                } else {
-                    routineProgress = RoutineProgress.InProgress(routine, _routineProgress.startDate, )
-                }
-
-            }
-            is RoutineProgress.Complete -> {
-
-            }
-        }
+    fun advance() {
+        routineProgress.value = routineProgress.value.advance()
     }
 
-    fun advance(exerciseProgress: ExerciseProgress?): ExerciseProgress {
-        when (exerciseProgress) {
-            null -> {
-                currentExercise.value = ExerciseProgress.InProgress(0)
-            }
-            is ExerciseProgress.InProgress -> {
-                currentExercise.value = ExerciseProgress.Resting(_currentExercise.set)
-            }
-            is ExerciseProgress.Resting -> {
-                if (currentExerciseProgress.set < currentRoutineExercise.sets - 1) {
-                    currentExercise.value = ExerciseProgress.InProgress(currentExerciseProgress.set + 1)
-                } else {
-                    currentExercise.value = ExerciseProgress.Complete
-                    val index = routine.exercises.indexOf(currentRoutineExercise)
-                    if (index < exerciseProgressMap.size - 1) {
-                        val nextExerciseId = routine.exercises[index + 1].id
-                        exerciseProgressMap[nextExerciseId] = ExerciseProgress.InProgress(0)
-                        routineProgress.value = RoutineProgress.InProgress(
-                            startDate = _routineProgress.startDate,
-                            currentRoutineExerciseId = nextExerciseId
-                        )
-                    } else {
-                        routineProgress.value = RoutineProgress.Complete(
-                            startDate = _routineProgress.startDate
-                        )
-                    }
-                }
-            }
-            is ExerciseProgress.Complete -> {
-            }
-        }
-    }
+//    fun advance(exerciseProgress: ExerciseProgress?): ExerciseProgress {
+//        when (exerciseProgress) {
+//            null -> {
+//                currentExercise.value = ExerciseProgress.InProgress(0)
+//            }
+//            is ExerciseProgress.InProgress -> {
+//                currentExercise.value = ExerciseProgress.Resting(_currentExercise.set)
+//            }
+//            is ExerciseProgress.Resting -> {
+//                if (currentExerciseProgress.set < currentRoutineExercise.sets - 1) {
+//                    currentExercise.value = ExerciseProgress.InProgress(currentExerciseProgress.set + 1)
+//                } else {
+//                    currentExercise.value = ExerciseProgress.Complete
+//                    val index = routine.exercises.indexOf(currentRoutineExercise)
+//                    if (index < exerciseProgressMap.size - 1) {
+//                        val nextExerciseId = routine.exercises[index + 1].id
+//                        exerciseProgressMap[nextExerciseId] = ExerciseProgress.InProgress(0)
+//                        routineProgress.value = RoutineProgress.InProgress(
+//                            startDate = _routineProgress.startDate,
+//                            currentRoutineExerciseId = nextExerciseId
+//                        )
+//                    } else {
+//                        routineProgress.value = RoutineProgress.Complete(
+//                            startDate = _routineProgress.startDate
+//                        )
+//                    }
+//                }
+//            }
+//            is ExerciseProgress.Complete -> {
+//            }
+//        }
+//    }
 
     suspend fun save(routine: Routine) {
         when (val _routineProgress = routineProgress) {
