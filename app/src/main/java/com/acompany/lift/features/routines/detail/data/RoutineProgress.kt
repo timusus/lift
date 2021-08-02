@@ -48,18 +48,19 @@ fun RoutineProgress.advance(): RoutineProgress {
         }
         is RoutineProgress.InProgress -> {
             val exerciseProgressList = exerciseProgressList.toMutableList()
+            var currentExerciseProgress = currentExerciseProgress
             val currentIndex = exerciseProgressList.indexOf(currentExerciseProgress)
 
             if (currentExerciseProgress is ExerciseProgress.Complete) {
                 if (exerciseProgressList.all { it is ExerciseProgress.Complete }) {
                     RoutineProgress.Complete(routine, startDate)
                 } else {
-                    // move to next exercise
-
+                    currentExerciseProgress = exerciseProgressList.first { it !is ExerciseProgress.Complete }
                     RoutineProgress.InProgress(routine, exerciseProgressList, currentExerciseProgress, startDate)
                 }
             } else {
-                // progress current exercise
+                currentExerciseProgress = currentExerciseProgress.advance()
+                exerciseProgressList[currentIndex] = currentExerciseProgress
                 RoutineProgress.InProgress(routine, exerciseProgressList, currentExerciseProgress, startDate)
 
             }

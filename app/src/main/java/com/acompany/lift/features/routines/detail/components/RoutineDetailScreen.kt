@@ -34,7 +34,7 @@ fun ExerciseScreen(
         modifier = modifier,
         screenState = screenState,
         selectedExercise = selectedExercise,
-        routineProgress = viewModel.sessionProgress,
+        routineProgress = viewModel.routineProgress,
         exerciseProgressMap = viewModel.exerciseProgressMap,
         onExerciseSelected = { routineExercise ->
             selectedExercise = routineExercise

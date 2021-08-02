@@ -1,7 +1,5 @@
 package com.acompany.lift.features.routines.detail.data
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -25,7 +23,7 @@ class RoutineDetailViewModel @Inject constructor(
     @AppModule.AppCoroutineScope private val appCoroutineScope: CoroutineScope,
     private val soundManager: SoundManager,
     savedStateHandle: SavedStateHandle,
-    private val routineManager: RoutineManager
+    private val routineManagerFactory: RoutineManager.RoutineManagerFactory
 ) : ViewModel() {
 
     private val routineId = savedStateHandle.get<Long>("routineId")!!
@@ -93,7 +91,7 @@ class RoutineDetailViewModel @Inject constructor(
 }
 
 object PreferenceKeys {
-    val SESSION_PROGRESS = stringSetPreferencesKey("sessionProgress")
-    val EXERCISE_IDS = stringSetPreferencesKey("exerciseIds")
+//    val SESSION_PROGRESS = stringSetPreferencesKey("sessionProgress")
+//    val EXERCISE_IDS = stringSetPreferencesKey("exerciseIds")
 }
 
