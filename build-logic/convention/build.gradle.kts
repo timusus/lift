@@ -50,8 +50,8 @@ gradlePlugin {
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("androidLibrary") {
-            id = "shuttle.android.library"
-            implementationClass = "AndroidLibraryConventionPlugin"
+            id = "shuttle.library"
+            implementationClass = "LibraryConventionPlugin"
         }
         register("androidFeature") {
             id = "shuttle.android.feature"
