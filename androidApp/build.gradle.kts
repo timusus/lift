@@ -1,21 +1,24 @@
 plugins {
-    id("shuttle.android.application")
-    id("shuttle.android.application.compose")
+    id("lift.android.application")
+    id("lift.android.application.compose")
     alias(libs.plugins.kotlin.android)
+    id("lift.android.hilt")
+    alias(libs.plugins.secrets)
+    alias(libs.plugins.google.services)
 }
 
 android {
-    namespace = "com.simplecityapps.shuttle3.android"
-    compileSdk = 33
+    namespace = "com.simplecityapps.lift.android"
+    compileSdk = 34
     defaultConfig {
-        applicationId = "com.simplecityapps.shuttle3.android"
-        minSdk = 24
-        targetSdk = 33
+        applicationId = "com.simplecityapps.lift.android"
+        minSdk = 31
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -28,28 +31,48 @@ android {
 }
 
 dependencies {
-    implementation(project(":shared"))
+    implementation(project(":shared:logging"))
+    implementation(project(":shared:model"))
+    implementation(project(":shared:database"))
+    implementation(project(":shared:network"))
+    implementation(project(":shared:data"))
+    implementation(project(":shared:domain"))
 
     androidTestImplementation(libs.androidx.navigation.testing)
 
     debugImplementation(libs.androidx.compose.ui.testManifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
+    implementation(libs.android.gms.play.services.maps)
+    implementation(libs.android.gms.play.services.location)
+    implementation(libs.android.maps.compose)
+    implementation(libs.android.maps.compose.utils)
+    implementation(libs.android.maps.compose.widgets)
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.windowSizeClass)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.profileinstaller)
     implementation(libs.androidx.window.manager)
 
+    implementation(libs.kotlinx.datetime)
 
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.permissions)
+
+    implementation(libs.kotlinx.serialization.json)
 }
 
 // androidx.test is forcing JUnit, 4.12. This forces it to use 4.13

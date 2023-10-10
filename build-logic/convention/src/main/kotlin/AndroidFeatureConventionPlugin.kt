@@ -33,7 +33,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             extensions.configure<LibraryExtension> {
                 defaultConfig {
                     testInstrumentationRunner =
-                        "com.acompany.lift.core.testing.NiaTestRunner"
+                        "com.simplecityapps.lift.core.testing.LiftTestRunner"
                 }
             }
 

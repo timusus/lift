@@ -18,48 +18,51 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.simplecityapps.shuttle.buildlogic"
+group = "com.simplecityapps.lift.buildlogic"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
-//    compileOnly(libs.spotless.gradlePlugin)
 }
 
 gradlePlugin {
     plugins {
         register("androidApplicationCompose") {
-            id = "shuttle.android.application.compose"
+            id = "lift.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
         register("androidApplication") {
-            id = "shuttle.android.application"
+            id = "lift.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("androidApplicationJacoco") {
-            id = "shuttle.android.application.jacoco"
+            id = "lift.android.application.jacoco"
             implementationClass = "AndroidApplicationJacocoConventionPlugin"
         }
         register("androidLibraryCompose") {
-            id = "shuttle.android.library.compose"
+            id = "lift.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("androidLibrary") {
-            id = "shuttle.library"
+            id = "lift.library"
             implementationClass = "LibraryConventionPlugin"
         }
         register("androidFeature") {
-            id = "shuttle.android.feature"
+            id = "lift.android.feature"
             implementationClass = "AndroidFeatureConventionPlugin"
         }
         register("androidTest") {
-            id = "shuttle.android.test"
+            id = "lift.android.test"
             implementationClass = "AndroidTestConventionPlugin"
+        }
+        register("androidHilt") {
+            id = "lift.android.hilt"
+            implementationClass = "AndroidHiltConventionPlugin"
         }
     }
 }

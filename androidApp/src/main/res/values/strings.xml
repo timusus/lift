@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lift</string>
+    <string name="nav_maps">Run</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_routines">Routines</string>
+    <string name="nav_sessions">Sessions</string>
+</resources>

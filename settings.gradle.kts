@@ -15,6 +15,14 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "shuttle"
+rootProject.name = "lift"
 include(":androidApp")
-include(":shared")
+include(":shared:domain")
+include(":shared:database")
+include(":shared:model")
+include(":shared:data")
+include(":shared:logging")
+include(":shared:network")
+include(":shared:domain")
+include(":shared:framework")
+include(":androidApp:maps")

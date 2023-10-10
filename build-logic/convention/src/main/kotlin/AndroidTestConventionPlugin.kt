@@ -1,6 +1,6 @@
 
 import com.android.build.gradle.TestExtension
-import com.simplecityapps.shuttle3.configureKotlinAndroid
+import com.simplecityapps.lift.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

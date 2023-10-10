@@ -29,3 +29,4 @@ dependencyResolutionManagement {
 }
 
 include(":convention")
+rootProject.name = "lift"

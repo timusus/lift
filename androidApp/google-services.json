@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1039696526904",
+    "project_id": "lift-400821",
+    "storage_bucket": "lift-400821.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1039696526904:android:52b8070e3168699323b0cd",
+        "android_client_info": {
+          "package_name": "com.simplecityapps.lift.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMy0lcrKzu5jl0QLIbcEExGI1BmrebufM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

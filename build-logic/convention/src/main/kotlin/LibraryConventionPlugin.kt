@@ -1,11 +1,16 @@
+
 import com.android.build.gradle.LibraryExtension
-import com.simplecityapps.shuttle3.configureKotlinAndroid
+import com.simplecityapps.lift.configureKotlinAndroid
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
-import org.gradle.internal.impldep.com.jcraft.jsch.ConfigRepository.defaultConfig
-import org.gradle.kotlin.dsl.*
+import org.gradle.kotlin.dsl.creating
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.getValue
+import org.gradle.kotlin.dsl.getting
+import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
@@ -16,6 +21,8 @@ class LibraryConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("org.jetbrains.kotlin.multiplatform")
                 apply("com.android.library")
+                apply("com.rickclephas.kmp.nativecoroutines")
+                apply("com.google.devtools.ksp")
             }
 
             extensions.configure<LibraryExtension>("android") {
@@ -24,13 +31,13 @@ class LibraryConventionPlugin : Plugin<Project> {
             }
 
             (extensions.getByName("kotlin") as KotlinMultiplatformExtension).apply {
-                android {
+                androidTarget {
                     compilations.all {
                         kotlinOptions {
                             configureCommonKotlinOptions(this@with)
 
                             // Set JVM target to 1.8
-                            jvmTarget = JavaVersion.VERSION_1_8.toString()
+                            jvmTarget = JavaVersion.VERSION_17.toString()
                         }
                     }
                 }
@@ -56,7 +63,7 @@ class LibraryConventionPlugin : Plugin<Project> {
                     }
 
                     val androidMain by getting
-                    val androidTest by getting
+                    val androidUnitTest by getting
 
                     val iosX64Main by getting
                     val iosArm64Main by getting
@@ -102,8 +109,6 @@ private fun KotlinCommonOptions.configureCommonKotlinOptions(project: Project) {
         // Enable experimental coroutines APIs, including Flow
         "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
         "-opt-in=kotlinx.coroutines.FlowPreview",
-        "-opt-in=kotlin.Experimental",
-        // Enable experimental kotlinx serialization APIs
-        "-opt-in=kotlinx.serialization.ExperimentalSerializationApi"
+        "-opt-in=kotlin.experimental.ExperimentalObjCName"
     )
 }
