@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simplecityapps.lift.android.DataImportUseCase
 import com.simplecityapps.lift.android.common.AsyncState
+import com.simplecityapps.lift.android.ui.auth.AuthManager
 import com.simplecityapps.lift.model.Session
 import com.simplecityapps.lift.repository.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,9 +18,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val authManager: AuthManager,
     sessionRepository: SessionRepository,
-    private val dataImportUseCase: DataImportUseCase
+    private val dataImportUseCase: DataImportUseCase,
 ) : ViewModel() {
+
+    val authState = authManager.authState
 
     val viewState: StateFlow<AsyncState<List<Session>>> = sessionRepository.getSessions(
         sessionIds = null

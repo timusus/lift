@@ -19,3 +19,9 @@ expect inline fun Any.logcat(
     tag: String? = null,
     message: () -> String
 )
+
+expect inline fun logcat(
+    tag: String,
+    priority: LogPriority = LogPriority.DEBUG,
+    message: () -> String
+)

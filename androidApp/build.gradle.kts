@@ -38,6 +38,10 @@ dependencies {
     implementation(project(":shared:data"))
     implementation(project(":shared:domain"))
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.android.gms.play.services.auth)
+
     androidTestImplementation(libs.androidx.navigation.testing)
 
     debugImplementation(libs.androidx.compose.ui.testManifest)
@@ -73,6 +77,14 @@ dependencies {
     implementation(libs.accompanist.permissions)
 
     implementation(libs.kotlinx.serialization.json)
+
+    androidTestImplementation(kotlin("test"))
+    testImplementation(kotlin("test"))
+    testImplementation(libs.junit5.jupiter.api)
+    testImplementation(libs.junit5.jupiter.params)
+    testRuntimeOnly(libs.junit5.jupiter.engine)
+    testImplementation(libs.mockk)
+
 }
 
 // androidx.test is forcing JUnit, 4.12. This forces it to use 4.13
@@ -82,4 +94,8 @@ configurations.configureEach {
         // Temporary workaround for https://issuetracker.google.com/174733673
         force("org.objenesis:objenesis:2.6")
     }
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }

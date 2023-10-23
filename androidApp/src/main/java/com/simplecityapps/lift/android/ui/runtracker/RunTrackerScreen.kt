@@ -1,18 +1,24 @@
 package com.simplecityapps.lift.android.ui.runtracker
 
+import android.text.format.DateUtils
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -24,13 +30,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -41,9 +48,19 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.simplecityapps.lift.android.ForegroundOnlyLocationService
 import com.simplecityapps.lift.android.ui.navigation.NavigationDestination
+import com.simplecityapps.lift.android.ui.theme.AppTheme
 import com.simplecityapps.lift.model.Location
 import com.simplecityapps.shuttle.logging.logcat
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import java.time.Duration
+import kotlin.time.toJavaDuration
 
 object MapsDestination : NavigationDestination {
     override val route: String = "maps_route"
@@ -92,7 +109,7 @@ fun RunTrackerScreen(
     val sessionStartTime by viewModel.sessionStartTime.collectAsStateWithLifecycle()
 
     RunTrackerScreen(
-        locationPermissionsState = locationPermissionsState,
+        hasLocationPermissions = locationPermissionsState.allPermissionsGranted,
         location = location,
         sessionStartTime = sessionStartTime,
         onToggleSession = {
@@ -161,13 +178,13 @@ fun RunTrackerScreen(
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RunTrackerScreen(
-    locationPermissionsState: MultiplePermissionsState,
+    hasLocationPermissions: Boolean,
     location: Location?,
     sessionStartTime: Instant?,
-    onToggleSession: () -> Unit
+    onToggleSession: () -> Unit = {}
 ) {
     val sheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Expanded,
@@ -177,9 +194,62 @@ fun RunTrackerScreen(
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetContent = {
-            Column(modifier = Modifier.padding(16.dp)) {
-                OutlinedButton(onClick = { onToggleSession() }) {
-                    Text("Start session")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 24.dp)
+            ) {
+                if (sessionStartTime == null) {
+                    Button(modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(),
+                        onClick = { onToggleSession() }
+                    ) {
+                        Text("Start session")
+                    }
+                } else {
+                    Row {
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            val timer by getTimerFlow(sessionStartTime).collectAsStateWithLifecycle(
+                                initialValue = Duration.ZERO
+                            )
+                            Text(
+                                text = "Duration",
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Spacer(
+                                modifier = Modifier.size(8.dp)
+                            )
+                            Text(
+                                text = DateUtils.formatElapsedTime(timer.seconds),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+                        Spacer(
+                            modifier = Modifier.size(8.dp)
+                        )
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            val timer by getTimerFlow(sessionStartTime).collectAsStateWithLifecycle(
+                                initialValue = Duration.ZERO
+                            )
+                            Text(
+                                text = "Distance",
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Spacer(modifier = Modifier.size(8.dp))
+                            Text(
+                                text = DateUtils.formatElapsedTime(timer.seconds),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -197,7 +267,7 @@ fun RunTrackerScreen(
             mutableStateOf(
                 MapProperties(
                     mapType = MapType.NORMAL,
-                    isMyLocationEnabled = locationPermissionsState.allPermissionsGranted
+                    isMyLocationEnabled = hasLocationPermissions
                 )
             )
         }
@@ -237,6 +307,41 @@ fun RunTrackerScreen(
             )
         }
     }
-
 }
 
+@Preview
+@Composable
+fun RunTrackerScreenPreview() {
+    AppTheme {
+        RunTrackerScreen(
+            hasLocationPermissions = true,
+            location = null,
+            sessionStartTime = null
+        )
+    }
+}
+
+
+@Preview
+@Composable
+fun RunTrackerScreenPreview2() {
+    AppTheme {
+        RunTrackerScreen(
+            hasLocationPermissions = true,
+            location = null,
+            sessionStartTime = Clock.System.now()
+        )
+    }
+}
+
+private fun getTimerFlow(startDate: Instant): Flow<Duration> {
+    return (0..Int.MAX_VALUE)
+        .asFlow()
+        .map {
+            Clock.System.now().minus(startDate).toJavaDuration()
+        }
+        .onEach { delay(1000) }
+        .onStart {
+            emit(Clock.System.now().minus(startDate).toJavaDuration())
+        }
+}

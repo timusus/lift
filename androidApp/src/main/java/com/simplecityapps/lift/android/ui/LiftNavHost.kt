@@ -7,6 +7,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.simplecityapps.lift.android.ui.auth.AuthDestination
+import com.simplecityapps.lift.android.ui.auth.AuthScreen
 import com.simplecityapps.lift.android.ui.home.HomeScreen
 import com.simplecityapps.lift.android.ui.navigation.HomeDestination
 import com.simplecityapps.lift.android.ui.navigation.RoutineListDestination
@@ -16,6 +18,8 @@ import com.simplecityapps.lift.android.ui.runtracker.MapsDestination
 import com.simplecityapps.lift.android.ui.runtracker.RunTrackerScreen
 import com.simplecityapps.lift.android.ui.sessions.SessionListScreen
 import com.simplecityapps.lift.android.ui.sessions.detail.SessionDetailScreen
+import com.simplecityapps.lift.android.ui.settings.SettingsDestination
+import com.simplecityapps.lift.android.ui.settings.SettingsScreen
 
 @Composable
 fun LiftNavHost(
@@ -27,7 +31,7 @@ fun LiftNavHost(
         startDestination = HomeDestination.route,
         modifier = modifier
     ) {
-        composable(MapsDestination.route){
+        composable(MapsDestination.route) {
             RunTrackerScreen()
         }
         composable(RoutineListDestination.route) {
@@ -41,7 +45,31 @@ fun LiftNavHost(
             SessionListScreen()
         }
         composable(HomeDestination.route) {
-            HomeScreen()
+            HomeScreen(
+                onNavigateToSettings = {
+                    navController.navigate(SettingsDestination.route)
+                },
+                onNavigateToSignIn = {
+                    navController.navigate(AuthDestination.route)
+                }
+            )
+        }
+        composable(AuthDestination.route) {
+            AuthScreen(
+                onNavigateToHome = {
+                    navController.navigate(HomeDestination.route)
+                }
+            )
+        }
+        composable(SettingsDestination.route) {
+            SettingsScreen(
+                onNavigateHome = {
+                    navController.popBackStack(
+                        route = HomeDestination.route,
+                        inclusive = false
+                    )
+                }
+            )
         }
         composable(
             route = "routines/{routineId}",

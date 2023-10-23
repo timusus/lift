@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "1039696526904",
-    "project_id": "lift-400821",
-    "storage_bucket": "lift-400821.appspot.com"
+    "project_number": "229223510486",
+    "project_id": "lift-6eb49",
+    "storage_bucket": "lift-6eb49.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1039696526904:android:52b8070e3168699323b0cd",
+        "mobilesdk_app_id": "1:229223510486:android:7510e3db7b07398fc63477",
         "android_client_info": {
           "package_name": "com.simplecityapps.lift.android"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "229223510486-eb0k7mmoqbs9t0vkalgusa6nocnalgde.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.simplecityapps.lift.android",
+            "certificate_hash": "abdbaddcf7ddcc1810acc93c4b84cf9a9e071d68"
+          }
+        },
+        {
+          "client_id": "229223510486-cfp9ct3s3vb1mu43g0l436jqr551be6h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAMy0lcrKzu5jl0QLIbcEExGI1BmrebufM"
+          "current_key": "AIzaSyAXqyWbUzsQ_YDx5ibnICRe_aA6owq9hRI"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "229223510486-cfp9ct3s3vb1mu43g0l436jqr551be6h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

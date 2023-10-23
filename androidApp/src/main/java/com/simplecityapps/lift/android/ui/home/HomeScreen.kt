@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,7 +22,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,16 +46,26 @@ import kotlin.math.pow
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onNavigateToSignIn: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-    HomeScreen(
-        viewState = viewState,
-        onImportData = {
-            viewModel.importData()
+    val authState by viewModel.authState.collectAsStateWithLifecycle()
+
+    if (authState is AsyncState.Success) {
+        HomeScreen(
+            viewState = viewState,
+            onSettingsClicked = {
+                onNavigateToSettings()
+            }
+        )
+    } else {
+        LaunchedEffect(authState) {
+            onNavigateToSignIn()
         }
-    )
+    }
 }
 
 
@@ -56,17 +73,28 @@ fun HomeScreen(
 @Composable
 fun HomeScreen(
     viewState: AsyncState<List<Session>>,
-    onImportData: () -> Unit
+    onSettingsClicked: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Home") },
                 actions = {
-                    IconButton(onClick = {
-                        onImportData()
-                    }) {
-                        Icon(imageVector = Icons.Outlined.Download, contentDescription = null)
+                    var showMenu by remember { mutableStateOf(false) }
+                    IconButton(onClick = { showMenu = !showMenu }) {
+                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(text = "Settings") },
+                            leadingIcon = {
+                                Icon(imageVector = Icons.Filled.Refresh, null)
+                            },
+                            onClick = { onSettingsClicked() },
+                        )
                     }
                 }
             )
@@ -130,7 +158,7 @@ private fun VolumeCard(sessions: List<Session>) {
         ) {
             val dataPoints = sessions
                 .map { session ->
-                        PointD(session.startDate.epochSeconds.toDouble(),  session.volume().toDouble())
+                    PointD(session.startDate.epochSeconds.toDouble(), session.volume().toDouble())
                 }
 
             val differences = dataPoints.zipWithNext().map { it.second.x - it.first.x }

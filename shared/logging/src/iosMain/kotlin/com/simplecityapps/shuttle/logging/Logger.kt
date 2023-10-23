@@ -21,3 +21,11 @@ actual inline fun Any.logcat(
         println(message())
     }
 }
+
+actual inline fun logcat(
+    tag: String,
+    priority: LogPriority,
+    message: () -> String
+) {
+    println("$tag: ${message()}")
+}

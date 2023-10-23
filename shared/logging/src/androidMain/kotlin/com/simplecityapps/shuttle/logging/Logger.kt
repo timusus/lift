@@ -11,3 +11,11 @@ actual inline fun Any.logcat(
 ) {
     logcat(priority, tag, message)
 }
+
+actual inline fun logcat(
+    tag: String,
+    priority: LogPriority,
+    message: () -> String
+) {
+    logcat(tag, priority, message)
+}

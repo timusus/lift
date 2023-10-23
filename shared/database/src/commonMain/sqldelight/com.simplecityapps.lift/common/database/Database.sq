@@ -224,7 +224,7 @@ WHERE id = :sessionExerciseId;
 -- Insert a new running session and return its ID.
 insertRunSession:
 INSERT INTO RunSessionEntity(startDate, endDate)
-VALUES (?, ?);
+VALUES (?,  ?);
 
 -- Update the end date of a running session.
 updateEndDate:
@@ -235,7 +235,7 @@ WHERE id = :id;
 -- Insert a new location for a session.
 insertLocation:
 INSERT INTO RunSessionLocationEntity (sessionId, latitude, longitude, timestamp)
-VALUES (sessionId = :sessionId, latitude = :latitude,  longitude = :longitude, timestamp = :timestamp);
+VALUES (?, ?, ?, ?);
 
 -- Get all locations for a specific session.
 getLocationsForRunSession:

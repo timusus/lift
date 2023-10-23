@@ -217,7 +217,7 @@ class AppDataSource(
     fun startRunningSession(): Long {
         val startDate = Clock.System.now()
         return database.transactionWithResult {
-            database.databaseQueries.insertRunSession(startDate, null)
+            database.databaseQueries.insertRunSession(startDate = startDate, endDate = null)
             database.databaseQueries.lastInsertId().executeAsOne()
         }
 
