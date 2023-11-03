@@ -4,32 +4,29 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(project(":shared:data"))
-                api(project(":shared:database"))
-                api(project(":shared:network"))
-                api(project(":shared:logging"))
-                api(project(":shared:model"))
-                api(project(":shared:domain"))
-            }
+        commonMain.dependencies {
+            api(project(":shared:data:repository"))
+            api(project(":shared:data:database"))
+            api(project(":shared:data:network"))
+            api(project(":shared:logging"))
+            api(project(":shared:domain"))
+            api(project(":shared:common"))
         }
     }
 
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
             baseName = "shared"
             linkerOpts.add("-lsqlite3")
-            export(project(":shared:data"))
-            export(project(":shared:database"))
-            export(project(":shared:network"))
+            export(project(":shared:data:repository"))
+            export(project(":shared:data:database"))
+            export(project(":shared:data:network"))
             export(project(":shared:logging"))
-            export(project(":shared:model"))
             export(project(":shared:domain"))
+            export(project(":shared:common"))
         }
     }
 }

@@ -1,8 +1,3 @@
-//
-// Created by Timothy Malseed on 30/10/2022.
-// Copyright (c) 2022 orgName. All rights reserved.
-//
-
 import Foundation
 import SwiftUI
 

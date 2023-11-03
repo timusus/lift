@@ -12,17 +12,23 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
     }
 }
 
 rootProject.name = "lift"
-include(":androidApp")
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+include(":shared:auth")
+include(":shared:common")
+include(":shared:data:database")
+include(":shared:data:network")
+include(":shared:data:repository")
 include(":shared:domain")
-include(":shared:database")
-include(":shared:model")
-include(":shared:data")
 include(":shared:logging")
-include(":shared:network")
-include(":shared:domain")
+
+include(":android:app")
+include(":android:sync:work")
+
 include(":shared:framework")
-include(":androidApp:maps")
