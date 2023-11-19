@@ -2,7 +2,8 @@ package com.simplecityapps.lift.common.database
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOne
+import app.cash.sqldelight.coroutines.mapToOneOrNull
+import com.simplecityapps.lift.common.utils.UuidGenerator
 import com.simplecityapps.lift.database.LiftDatabase
 import comsimplecityappslift.common.database.ExerciseEntity
 import comsimplecityappslift.common.database.RoutineEntity
@@ -10,159 +11,254 @@ import comsimplecityappslift.common.database.RoutineExerciseEntity
 import comsimplecityappslift.common.database.RunSessionLocationEntity
 import comsimplecityappslift.common.database.SessionEntity
 import comsimplecityappslift.common.database.SessionExerciseEntity
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 class AppDataSource(
-    private val database: LiftDatabase
+    private val database: LiftDatabase,
+    private val dispatcher: CoroutineDispatcher
 ) {
 
     // Exercises
 
-    suspend fun createExercise(
-        id: Long?, name: String, oneRepMax: Float?
-    ): Long {
-        return withContext(Dispatchers.Default) {
-            database.transactionWithResult {
-                database.databaseQueries.createExercise(
-                    id = id,
-                    name = name,
-                    one_rep_max = oneRepMax
-                )
-                database.databaseQueries.lastInsertId().executeAsOne()
-            }
+    suspend fun upsertExercise(
+        id: String?,
+        name: String,
+        oneRepMax: Float?,
+        lastModified: Instant = Clock.System.now(),
+        lastSynced: Instant? = null
+    ) {
+        return withContext(dispatcher) {
+            database.databaseQueries.upsertExercise(
+                id = id ?: UuidGenerator.generateUuid(),
+                name = name,
+                one_rep_max = oneRepMax,
+                last_modified = lastModified,
+                last_synced = lastSynced
+            )
         }
     }
 
     fun getAllExercises(): Flow<List<ExerciseEntity>> {
         return database.databaseQueries.selectAllExercises()
-            .asFlow().mapToList(Dispatchers.Default)
+            .asFlow().mapToList(dispatcher)
+    }
+
+    fun getExercisesToSync(): Flow<List<ExerciseEntity>> {
+        return database.databaseQueries.selectExercisesToSync()
+            .asFlow().mapToList(dispatcher)
+    }
+
+    fun getExerciseById(id: String): Flow<ExerciseEntity?> {
+        return database.databaseQueries.selectExercise(id)
+            .asFlow()
+            .mapToOneOrNull(dispatcher)
+    }
+
+    suspend fun getExerciseLastSyncTime(): Instant? {
+        return withContext(dispatcher) {
+            database.databaseQueries.selectLastSyncedExerciseInstant().executeAsOneOrNull()?.last_synced
+        }
+    }
+
+    suspend fun updateExerciseLastSynced(ids: List<String>, time: Instant) {
+        return withContext(dispatcher) {
+            database.databaseQueries.updateExerciseLastSynced(
+                last_synced = time,
+                id = ids
+            )
+        }
     }
 
     // Routine Exercises
 
-    suspend fun createRoutineExercise(
-        id: Long?,
+    suspend fun upsertRoutineExercise(
+        id: String?,
         sortOrder: Int,
         sets: Int,
         reps: Int,
         percentOneRepMax: Float?,
         weight: Float?,
-        routineId: Long,
-        exerciseId: Long
-    ): Long {
-        return withContext(Dispatchers.Default) {
-            database.transactionWithResult {
-                database.databaseQueries.createRoutineExercise(
-                    id = id,
-                    sort_order = sortOrder,
-                    sets = sets,
-                    reps = reps,
-                    percent_one_rep_max = percentOneRepMax,
-                    weight = weight,
-                    routineId = routineId,
-                    exerciseId = exerciseId
-                )
-                database.databaseQueries.lastInsertId().executeAsOne()
-            }
+        routineId: String,
+        exerciseId: String,
+        lastModified: Instant = Clock.System.now(),
+        lastSynced: Instant? = null
+    ) {
+        return withContext(dispatcher) {
+            database.databaseQueries.upsertRoutineExercise(
+                id = id ?: UuidGenerator.generateUuid(),
+                sort_order = sortOrder,
+                sets = sets,
+                reps = reps,
+                percent_one_rep_max = percentOneRepMax,
+                weight = weight,
+                routineId = routineId,
+                exerciseId = exerciseId,
+                last_modified = lastModified,
+                last_synced = lastSynced
+            )
         }
     }
 
-    fun getRoutineExercises(routineIds: Collection<Long>? = null): Flow<List<RoutineExerciseEntity>> {
+    fun getRoutineExercises(routineIds: Collection<String>? = null): Flow<List<RoutineExerciseEntity>> {
         return (routineIds?.let {
             database.databaseQueries.selectRoutineExercises(routineIds)
         } ?: database.databaseQueries.selectAllRoutineExercises())
-            .asFlow().mapToList(Dispatchers.Default)
+            .asFlow().mapToList(dispatcher)
     }
 
-    suspend fun updateRoutineExercisePercentOneRepMax(id: Long, percentOneRepMax: Float?) {
-        withContext(Dispatchers.Default) {
+    fun getRoutineExercise(id: String): Flow<RoutineExerciseEntity?> {
+        return database.databaseQueries.selectRoutineExercise(id)
+            .asFlow()
+            .mapToOneOrNull(dispatcher)
+    }
+
+    fun getRoutineExercisesToSync(): Flow<List<RoutineExerciseEntity>> {
+        return database.databaseQueries.selectRoutineExercisesToSync()
+            .asFlow().mapToList(dispatcher)
+    }
+
+    suspend fun getRoutineExerciseLastSyncTime(): Instant? {
+        return withContext(dispatcher) {
+            database.databaseQueries.selectLastSyncedRoutineExerciseInstant().executeAsOneOrNull()?.last_synced
+        }
+    }
+
+    suspend fun updateRoutineExerciseLastSynced(ids: List<String>, time: Instant) {
+        return withContext(dispatcher) {
+            database.databaseQueries.updateRoutineExerciseLastSynced(
+                last_synced = time,
+                id = ids
+            )
+        }
+    }
+
+    suspend fun updateRoutineExercisePercentOneRepMax(id: String, percentOneRepMax: Float?) {
+        withContext(dispatcher) {
             database.databaseQueries.updateRoutineExercisePercentOneRepMax(percentOneRepMax, id)
         }
     }
 
-    suspend fun updateRoutineExerciseWeight(id: Long, weight: Float?) {
-        withContext(Dispatchers.Default) {
+    suspend fun updateRoutineExerciseWeight(id: String, weight: Float?) {
+        withContext(dispatcher) {
             database.databaseQueries.updateRoutineExerciseWeight(weight, id)
         }
     }
 
-    suspend fun updateExerciseOneRepMax(id: Long, oneRepMax: Float?) {
-        withContext(Dispatchers.Default) {
+    suspend fun updateExerciseOneRepMax(id: String, oneRepMax: Float?) {
+        withContext(dispatcher) {
             database.databaseQueries.updateExerciseOneRepMax(oneRepMax, id)
+        }
+    }
+
+    suspend fun updateRoutineLastSynced(ids: List<String>, time: Instant) {
+        withContext(dispatcher) {
+            database.databaseQueries.updateRoutineLastSynced(
+                id = ids,
+                last_synced = time
+            )
         }
     }
 
     // Routines
 
-    suspend fun createRoutine(
-        id: Long?,
+    suspend fun upsertRoutine(
+        id: String?,
         sortOrder: Int,
-        name: String
-    ): Long {
-        return withContext(Dispatchers.Default) {
-            database.transactionWithResult {
-                database.databaseQueries.createRoutine(
-                    id = id,
-                    sort_order = sortOrder,
-                    name = name
-                )
-                database.databaseQueries.lastInsertId().executeAsOne()
-            }
+        name: String,
+        lastModified: Instant = Clock.System.now(),
+        lastSynced: Instant? = null
+    ) {
+        return withContext(dispatcher) {
+            database.databaseQueries.upsertRoutine(
+                id = id ?: UuidGenerator.generateUuid(),
+                sort_order = sortOrder,
+                name = name,
+                last_modified = lastModified,
+                last_synced = lastSynced
+            )
         }
     }
 
-    fun getRoutines(ids: Collection<Long>? = null): Flow<List<RoutineEntity>> {
+    fun getRoutines(ids: Collection<String>? = null): Flow<List<RoutineEntity>> {
         return (ids?.let {
             database.databaseQueries.selectRoutines(ids)
         } ?: database.databaseQueries.selectAllRoutines())
             .asFlow()
-            .mapToList(Dispatchers.Default)
+            .mapToList(dispatcher)
     }
 
-    fun getRoutine(id: Long): Flow<RoutineEntity> {
+    fun getRoutinesToSync(): Flow<List<RoutineEntity>> {
+        return database.databaseQueries.selectRoutinesToSync()
+            .asFlow().mapToList(dispatcher)
+    }
+
+    fun getRoutine(id: String): Flow<RoutineEntity?> {
         return database.databaseQueries.selectRoutine(id)
             .asFlow()
-            .mapToOne(Dispatchers.Default)
+            .mapToOneOrNull(dispatcher)
+    }
+
+    suspend fun getRoutineLastSyncTime(): Instant? {
+        return withContext(dispatcher) {
+            database.databaseQueries.selectLastSyncedRoutineInstant().executeAsOneOrNull()?.last_synced
+        }
     }
 
     // Session Exercises
 
-    suspend fun createSessionExercise(
-        id: Long?,
+    suspend fun upsertSessionExercise(
+        id: String?,
         sets: Int?,
         reps: Int?,
         weight: Float?,
-        sessionId: Long,
-        routineExerciseId: Long,
-    ): Long {
-        return withContext(Dispatchers.Default) {
-            database.transactionWithResult {
-                database.databaseQueries.createSessionExercise(
-                    id = id,
-                    sets = sets,
-                    reps = reps,
-                    weight = weight,
-                    sessionId = sessionId,
-                    routineExerciseId = routineExerciseId
-                )
-                database.databaseQueries.lastInsertId().executeAsOne()
-            }
+        sessionId: String,
+        routineExerciseId: String,
+        lastModified: Instant = Clock.System.now(),
+        lastSynced: Instant? = null
+    ) {
+        return withContext(dispatcher) {
+            database.databaseQueries.upsertSessionExercise(
+                id = id ?: UuidGenerator.generateUuid(),
+                sets = sets,
+                reps = reps,
+                weight = weight,
+                sessionId = sessionId,
+                routineExerciseId = routineExerciseId,
+                last_modified = lastModified,
+                last_synced = lastSynced
+            )
         }
     }
 
-    fun getSessionExercises(sessionIds: Collection<Long>?): Flow<List<SessionExerciseEntity>> {
+    fun getSessionExercises(sessionIds: Collection<String>?): Flow<List<SessionExerciseEntity>> {
         return (sessionIds?.let {
             database.databaseQueries.selectSessionExercises(sessionIds)
         } ?: database.databaseQueries.selectAllSessionExercises())
-            .asFlow().mapToList(Dispatchers.Default)
+            .asFlow().mapToList(dispatcher)
     }
 
-    suspend fun updateSessionExercise(sessionExerciseId: Long, currentSet: Int, endDate: Instant?, weight: Float?) {
-        withContext(Dispatchers.Default) {
+    fun getSessionExercise(sessionId: String): Flow<SessionExerciseEntity?> {
+        return database.databaseQueries.selectSessionExercise(sessionId)
+            .asFlow().mapToOneOrNull(dispatcher)
+    }
+
+    fun getSessionExercisesToSync(): Flow<List<SessionExerciseEntity>> {
+        return database.databaseQueries.selectSessionExercisesToSync()
+            .asFlow().mapToList(dispatcher)
+    }
+
+    suspend fun getSessionExerciseLastSyncTime(): Instant? {
+        return withContext(dispatcher) {
+            database.databaseQueries.selectLastSyncedSessionExerciseInstant().executeAsOneOrNull()?.last_synced
+        }
+    }
+
+    suspend fun updateSessionExercise(sessionExerciseId: String, currentSet: Int, endDate: Instant?, weight: Float?) {
+        withContext(dispatcher) {
             database.databaseQueries.updateSessionExercise(
                 sessionExerciseId = sessionExerciseId,
                 currentSet = currentSet,
@@ -172,54 +268,68 @@ class AppDataSource(
         }
     }
 
-    suspend fun deleteSessionExercises(sessionId: Long) {
-        withContext(Dispatchers.Default) {
+    suspend fun deleteSessionExercises(sessionId: String) {
+        withContext(dispatcher) {
             database.databaseQueries.deleteExercisesForSession(sessionId)
         }
     }
 
     // Sessions
 
-    suspend fun createSession(
-        id: Long?,
+    suspend fun upsertSession(
+        id: String?,
         startDate: Instant,
         endDate: Instant?,
-        routineId: Long,
-    ): Long {
-        return withContext(Dispatchers.Default) {
-            database.transactionWithResult {
-                database.databaseQueries.createSession(
-                    id = id,
-                    startDate = startDate,
-                    endDate = endDate,
-                    routineId = routineId
-                )
-                database.databaseQueries.lastInsertId().executeAsOne()
-            }
+        routineId: String,
+        lastModified: Instant = Clock.System.now(),
+        lastSynced: Instant? = null
+    ) {
+        return withContext(dispatcher) {
+            database.databaseQueries.upsertSession(
+                id = id ?: UuidGenerator.generateUuid(),
+                startDate = startDate,
+                endDate = endDate,
+                routineId = routineId,
+                last_modified = lastModified,
+                last_synced = lastSynced
+            )
         }
     }
 
-    fun getSessions(sessionIds: Collection<Long>?): Flow<List<SessionEntity>> {
-        return (if (sessionIds == null) {
-            database.databaseQueries.selectAllSessions()
-        } else {
-            database.databaseQueries.selectSessions(sessionIds)
-        })
-            .asFlow().mapToList(Dispatchers.Default)
+    fun getSessions(sessionIds: Collection<String>?): Flow<List<SessionEntity>> {
+        return (
+                if (sessionIds == null) {
+                    database.databaseQueries.selectAllSessions()
+                } else {
+                    database.databaseQueries.selectSessions(sessionIds)
+                }
+                )
+            .asFlow().mapToList(dispatcher)
     }
 
-    fun getSession(sessionId: Long): Flow<SessionEntity> {
+    fun getSessionsToSync(): Flow<List<SessionEntity>> {
+        return database.databaseQueries.selectSessionsToSync()
+            .asFlow().mapToList(dispatcher)
+    }
+
+    fun getSession(sessionId: String): Flow<SessionEntity?> {
         return database.databaseQueries.selectSession(sessionId)
-            .asFlow().mapToOne(Dispatchers.Default)
+            .asFlow().mapToOneOrNull(dispatcher)
     }
 
-    fun getSessionsForRoutine(routineId: Long): Flow<List<SessionEntity>> {
+    fun getSessionsForRoutine(routineId: String): Flow<List<SessionEntity>> {
         return database.databaseQueries.selectSessionsForRoutine(routineId)
-            .asFlow().mapToList(Dispatchers.Default)
+            .asFlow().mapToList(dispatcher)
     }
 
-    suspend fun updateSession(sessionId: Long, currentExerciseId: Long?, endDate: Instant?) {
-        withContext(Dispatchers.Default) {
+    suspend fun getSessionLastSyncTime(): Instant? {
+        return withContext(dispatcher) {
+            database.databaseQueries.selectLastSyncedSessionInstant().executeAsOneOrNull()?.last_synced
+        }
+    }
+
+    suspend fun updateSession(sessionId: String, currentExerciseId: String?, endDate: Instant?) {
+        withContext(dispatcher) {
             database.databaseQueries.updateSession(
                 sessionId = sessionId,
                 currentExerciseId = currentExerciseId,
@@ -228,24 +338,47 @@ class AppDataSource(
         }
     }
 
-    suspend fun deleteSession(sessionId: Long) {
-        withContext(Dispatchers.Default) {
+    suspend fun updateSessionLastSynced(ids: List<String>, time: Instant) {
+        withContext(dispatcher) {
+            database.databaseQueries.updateSessionLastSynced(
+                id = ids,
+                last_synced = time
+            )
+        }
+    }
+
+    suspend fun updateSessionExerciseLastSynced(ids: List<String>, time: Instant) {
+        withContext(dispatcher) {
+            database.databaseQueries.updateSessionExerciseLastSynced(
+                id = ids,
+                last_synced = time
+            )
+        }
+    }
+
+    suspend fun deleteSession(sessionId: String) {
+        withContext(dispatcher) {
             database.databaseQueries.deleteSession(sessionId)
         }
     }
 
     // Runs
 
-    fun startRunningSession(): Long {
+    fun startRunningSession(): String {
+        val id = UuidGenerator.generateUuid()
         val startDate = Clock.System.now()
         return database.transactionWithResult {
-            database.databaseQueries.insertRunSession(startDate = startDate, endDate = null)
-            database.databaseQueries.lastInsertId().executeAsOne()
+            database.databaseQueries.insertRunSession(
+                id = id,
+                startDate = startDate,
+                endDate = null,
+                last_modified = Clock.System.now()
+            )
+            id
         }
-
     }
 
-    fun stopRunningSession(sessionId: Long) {
+    fun stopRunningSession(sessionId: String) {
         val endDate = Clock.System.now()
         database.databaseQueries.updateEndDate(
             endDate = endDate,
@@ -253,16 +386,18 @@ class AppDataSource(
         )
     }
 
-    fun addLocationToSession(sessionId: Long, latitude: Double, longitude: Double) {
+    fun addLocationToSession(sessionId: String, latitude: Double, longitude: Double) {
         database.databaseQueries.insertLocation(
+            id = UuidGenerator.generateUuid(),
             sessionId = sessionId,
             latitude = latitude,
             longitude = longitude,
-            timestamp = Clock.System.now()
+            timestamp = Clock.System.now(),
+            last_modified = Clock.System.now()
         )
     }
 
-    fun getSessionLocations(sessionId: Long): Flow<List<RunSessionLocationEntity>> {
-        return database.databaseQueries.getLocationsForRunSession(sessionId).asFlow().mapToList(Dispatchers.Default)
+    fun getSessionLocations(sessionId: String): Flow<List<RunSessionLocationEntity>> {
+        return database.databaseQueries.getLocationsForRunSession(sessionId).asFlow().mapToList(dispatcher)
     }
 }

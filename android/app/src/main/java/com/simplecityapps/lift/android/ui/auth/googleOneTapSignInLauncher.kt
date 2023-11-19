@@ -9,8 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import com.simplecityapps.lift.android.common.AsyncState
-import com.simplecityapps.lift.auth.AuthRepository
 import com.simplecityapps.lift.auth.signin.GoogleOneTapSignInProvider
+import com.simplecityapps.lift.common.repository.AuthRepository
 import com.simplecityapps.lift.logging.logcat
 import kotlinx.coroutines.launch
 

@@ -4,29 +4,20 @@ import com.simplecityapps.lift.common.model.Routine
 import com.simplecityapps.lift.common.model.toSession
 import com.simplecityapps.lift.common.repository.SessionRepository
 
-class CreateSessionFromRoutineUseCase(val sessionRepository: SessionRepository) {
+class CreateSessionFromRoutineUseCase(
+    private val sessionRepository: SessionRepository
+) {
     suspend operator fun invoke(
         routine: Routine
-    ): Long {
+    ): String {
         val session = routine.toSession()
-        val sessionId = sessionRepository.createSession(
-            session = session,
-            generateId = true
-        )
-        val sessionExerciseIdMap = session.sessionExercises.map { sessionExercise ->
-            sessionRepository.createSessionExercise(sessionExercise.copy(sessionId = sessionId)) to sessionExercise
+        sessionRepository.upsertSession(session = session)
+        session.sessionExercises.forEach { sessionExercise ->
+            sessionRepository.upsertSessionExercise(sessionExercise)
         }
-        sessionExerciseIdMap.firstOrNull()
-            ?.let { (sessionExerciseId, sessionExercise) ->
-                sessionRepository.updateSession(
-                    session.copy(
-                        id = sessionId,
-                        currentExercise = sessionExercise.copy(
-                            id = sessionExerciseId
-                        )
-                    )
-                )
-            }
-        return sessionId
+        sessionRepository.updateSession(
+            session.copy(currentExercise = session.sessionExercises.firstOrNull())
+        )
+        return session.id
     }
 }

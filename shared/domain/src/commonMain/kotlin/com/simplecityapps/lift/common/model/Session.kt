@@ -5,7 +5,7 @@ import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.hours
 
 data class Session(
-    val id: Long,
+    val id: String,
     val startDate: Instant,
     val endDate: Instant?,
     val routine: Routine,

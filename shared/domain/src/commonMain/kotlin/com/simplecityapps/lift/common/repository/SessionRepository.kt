@@ -4,27 +4,21 @@ import com.simplecityapps.lift.common.model.Session
 import com.simplecityapps.lift.common.model.SessionExercise
 import kotlinx.coroutines.flow.Flow
 
-interface SessionRepository {
-    suspend fun createSessionExercise(
-        sessionExercise: SessionExercise,
-        generateId: Boolean = true
-    ): Long
+interface SessionRepository: SyncRepository {
+    suspend fun upsertSessionExercise(sessionExercise: SessionExercise)
 
-    fun getSessionExercises(sessionIds: Collection<Long>? = null): Flow<List<SessionExercise>>
+    fun getSessionExercises(sessionIds: Collection<String>? = null): Flow<List<SessionExercise>>
 
     suspend fun updateSessionExercise(sessionExercise: SessionExercise)
 
     suspend fun deleteSessionExercises(session: Session)
 
-    suspend fun createSession(
-        session: Session,
-        generateId: Boolean
-    ): Long
+    suspend fun upsertSession(session: Session)
 
-    fun getSessions(sessionIds: Collection<Long>? = null): Flow<List<Session>>
-    fun getSession(sessionId: Long): Flow<Session>
-    fun getSessionsForRoutine(routineId: Long): Flow<List<Session>>
-    fun getLatestSessionForRoutine(routineId: Long): Flow<Session?>
+    fun getSessions(sessionIds: Collection<String>? = null): Flow<List<Session>>
+    fun getSession(sessionId: String): Flow<Session?>
+    fun getSessionsForRoutine(routineId: String): Flow<List<Session>>
+    fun getLatestSessionForRoutine(routineId: String): Flow<Session?>
 
     suspend fun deleteSession(session: Session)
 

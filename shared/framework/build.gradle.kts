@@ -7,7 +7,7 @@ kotlin {
         commonMain.dependencies {
             api(project(":shared:data:repository"))
             api(project(":shared:data:database"))
-            api(project(":shared:data:network"))
+            api(project(":shared:data:firestore"))
             api(project(":shared:logging"))
             api(project(":shared:domain"))
             api(project(":shared:common"))
@@ -23,7 +23,7 @@ kotlin {
             linkerOpts.add("-lsqlite3")
             export(project(":shared:data:repository"))
             export(project(":shared:data:database"))
-            export(project(":shared:data:network"))
+            export(project(":shared:data:firestore"))
             export(project(":shared:logging"))
             export(project(":shared:domain"))
             export(project(":shared:common"))

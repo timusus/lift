@@ -1,7 +1,7 @@
 package com.simplecityapps.lift.common.model
 
 data class Exercise(
-    val id: Long,
+    val id: String,
     val name: String,
     val oneRepMax: Float?
 )

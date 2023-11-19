@@ -46,9 +46,6 @@ fun LiftNavHost(
         }
         composable(HomeDestination.route) {
             HomeScreen(
-                onNavigateToSettings = {
-                    navController.navigate(SettingsDestination.route)
-                },
                 onNavigateToSignIn = {
                     navController.navigate(AuthDestination.route)
                 }
@@ -75,7 +72,7 @@ fun LiftNavHost(
             route = "routines/{routineId}",
             arguments = listOf(
                 navArgument("routineId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                 }
             )
         ) {

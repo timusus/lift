@@ -20,15 +20,17 @@ rootProject.name = "lift"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-include(":shared:auth")
 include(":shared:common")
+include(":shared:data:auth")
 include(":shared:data:database")
-include(":shared:data:network")
+include(":shared:data:firestore")
+include(":shared:data:local-json")
 include(":shared:data:repository")
+include(":shared:data:preferences")
 include(":shared:domain")
 include(":shared:logging")
 
 include(":android:app")
 include(":android:sync:work")
 
-include(":shared:framework")
+//include(":shared:framework")

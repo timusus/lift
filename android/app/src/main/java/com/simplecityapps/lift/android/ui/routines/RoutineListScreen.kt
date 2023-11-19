@@ -76,7 +76,7 @@ private fun RoutineListScreen(
                             RoutineListItem(
                                 routine = routine,
                                 session = session,
-                                isCurrent = routine.id == viewState.leastRecentRoutine.id
+                                isCurrent = routine.id == viewState.leastRecentRoutine?.id
                             ) {
                                 onNavigateToDetailScreen(routine)
                             }

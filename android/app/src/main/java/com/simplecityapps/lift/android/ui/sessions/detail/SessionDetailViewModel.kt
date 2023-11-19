@@ -11,7 +11,7 @@ import com.simplecityapps.lift.common.model.SessionExercise
 import com.simplecityapps.lift.common.repository.RoutineRepository
 import com.simplecityapps.lift.common.repository.SessionRepository
 import com.simplecityapps.lift.common.usecase.CreateSessionFromRoutineUseCase
-import com.simplecityapps.lift.repository.SessionManager
+import com.simplecityapps.lift.data.repository.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,11 +41,11 @@ class SessionDetailViewModel @Inject constructor(
     private val soundManager: SoundManager
 ) : ViewModel() {
 
-    private val routineId: Long = requireNotNull(savedStateHandle["routineId"]) {
+    private val routineId: String = requireNotNull(savedStateHandle["routineId"]) {
         "Routine ID must not be null"
     }
 
-    private val sessionId = MutableStateFlow<Long?>(null)
+    private val sessionId = MutableStateFlow<String?>(null)
 
     private val _useExistingSessionDialogState = MutableStateFlow<DialogSessionState>(DialogSessionState.Hide)
     val useExistingSessionDialogState = _useExistingSessionDialogState.asStateFlow()
@@ -94,7 +94,7 @@ class SessionDetailViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val routine = routineRepository.getRoutine(routineId).first()
+            val routine = requireNotNull(routineRepository.getRoutine(routineId).first())
 
             val existingSession = getExistingSession(routine)
 

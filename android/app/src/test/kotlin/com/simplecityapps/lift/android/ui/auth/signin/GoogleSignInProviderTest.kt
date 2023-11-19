@@ -8,7 +8,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Status
 import com.simplecityapps.lift.android.common.AsyncState
-import com.simplecityapps.lift.auth.AuthRepository
+import com.simplecityapps.lift.data.repository.DefaultAuthRepository
+import com.simplecityapps.lift.auth.signin.GoogleSignInProvider
+import com.simplecityapps.lift.common.repository.AuthRepository
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -22,7 +24,7 @@ import org.junit.jupiter.api.Test
 
 class GoogleSignInProviderTest {
 
-    private lateinit var authRepository: AuthRepository
+    private lateinit var authRepository: DefaultAuthRepository
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var googleSignInProvider: GoogleSignInProvider
 

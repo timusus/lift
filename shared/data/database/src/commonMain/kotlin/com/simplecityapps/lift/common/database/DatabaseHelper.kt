@@ -5,6 +5,7 @@ import app.cash.sqldelight.adapter.primitive.FloatColumnAdapter
 import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
+import com.simplecityapps.lift.common.DateSerializer
 import com.simplecityapps.lift.database.LiftDatabase
 import comsimplecityappslift.common.database.ExerciseEntity
 import comsimplecityappslift.common.database.RoutineEntity
@@ -13,26 +14,32 @@ import comsimplecityappslift.common.database.RunSessionEntity
 import comsimplecityappslift.common.database.RunSessionLocationEntity
 import comsimplecityappslift.common.database.SessionEntity
 import comsimplecityappslift.common.database.SessionExerciseEntity
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Instant
 
-class DatabaseHelper(private val driverFactory: DriverFactory) {
-
-    private val instantAdapter: ColumnAdapter<Instant, String> by lazy {
-        object : ColumnAdapter<Instant, String> {
-            override fun decode(databaseValue: String): Instant {
-                return Instant.parse(databaseValue)
-            }
-
-            override fun encode(value: Instant): String {
-                return value.toString()
-            }
-        }
+class InstantStringColumnAdapter(
+    private val dateSerializer: DateSerializer
+) : ColumnAdapter<Instant, String> {
+    override fun decode(databaseValue: String): Instant {
+        return runBlocking { dateSerializer.deserialize(databaseValue) }
     }
+
+    override fun encode(value: Instant): String {
+        return runBlocking { dateSerializer.serialize(value) }
+    }
+}
+
+class DatabaseHelper(
+    private val driverFactory: DriverFactory,
+    private val instantAdapter: InstantStringColumnAdapter
+) {
 
     private val sessionAdapter by lazy {
         SessionEntity.Adapter(
-            instantAdapter,
-            instantAdapter
+            startDateAdapter = instantAdapter,
+            endDateAdapter = instantAdapter,
+            last_modifiedAdapter = instantAdapter,
+            last_syncedAdapter = instantAdapter
         )
     }
 
@@ -42,7 +49,9 @@ class DatabaseHelper(private val driverFactory: DriverFactory) {
             repsAdapter = IntColumnAdapter,
             weightAdapter = FloatColumnAdapter,
             currentSetAdapter = IntColumnAdapter,
-            endDateAdapter = instantAdapter
+            endDateAdapter = instantAdapter,
+            last_modifiedAdapter = instantAdapter,
+            last_syncedAdapter = instantAdapter
         )
     }
 
@@ -52,25 +61,43 @@ class DatabaseHelper(private val driverFactory: DriverFactory) {
             setsAdapter = IntColumnAdapter,
             repsAdapter = IntColumnAdapter,
             percent_one_rep_maxAdapter = FloatColumnAdapter,
-            weightAdapter = FloatColumnAdapter
+            weightAdapter = FloatColumnAdapter,
+            last_modifiedAdapter = instantAdapter,
+            last_syncedAdapter = instantAdapter
         )
     }
 
     private val runSessionEntityAdapter by lazy {
         RunSessionEntity.Adapter(
             startDateAdapter = instantAdapter,
-            endDateAdapter = instantAdapter
+            endDateAdapter = instantAdapter,
+            last_modifiedAdapter = instantAdapter,
+            last_syncedAdapter = instantAdapter
         )
     }
 
     private val runSessionLocationEntityAdapter by lazy {
         RunSessionLocationEntity.Adapter(
-            timestampAdapter = instantAdapter
+            timestampAdapter = instantAdapter,
+            last_modifiedAdapter = instantAdapter,
+            last_syncedAdapter = instantAdapter
         )
     }
 
-    private val exerciseAdapter by lazy { ExerciseEntity.Adapter(FloatColumnAdapter) }
-    private val routineAdapter by lazy { RoutineEntity.Adapter(IntColumnAdapter) }
+    private val exerciseAdapter by lazy {
+        ExerciseEntity.Adapter(
+            one_rep_maxAdapter = FloatColumnAdapter,
+            last_modifiedAdapter = instantAdapter,
+            last_syncedAdapter = instantAdapter
+        )
+    }
+    private val routineAdapter by lazy {
+        RoutineEntity.Adapter(
+            sort_orderAdapter = IntColumnAdapter,
+            last_modifiedAdapter = instantAdapter,
+            last_syncedAdapter = instantAdapter
+        )
+    }
 
     private val driver: SqlDriver by lazy { driverFactory.createDriver() }
 

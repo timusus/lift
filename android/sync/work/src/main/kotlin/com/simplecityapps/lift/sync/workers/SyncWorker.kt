@@ -12,8 +12,8 @@ import com.simplecityapps.lift.common.repository.ExerciseRepository
 import com.simplecityapps.lift.logging.LogPriority
 import com.simplecityapps.lift.logging.asLog
 import com.simplecityapps.lift.logging.logcat
-import com.simplecityapps.lift.network.Dispatcher
-import com.simplecityapps.lift.network.LiftDispatchers
+import com.simplecityapps.lift.common.utils.Dispatcher
+import com.simplecityapps.lift.common.utils.LiftDispatchers
 import com.simplecityapps.lift.sync.initializers.SyncConstraints
 import com.simplecityapps.lift.sync.initializers.syncForegroundInfo
 import dagger.assisted.Assisted

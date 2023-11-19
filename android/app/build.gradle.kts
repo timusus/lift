@@ -32,16 +32,14 @@ android {
 
 dependencies {
     implementation(project(":shared:common"))
-    implementation(project(":shared:logging"))
+    implementation(project(":shared:data:auth"))
     implementation(project(":shared:data:database"))
-    implementation(project(":shared:data:network"))
+    implementation(project(":shared:data:firestore"))
+    implementation(project(":shared:data:local-json"))
+    implementation(project(":shared:data:preferences"))
     implementation(project(":shared:data:repository"))
     implementation(project(":shared:domain"))
-    implementation(project(":shared:auth"))
-
-//    implementation(platform(libs.firebase.bom))
-//    implementation(libs.firebase.auth)
-//    implementation(libs.android.gms.play.services.auth)
+    implementation(project(":shared:logging"))
 
     androidTestImplementation(libs.androidx.navigation.testing)
 
@@ -86,15 +84,6 @@ dependencies {
     testRuntimeOnly(libs.junit5.jupiter.engine)
     testImplementation(libs.mockk)
 
-}
-
-// androidx.test is forcing JUnit, 4.12. This forces it to use 4.13
-configurations.configureEach {
-    resolutionStrategy {
-        force(libs.junit4)
-        // Temporary workaround for https://issuetracker.google.com/174733673
-        force("org.objenesis:objenesis:2.6")
-    }
 }
 
 tasks.withType<Test>().configureEach {

@@ -15,7 +15,10 @@ import javax.inject.Inject
 
 sealed class RoutineListViewState {
     data object Loading : RoutineListViewState()
-    data class Ready(val routineSessionMap: List<Pair<Routine, Session?>>, val leastRecentRoutine: Routine) : RoutineListViewState()
+    data class Ready(
+        val routineSessionMap: List<Pair<Routine, Session?>>,
+        val leastRecentRoutine: Routine?
+    ) : RoutineListViewState()
 }
 
 @HiltViewModel
@@ -32,8 +35,9 @@ class RoutineListViewModel @Inject constructor(
             // First routine with no recent session
             val leastRecentRoutine = routineSessionMap.firstOrNull { routineSessionPair -> routineSessionPair.second == null }?.first // First routine with no session
                 ?: routineSessionMap.firstOrNull { it.second?.isComplete == false }?.first // First routine whose session is incomplete
-                ?: routineSessionMap.minByOrNull { routineSessionPair -> routineSessionPair.second!!.endDate ?: routineSessionPair.second!!.startDate }?.first // First routine whose completion date is oldest
-                ?: routineSessionMap.first().first // First routine
+                ?: routineSessionMap.minByOrNull { routineSessionPair -> routineSessionPair.second!!.endDate ?: routineSessionPair.second!!.startDate
+                }?.first // First routine whose completion date is oldest
+                ?: routineSessionMap.firstOrNull()?.first // First routine
 
             RoutineListViewState.Ready(
                 routineSessionMap = routineSessionMap,

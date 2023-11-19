@@ -2,6 +2,7 @@ package com.simplecityapps.lift.android.ui
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -42,6 +43,7 @@ fun LiftApp() {
         LiftNavHost(
             navController = navController,
             modifier = Modifier
+                .fillMaxSize()
                 .padding(padding)
                 .consumeWindowInsets(padding)
         )

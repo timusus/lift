@@ -9,7 +9,6 @@ android {
 
 dependencies {
     implementation(projects.shared.common)
-    implementation(projects.shared.auth)
     implementation(projects.shared.domain)
     implementation(projects.shared.logging)
     implementation(libs.androidx.work.ktx)

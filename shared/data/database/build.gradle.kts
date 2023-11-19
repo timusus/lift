@@ -20,6 +20,7 @@ kotlin {
                 implementation(libs.sql.delight.coroutines)
                 implementation(libs.sql.delight.primitive.adapters)
                 implementation(libs.kotlinx.datetime)
+                implementation(project(":shared:common"))
             }
         }
         val androidMain by getting {

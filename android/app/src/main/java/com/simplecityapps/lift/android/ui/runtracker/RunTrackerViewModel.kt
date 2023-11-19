@@ -23,7 +23,7 @@ class RunTrackerViewModel @Inject constructor(
     locationRepository: LocationRepository
 ) : ViewModel() {
 
-    private var currentSessionId: Long? = null
+    private var currentSessionId: String? = null
     private val _sessionStartTime: MutableStateFlow<Instant?> = MutableStateFlow(null)
     val sessionStartTime = _sessionStartTime.asStateFlow()
 

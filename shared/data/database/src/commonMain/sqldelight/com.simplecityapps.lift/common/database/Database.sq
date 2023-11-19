@@ -1,4 +1,3 @@
-import kotlin.Boolean;
 import kotlin.Float;
 import kotlin.Int;
 import kotlinx.datetime.Instant;
@@ -6,71 +5,78 @@ import kotlinx.datetime.Instant;
 -- Table Creation
 
 CREATE TABLE ExerciseEntity (
-    id INTEGER PRIMARY KEY,
+    id TEXT PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
     one_rep_max REAL AS Float,
-    synced INTEGER AS Boolean NOT NULL DEFAULT 0
+    last_modified TEXT AS Instant NOT NULL,
+    last_synced TEXT AS Instant
 );
 
 CREATE TABLE RoutineEntity (
-    id INTEGER PRIMARY KEY,
+    id TEXT PRIMARY KEY NOT NULL,
     sort_order INTEGER AS Int NOT NULL,
     name TEXT NOT NULL,
-    synced INTEGER AS Boolean NOT NULL DEFAULT 0
+    last_modified TEXT AS Instant NOT NULL,
+    last_synced TEXT AS Instant
 );
 
 CREATE TABLE RoutineExerciseEntity (
-     id INTEGER PRIMARY KEY,
+     id TEXT PRIMARY KEY NOT NULL,
      sort_order INTEGER AS Int NOT NULL,
      sets INTEGER AS Int NOT NULL,
      reps INTEGER AS Int NOT NULL,
      percent_one_rep_max REAL AS Float,
      weight REAL AS Float,
-     routineId INTEGER NOT NULL,
-     exerciseId INTEGER NOT NULL,
-     synced INTEGER AS Boolean NOT NULL DEFAULT 0,
+     routineId TEXT NOT NULL,
+     exerciseId TEXT NOT NULL,
+     last_modified TEXT AS Instant NOT NULL,
+     last_synced TEXT AS Instant,
      FOREIGN KEY (routineId) REFERENCES RoutineEntity(id),
      FOREIGN KEY (exerciseId) REFERENCES ExerciseEntity(id)
 );
 
 CREATE TABLE SessionEntity (
-    id INTEGER PRIMARY KEY,
+    id TEXT PRIMARY KEY NOT NULL,
     startDate TEXT AS Instant NOT NULL,
     endDate TEXT AS Instant,
-    routineId INTEGER NOT NULL,
-    currentExerciseId INTEGER,
-    synced INTEGER AS Boolean NOT NULL DEFAULT 0,
+    routineId TEXT NOT NULL,
+    currentExerciseId TEXT,
+    last_modified TEXT AS Instant NOT NULL,
+    last_synced TEXT AS Instant,
     FOREIGN KEY (routineId) REFERENCES RoutineEntity(id)
 );
 
 CREATE TABLE SessionExerciseEntity (
-    id INTEGER PRIMARY KEY,
+    id TEXT PRIMARY KEY NOT NULL,
     sets INTEGER AS Int,
     reps INTEGER AS Int,
     weight REAL AS Float,
-    sessionId INTEGER NOT NULL,
-    routineExerciseId INTEGER NOT NULL,
+    sessionId TEXT NOT NULL,
+    routineExerciseId TEXT NOT NULL,
     currentSet INTEGER AS Int NOT NULL DEFAULT 0,
     endDate TEXT AS Instant,
-    synced INTEGER AS Boolean NOT NULL DEFAULT 0,
+    last_modified TEXT AS Instant NOT NULL,
+    last_synced TEXT AS Instant,
     FOREIGN KEY (sessionId) REFERENCES SessionEntity(id) ON DELETE CASCADE,
     FOREIGN KEY (routineExerciseId) REFERENCES RoutineExerciseEntity(id)
 );
 
 CREATE TABLE RunSessionEntity (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id TEXT PRIMARY KEY NOT NULL,
     startDate TEXT AS Instant NOT NULL,
     endDate TEXT AS Instant,
-    synced INTEGER AS Boolean NOT NULL DEFAULT 0
+    last_modified TEXT AS Instant NOT NULL,
+    last_synced TEXT AS Instant
 );
 
 CREATE TABLE RunSessionLocationEntity (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    sessionId INTEGER NOT NULL REFERENCES RunSessionEntity(id),
+    id TEXT PRIMARY KEY NOT NULL,
+    sessionId TEXT NOT NULL REFERENCES RunSessionEntity(id),
     latitude REAL NOT NULL,
     longitude REAL NOT NULL,
     timestamp TEXT AS Instant NOT NULL,
-    synced INTEGER AS Boolean NOT NULL DEFAULT 0
+    last_modified TEXT AS Instant NOT NULL,
+    last_synced TEXT AS Instant
 );
 
 -- Queries
@@ -80,13 +86,39 @@ selectAllExercises:
 SELECT *
 FROM ExerciseEntity;
 
-selectExercises:
+selectExercise:
 SELECT *
-FROM ExerciseEntity;
+FROM ExerciseEntity
+WHERE id = ?
+LIMIT 1;
 
-createExercise:
-INSERT INTO ExerciseEntity(id, name, one_rep_max)
-VALUES (?, ?, ?);
+selectExercisesToSync:
+SELECT *
+FROM ExerciseEntity
+WHERE last_synced IS NULL OR last_modified > last_synced;
+
+selectLastSyncedExerciseInstant:
+SELECT last_synced
+FROM ExerciseEntity
+ORDER BY last_synced DESC
+LIMIT 1;
+
+select:
+SELECT AVG(CAST(:BAR AS INTEGER));
+
+updateExerciseLastSynced:
+UPDATE ExerciseEntity
+SET last_synced = ?
+WHERE id IN ?;
+
+upsertExercise:
+INSERT INTO ExerciseEntity (id, name, one_rep_max, last_modified, last_synced)
+VALUES (?, ?, ?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+  name = excluded.name,
+  one_rep_max = excluded.one_rep_max,
+  last_modified = excluded.last_modified,
+  last_synced = excluded.last_synced;
 
 updateExerciseOneRepMax:
 UPDATE ExerciseEntity
@@ -106,16 +138,36 @@ FROM RoutineEntity
 WHERE id IN :routineIds
 ORDER BY sort_order;
 
+selectRoutinesToSync:
+SELECT *
+FROM RoutineEntity
+WHERE last_synced IS NULL OR last_modified > last_synced;
+
 selectRoutine:
 SELECT *
 FROM RoutineEntity
-WHERE id = :routineIds
-ORDER BY sort_order
+WHERE id = :routineId
 LIMIT 1;
 
-createRoutine:
-INSERT INTO RoutineEntity(id, sort_order, name)
-VALUES (?, ?, ?);
+selectLastSyncedRoutineInstant:
+SELECT last_synced
+FROM RoutineEntity
+ORDER BY last_synced DESC
+LIMIT 1;
+
+upsertRoutine:
+INSERT INTO RoutineEntity (id, sort_order, name, last_modified,  last_synced)
+VALUES (?, ?, ?,  ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+  sort_order = excluded.sort_order,
+  name = excluded.name,
+  last_modified = excluded.last_modified,
+  last_synced = excluded.last_synced;
+
+updateRoutineLastSynced:
+UPDATE RoutineEntity
+SET last_synced = ?
+WHERE id IN ?;
 
 -- Routine Exercises
 
@@ -130,6 +182,23 @@ FROM RoutineExerciseEntity
 WHERE routineId IN :routineIds
 ORDER BY sort_order;
 
+selectRoutineExercise:
+SELECT *
+FROM RoutineExerciseEntity
+WHERE id = :routineExerciseId
+LIMIT 1;
+
+selectRoutineExercisesToSync:
+SELECT *
+FROM RoutineExerciseEntity
+WHERE last_synced IS NULL OR last_modified > last_synced;
+
+selectLastSyncedRoutineExerciseInstant:
+SELECT last_synced
+FROM RoutineExerciseEntity
+ORDER BY last_synced DESC
+LIMIT 1;
+
 updateRoutineExerciseWeight:
 UPDATE RoutineExerciseEntity
 SET weight = :weight
@@ -140,15 +209,36 @@ UPDATE RoutineExerciseEntity
 SET percent_one_rep_max = :percentOneRepMax
 WHERE id = :routineExerciseId;
 
-createRoutineExercise:
-INSERT INTO RoutineExerciseEntity(id, sort_order, sets, reps, percent_one_rep_max, weight, routineId, exerciseId)
-VALUES (?, ?, ?, ?, ?, ? ,?, ?);
+updateRoutineExerciseLastSynced:
+UPDATE RoutineExerciseEntity
+SET last_synced = ?
+WHERE id IN ?;
+
+upsertRoutineExercise:
+INSERT INTO RoutineExerciseEntity (id, sort_order, sets, reps, percent_one_rep_max, weight, routineId, exerciseId, last_modified, last_synced)
+VALUES (?, ?, ?, ?, ?, ? ,?, ?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+  sort_order = excluded.sort_order,
+  sets = excluded.sets,
+  reps = excluded.reps,
+  percent_one_rep_max = excluded.percent_one_rep_max,
+  weight = excluded.weight,
+  routineId = excluded.routineId,
+  exerciseId = excluded.exerciseId,
+  last_modified = excluded.last_modified,
+  last_synced = excluded.last_synced;
 
 -- Sessions
 
-createSession:
-INSERT INTO SessionEntity(id, startDate, endDate, routineId)
-VALUES (?, ?, ?, ?);
+upsertSession:
+INSERT INTO SessionEntity(id, startDate, endDate, routineId, last_modified, last_synced)
+VALUES (?, ?, ?, ?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+  startDate = excluded.startDate,
+  endDate = excluded.endDate,
+  routineId = excluded.routineId,
+  last_modified = excluded.last_modified,
+  last_synced = excluded.last_synced;
 
 selectAllSessions:
 SELECT *
@@ -165,8 +255,12 @@ selectSession:
 SELECT *
 FROM SessionEntity
 WHERE id = :sessionId
-ORDER BY startDate DESC
 LIMIT 1;
+
+selectSessionsToSync:
+SELECT *
+FROM SessionEntity
+WHERE last_synced IS NULL OR last_modified > last_synced;
 
 selectSessionsForRoutine:
 SELECT *
@@ -174,10 +268,21 @@ FROM SessionEntity
 WHERE routineId = :routineId
 ORDER BY startDate DESC;
 
+selectLastSyncedSessionInstant:
+SELECT last_synced
+FROM SessionEntity
+ORDER BY last_synced DESC
+LIMIT 1;
+
 updateSession:
 UPDATE SessionEntity
 SET currentExerciseId = :currentExerciseId, endDate = :endDate
 WHERE id = :sessionId;
+
+updateSessionLastSynced:
+UPDATE SessionEntity
+SET last_synced = ?
+WHERE id IN ?;
 
 deleteSession:
 DELETE FROM SessionEntity
@@ -194,9 +299,34 @@ SELECT *
 FROM SessionExerciseEntity
 WHERE sessionId IN :sessionIds;
 
-createSessionExercise:
-INSERT INTO SessionExerciseEntity(id, sets, reps, weight, sessionId, routineExerciseId)
-VALUES (?, ?, ?, ?, ?, ?);
+selectSessionExercise:
+SELECT *
+FROM SessionExerciseEntity
+WHERE id = :sessionId
+LIMIT 1;
+
+selectSessionExercisesToSync:
+SELECT *
+FROM SessionExerciseEntity
+WHERE last_synced IS NULL OR last_modified > last_synced;
+
+upsertSessionExercise:
+INSERT INTO SessionExerciseEntity(id, sets, reps, weight, sessionId, routineExerciseId, last_modified, last_synced)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+  sets = excluded.sets,
+  reps = excluded.reps,
+  weight = excluded.weight,
+  sessionId = excluded.sessionId,
+  routineExerciseId = excluded.routineExerciseId,
+  last_modified = excluded.last_modified,
+  last_synced = excluded.last_synced;
+
+selectLastSyncedSessionExerciseInstant:
+SELECT last_synced
+FROM SessionExerciseEntity
+ORDER BY last_synced DESC
+LIMIT 1;
 
 deleteExercisesForSession:
 DELETE FROM SessionExerciseEntity
@@ -207,12 +337,17 @@ UPDATE SessionExerciseEntity
 SET currentSet = :currentSet, endDate = :endDate, weight = :weight
 WHERE id = :sessionExerciseId;
 
+updateSessionExerciseLastSynced:
+UPDATE SessionExerciseEntity
+SET last_synced = ?
+WHERE id IN ?;
+
 -- Running
 
 -- Insert a new running session and return its ID.
 insertRunSession:
-INSERT INTO RunSessionEntity(startDate, endDate)
-VALUES (?,  ?);
+INSERT INTO RunSessionEntity(id, startDate, endDate, last_modified)
+VALUES (?, ?,  ?, ?);
 
 -- Update the end date of a running session.
 updateEndDate:
@@ -222,8 +357,8 @@ WHERE id = :id;
 
 -- Insert a new location for a session.
 insertLocation:
-INSERT INTO RunSessionLocationEntity (sessionId, latitude, longitude, timestamp)
-VALUES (?, ?, ?, ?);
+INSERT INTO RunSessionLocationEntity (id, sessionId, latitude, longitude, timestamp, last_modified)
+VALUES (?, ?, ?, ?, ?, ?);
 
 -- Get all locations for a specific session.
 getLocationsForRunSession:
@@ -235,8 +370,3 @@ ORDER BY timestamp ASC;
 getRunSession:
 SELECT * FROM RunSessionEntity
 WHERE id = :id;
-
--- All
-
-lastInsertId:
-SELECT last_insert_rowid();

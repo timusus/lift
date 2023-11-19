@@ -1,11 +1,13 @@
 package com.simplecityapps.lift.common.model
 
+import com.simplecityapps.lift.common.utils.UuidGenerator
 import kotlinx.datetime.Clock
 
 fun Routine.toSession(): Session {
-    val sessionExercises = exercises.map { it.toSessionExercise() }
+    val sessionId = UuidGenerator.generateUuid()
+    val sessionExercises = exercises.map { it.toSessionExercise(sessionId) }
     return Session(
-        id = 0,
+        id = sessionId,
         startDate = Clock.System.now(),
         endDate = null,
         routine = this,
@@ -14,13 +16,13 @@ fun Routine.toSession(): Session {
     )
 }
 
-fun RoutineExercise.toSessionExercise(): SessionExercise {
+fun RoutineExercise.toSessionExercise(sessionId: String): SessionExercise {
     return SessionExercise(
-        id = 0,
+        id = UuidGenerator.generateUuid(),
         sets = sets,
         reps = reps,
         weight = weight,
-        sessionId = 0,
+        sessionId = sessionId,
         routineExercise = this,
         currentSet = 0,
         endDate = null

@@ -32,10 +32,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.simplecityapps.lift.android.common.AsyncState
 import com.simplecityapps.lift.android.ui.theme.AppTheme
-import com.simplecityapps.lift.auth.AuthRepository
 import com.simplecityapps.lift.auth.signin.GoogleOneTapSignInProvider
 import com.simplecityapps.lift.auth.signin.GoogleSignInProvider
 import com.simplecityapps.lift.common.model.User
+import com.simplecityapps.lift.common.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -49,7 +49,7 @@ class AuthViewModel @Inject constructor(
 
     val authState = authRepository.authState
 
-    fun getAuthManager(): AuthRepository {
+    fun getAuthRepository(): AuthRepository {
         return authRepository
     }
 
@@ -71,7 +71,7 @@ fun AuthScreen(
     val googleOneTapSignInProvider = viewModel.getGoogleOneTapSignInProvider()
     val googleOneTapLauncher = googleOneTapSignInLauncher(
         googleOneTapSignInProvider = googleOneTapSignInProvider,
-        authRepository = viewModel.getAuthManager(),
+        authRepository = viewModel.getAuthRepository(),
         onUserCancelled = {
             useOneTap = false
         }
@@ -80,7 +80,7 @@ fun AuthScreen(
     val googleSignInProvider = viewModel.getGoogleSignInProvider()
     val googleSignInLauncher = googleSignInLauncher(
         googleSignInProvider = googleSignInProvider,
-        authRepository = viewModel.getAuthManager(),
+        authRepository = viewModel.getAuthRepository(),
     )
 
     val authState by viewModel.authState.collectAsStateWithLifecycle()

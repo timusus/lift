@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -19,6 +21,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -47,17 +53,25 @@ import kotlin.math.pow
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToSignIn: () -> Unit,
-    onNavigateToSettings: () -> Unit
 ) {
     val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
     val authState by viewModel.authState.collectAsStateWithLifecycle()
 
+    val syncing by viewModel.syncing.collectAsStateWithLifecycle()
+
     if (authState is AsyncState.Success) {
         HomeScreen(
             viewState = viewState,
-            onSettingsClicked = {
-                onNavigateToSettings()
+            syncing = syncing,
+            onSignOutClicked = {
+                viewModel.signOut()
+            },
+            onSyncClicked = {
+                viewModel.syncData()
+            },
+            onImportClicked = {
+                viewModel.importData()
             }
         )
     } else {
@@ -72,8 +86,14 @@ fun HomeScreen(
 @Composable
 fun HomeScreen(
     viewState: AsyncState<List<Session>>,
-    onSettingsClicked: () -> Unit = {}
+    syncing: Boolean,
+    onSignOutClicked: () -> Unit = {},
+    onSyncClicked: () -> Unit = {},
+    onImportClicked: () -> Unit = {}
 ) {
+
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -88,15 +108,47 @@ fun HomeScreen(
                         onDismissRequest = { showMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text(text = "Settings") },
+                            text = { Text(text = "Sync Data") },
+                            leadingIcon = {
+                                Icon(imageVector = Icons.Filled.Sync, null)
+                            },
+                            onClick = {
+                                onSyncClicked()
+                                showMenu = false
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = "Import Data") },
+                            leadingIcon = {
+                                Icon(imageVector = Icons.Filled.Download, null)
+                            },
+                            onClick = {
+                                onImportClicked()
+                                showMenu = false
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = "Sign Out") },
                             leadingIcon = {
                                 Icon(imageVector = Icons.Filled.Refresh, null)
                             },
-                            onClick = { onSettingsClicked() },
+                            onClick = {
+                                onSignOutClicked()
+                                showMenu = false
+                            },
                         )
                     }
                 }
             )
+        },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbar(
+                    modifier = Modifier
+                ) {
+                    Text(data.visuals.message)
+                }
+            }
         }
     ) { padding ->
         when (viewState) {
@@ -139,6 +191,15 @@ fun HomeScreen(
             is AsyncState.Failure -> {
                 // Todo
             }
+        }
+    }
+
+    LaunchedEffect(syncing) {
+        if (syncing) {
+            snackbarHostState.showSnackbar(
+                message = "Syncing",
+                duration = SnackbarDuration.Indefinite
+            )
         }
     }
 }
